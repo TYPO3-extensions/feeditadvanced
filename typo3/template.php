@@ -173,7 +173,7 @@ class template {
 	var $form='';					// This can be set to the HTML-code for a formtag. Useful when you need a form to span the whole page; Inserted exactly after the body-tag.
 	var $JScodeLibArray = array();		// Similar to $JScode (see below) but used as an associative array to prevent double inclusion of JS code. This is used to include certain external Javascript libraries before the inline JS code. <script>-Tags are not wrapped around automatically
 	var $JScode='';					// Additional header code (eg. a JavaScript section) could be accommulated in this var. It will be directly outputted in the header.
-	var $extJsCode = '';				// Additional header code for ExtJS. It will be included in document header and inserted in a Ext.onReady(function()
+	var $extJScode = '';				// Additional header code for ExtJS. It will be included in document header and inserted in a Ext.onReady(function()
 	var $JScodeArray = array();		// Similar to $JScode but for use as array with associative keys to prevent double inclusion of JS code. a <script> tag is automatically wrapped around.
 	var $postCode='';				// Additional 'page-end' code could be accommulated in this var. It will be outputted at the end of page before </body> and some other internal page-end code.
 	var $docType = '';				// Doc-type used in the header. Default is xhtml_trans. You can also set it to 'html_3', 'xhtml_strict' or 'xhtml_frames'.
@@ -697,13 +697,13 @@ class template {
 	' . $this->renderJSlibraries() . '
 	'.$this->JScode.'
 	'.$this->wrapScriptTags(implode("\n", $this->JScodeArray)).
-	($this->extJsCode ? $this->wrapScriptTags('Ext.onReady(function() {' . chr(10) . $this->extJsCode . chr(10) . '});') : '') .
+	($this->extJScode ? $this->wrapScriptTags('Ext.onReady(function() {' . chr(10) . $this->extJScode . chr(10) . '});') : '') .
 	'
 	<!--###POSTJSMARKER###-->
 </head>
 ';
 		$this->JScodeLibArray = array();
-		$this->JScode = $this->extJsCode = '';
+		$this->JScode = $this->extJScode = '';
 		$this->JScodeArray = array();
 
 		if ($this->docType=='xhtml_frames')	{
@@ -1400,7 +1400,7 @@ $str.=$this->docBodyTagBegin().
 			foreach($menuItems as $value => $label) {
 				$menuDef[$value]['isActive'] = !strcmp($currentValue,$value);
 				$menuDef[$value]['label'] = t3lib_div::deHSCentities(htmlspecialchars($label));
-				$menuDef[$value]['url'] = htmlspecialchars($script.'?'.$mainParams.$addparams.'&'.$elementName.'='.$value);
+				$menuDef[$value]['url'] = $script . '?' . $mainParams . $addparams . '&' . $elementName . '=' . $value;
 			}
 			$content = $this->getTabMenuRaw($menuDef);
 
@@ -2007,7 +2007,15 @@ $str.=$this->docBodyTagBegin().
 			$libs[] = 'contrib/extjs/ext-all' . ($this->addExtJSdebug ? '-debug' : '') . '.js';
 
 				// add extJS localization
-			$extJsLocaleFile = 'contrib/extjs/locale/ext-lang-' . $GLOBALS['BE_USER']->uc['lang'] . '.js';
+			$localeMap = $GLOBAL['LANG']->csConvObj->isoArray;	// load standard ISO mapping and modify for use with ExtJS
+			$localeMap[''] = 'en';
+			$localeMap['default'] = 'en';
+			$localeMap['gr'] = 'el_GR';	// Greek
+			$localeMap['no'] = 'no_BO';	// Norwegian Bokmaal
+			$localeMap['se'] = 'se_SV';	// Swedish
+			$extJsLang = isset($localeMap[$GLOBALS['BE_USER']->uc['lang']]) ? $localeMap[$GLOBALS['BE_USER']->uc['lang']] : $GLOBALS['BE_USER']->uc['lang'];
+			// TODO autoconvert file from UTF8 to current BE charset if necessary!!!!
+			$extJsLocaleFile = 'contrib/extjs/locale/ext-lang-' . $extJsLang . '.js';
 			if (file_exists(PATH_typo3 . $extJsLocaleFile)) {
 				$libs[] = $extJsLocaleFile;
 			}

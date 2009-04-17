@@ -172,8 +172,16 @@ class t3lib_cs {
 		'cp819' => 'iso-8859-1',
 		'ibm819' => 'iso-8859-1',
 		'iso-ir-100' => 'iso-8859-1',
-		'iso-ir-109' => 'iso-8859-2',
+		'iso-ir-101' => 'iso-8859-2',
+		'iso-ir-109' => 'iso-8859-3',
+		'iso-ir-110' => 'iso-8859-4',
+		'iso-ir-144' => 'iso-8859-5',
+		'iso-ir-127' => 'iso-8859-6',
+		'iso-ir-126' => 'iso-8859-7',
+		'iso-ir-138' => 'iso-8859-8',
 		'iso-ir-148' => 'iso-8859-9',
+		'iso-ir-157' => 'iso-8859-10',
+		'iso-ir-179' => 'iso-8859-13',
 		'iso-ir-199' => 'iso-8859-14',
 		'iso-ir-203' => 'iso-8859-15',
 		'csisolatin1' => 'iso-8859-1',
@@ -244,12 +252,9 @@ class t3lib_cs {
 		'ucs4' => 'ucs-4',
 	);
 
-		// mapping of iso-639:2 language codes to script names
+		// mapping of iso-639-1 language codes to script names
 	var $lang_to_script=array(
-			// iso-639:2 language codes, see:
-			//  http://www.w3.org/WAI/ER/IG/ert/iso639.htm
-			//  http://www.loc.gov/standards/iso639-2/langcodes.html
-			//  http://www.unicode.org/onlinedat/languages.html
+			// iso-639-1 language codes, see http://www.loc.gov/standards/iso639-2/php/code_list.php
 		'ar' => 'arabic',
 		'bg' => 'cyrillic',		// Bulgarian
 		'bs' => 'east_european',	// Bosnian
@@ -281,6 +286,8 @@ class t3lib_cs {
 		'lv' => 'west_european',	// Latvian/Lettish
 		'nl' => 'west_european',	// Dutch
 		'no' => 'west_european',	// Norwegian
+		'nb' => 'west_european',	// Norwegian Bokmal
+		'nn' => 'west_european',	// Norwegian Nynorsk
 		'pl' => 'east_european',	// Polish
 		'pt' => 'west_european',	// Portuguese
 		'ro' => 'east_european',	// Romanian

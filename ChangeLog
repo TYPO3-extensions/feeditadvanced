@@ -1,3 +1,45 @@
+2009-04-17  Steffen Kamper  <info@sk-typo3.de>
+
+	* Fixed bug #10827: Hide "Save and View"-button when editing a content-element
+
+2009-04-17  Christian Kuhn  <lolli@schwarzbu.ch>
+
+	* Fixed bug #2178: template::getTabMenu doubles ampersands (thanks to Stefano Kowalke)
+
+2009-04-16  Oliver Hader  <oliver@typo3.org>
+
+	* Added feature #10725: Integrate possibility to determine maximum of multiple values in GIFBUILDER
+
+2009-04-16  Steffen Kamper  <info@sk-typo3.de>
+
+	* Fixed bug #10735: Wrong returnUrl with clipboard actions
+
+2009-04-15  Tobias Liebig <mail_typo3@etobi.de>
+
+	* Fixed issue #8103: t3editor / typoscript on the right side of an operator is not tokenized (needed to enable codecompletion behind copy or reference operator)
+	* Fixed issue #9051: t3editor / On Mac Os X the key combination CMD+LEFT will close the t3editor
+	* Fixed issue #10899: bugfixes for t3editor codecompletion (credits to Stephan Petzl and Christian Kartnig)
+
+2009-04-10  Martin Kutschker  <masi@typo3.org>
+
+	* Fixed bug #10866: extra extJS onready code not loaded with template.php
+	* Fixed bug #10867: extJS localization doesn't work
+	* Fixed bug #9076: iso-ir-109 detected as iso-8859-2 instead of iso-8859-3
+	* Added feature #10888: support for Unix locales Norwegian bokmal and nynorsk
+
+2009-04-09  Stanislas Rolland  <typo3@sjbr.ca>
+
+	* Fixed issue #10847: htmlArea RTE: undo/redo is erratic in IE8
+	* Fixed issue #10665: RTE in FE loads stylesheet with title attribute which prevents Firefox from applying the stylesheet
+
+2009-04-09  Oliver Hader  <oliver@typo3.org>
+
+	* Fixed bug #8882: drag & drop of section elements and IRRE records does not work if frame has to be scrolled (thanks to Sebastian Fuchs & Helmut Hummel)
+
+2009-04-08  Christian Kuhn  <lolli@schwarzbu.ch>
+
+	* Fixed bug #10266: No user authentication for >1 TYPO3 installation under one domain (Thanks to Marcus Krause)
+
 2009-04-07  Christian Kuhn  <lolli@schwarzbu.ch>
 
 	* Fixed bug #10737: Add xmlns attribute to html tag in backend

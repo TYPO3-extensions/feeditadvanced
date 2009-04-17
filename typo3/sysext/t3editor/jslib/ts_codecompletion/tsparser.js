@@ -139,7 +139,8 @@ var TsParser = function(tsRef,extTsObjTree){
 
 	}
 
-	var tsTree; // = new TreeNode("_L_");
+	// the top level treenode
+	var tsTree = new TreeNode("_L_");
 	var currentLine = "";
 
 
@@ -272,9 +273,18 @@ var TsParser = function(tsRef,extTsObjTree){
 								setTreeNodeValue(path, str);
 								break;
 							case '=<': // reference to another object in the tree
+								 // resolve relative path		
+								if ( prefixes.length > 0 
+										&& str.substr(0, 1) == '.' ) {
+									str = prefixes.join('.') + str;
+								}
 								setReference(path, str);
 								break;
 							case '<': // copy from another object in the tree
+								if ( prefixes.length > 0 
+										&& str.substr(0, 1) == '.' ) {
+									str = prefixes.join('.') + str;
+								}
 								setCopy(path, str);
 								break;
 							case '>': // delete object value and properties
@@ -311,14 +321,18 @@ var TsParser = function(tsRef,extTsObjTree){
 			currentLine = line;
 			var i = line.indexOf('<');
 			if (i != -1) {
-				var path = line.substring(i+1, line.length)
+				var path = line.substring(i+1, line.length);
+				path = path.replace(/\s/g,"");
+				if ( prefixes.length > 0 && path.substr(0,1) == '.') {
+					path = prefixes.join('.') + path;
+				}
 			} else {
 				var path = line;
 				if (prefixes.length>0) {
 					path = prefixes.join('.') + '.' + path;
+					path = path.replace(/\s/g,"");
 				}
 			}
-			path = path.replace(/\s/g,"");
 			var lastDot = path.lastIndexOf(".");
 			path = path.substring(0, lastDot);
 		}
@@ -371,10 +385,12 @@ var TsParser = function(tsRef,extTsObjTree){
 				subTree[pathSeg].parent = parent;
 				//subTree[pathSeg].extTsObjTree = extTsObjTree;
 				// the extPath has to be set, so the TreeNode can retrieve the respecting node in the external templates
-				if(currentNodePath)		
-					currentNodePath += '.';
-				currentNodePath += pathSeg;				
-				subTree[pathSeg].extPath = currentNodePath;
+				var extPath = parent.extPath;
+				if(extPath) {
+					extPath += '.';
+				}
+				extPath += pathSeg;
+				subTree[pathSeg].extPath = extPath;
 			} 
 			if(i==aPath.length-1){
 				return subTree[pathSeg];
@@ -445,12 +461,15 @@ var TsParser = function(tsRef,extTsObjTree){
 			var myNewObj = new Object();
 
 			for(var i in myObj){
+				// disable recursive cloning for parent object -> copy by reference
 				if(i != "parent"){
 					if (typeof myObj[i] == 'object') {
 						myNewObj[i] = clone(myObj[i]);
 					} else {
 						myNewObj[i] = myObj[i];
 					}
+				} else {
+					myNewObj.parent = myObj.parent;
 				}
 			}
 			return myNewObj;
