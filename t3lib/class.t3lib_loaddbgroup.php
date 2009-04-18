@@ -201,26 +201,33 @@ class t3lib_loadDBGroup	{
 			$tempItemArray = t3lib_div::trimExplode(',', $itemlist);	// Changed to trimExplode 31/3 04; HMENU special type "list" didn't work if there were spaces in the list... I suppose this is better overall...
 			foreach($tempItemArray as $key => $val)	{
 				$isSet = 0;	// Will be set to "1" if the entry was a real table/id:
-
 					// Extract table name and id. This is un the formular [tablename]_[id] where table name MIGHT contain "_", hence the reversion of the string!
-				$val = strrev($val);
-				$parts = explode('_',$val,2);
+				$valReversed = strrev($val);
+				$parts = explode('_',$valReversed,2);
 				$theID = strrev($parts[0]);
 
-					// Check that the id IS an integer:
-				if (t3lib_div::testInt($theID))	{
-						// Get the table name: If a part of the exploded string, use that. Otherwise if the id number is LESS than zero, use the second table, otherwise the first table
-					$theTable = trim($parts[1]) ? strrev(trim($parts[1])) : ($this->secondTable && $theID<0 ? $this->secondTable : $this->firstTable);
-						// If the ID is not blank and the table name is among the names in the inputted tableList, then proceed:
-					if ((string)$theID!='' && $theID && $theTable && isset($this->tableArray[$theTable]))	{
-							// Get ID as the right value:
-						$theID = $this->secondTable ? abs(intval($theID)) : intval($theID);
-							// Register ID/table name in internal arrays:
-						$this->itemArray[$key]['id'] = $theID;
-						$this->itemArray[$key]['table'] = $theTable;
-						$this->tableArray[$theTable][] = $theID;
-							// Set update-flag:
-						$isSet=1;
+					// @todo 	jeff: how do we really want to do this hook?
+				if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_loaddbgroup.php']['processDBListItem'])) {
+					foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_loaddbgroup.php']['processDBListItem'] as $_funcRef) {
+						$_params = array('key' => $key, 'val' => $val, 'theID' => $theID);
+						$isSet = t3lib_div::callUserFunction($_funcRef, $_params, $this);
+					}
+				} else {
+						// Check that the id IS an integer:
+					if (t3lib_div::testInt($theID))	{
+							// Get the table name: If a part of the exploded string, use that. Otherwise if the id number is LESS than zero, use the second table, otherwise the first table
+						$theTable = trim($parts[1]) ? strrev(trim($parts[1])) : ($this->secondTable && $theID<0 ? $this->secondTable : $this->firstTable);
+							// If the ID is not blank and the table name is among the names in the inputted tableList, then proceed:
+						if ((string)$theID!='' && $theID && $theTable && isset($this->tableArray[$theTable]))	{
+								// Get ID as the right value:
+							$theID = $this->secondTable ? abs(intval($theID)) : intval($theID);
+								// Register ID/table name in internal arrays:
+							$this->itemArray[$key]['id'] = $theID;
+							$this->itemArray[$key]['table'] = $theTable;
+							$this->tableArray[$theTable][] = $theID;
+								// Set update-flag:
+							$isSet=1;
+						}
 					}
 				}
 

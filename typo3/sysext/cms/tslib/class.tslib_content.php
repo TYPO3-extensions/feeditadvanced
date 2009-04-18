@@ -1397,6 +1397,13 @@ class tslib_cObj {
 			while(list(,$val)=each($loadDB->itemArray))	{
 				$row = $data[$val['table']][$val['id']];
 
+				// @todo jeff: Added this foreach temporarily, but how do we really want to do it?
+				foreach($val as $key => $value) {
+					if($key != 'table' && !array_key_exists($key, (array) $row)) {
+						$row[$key] = $value;
+					}
+				}
+
 					// Versioning preview:
 				$GLOBALS['TSFE']->sys_page->versionOL($val['table'],$row);
 
