@@ -5095,7 +5095,7 @@ class t3lib_TCEforms	{
 	 * 		... and then include the result of this function after the form
 	 *
 	 * @param	string		$formname: The identification of the form on the page.
-	 * @param	boolean		$update: Just extend/update existing settings, e.g. for AJAX call
+	 * @param	boolean		$update: Just extend/update existing settings, e.g. for AJAX call (deprecated)
 	 * @return	string		A section with JavaScript - if $update is false, embedded in <script></script>
 	 */
 	function JSbottom($formname='forms[0]', $update = false)	{
@@ -5127,7 +5127,7 @@ class t3lib_TCEforms	{
 
 		$this->TBE_EDITOR_fieldChanged_func='TBE_EDITOR.fieldChanged_fName(fName,formObj[fName+"_list"]);';
 
-		if (!$update) {
+		if (!isset($GLOBALS['TYPO3_AJAX']) || !$GLOBALS['TYPO3_AJAX']) {
 			if ($this->loadMD5_JS) {
 				$this->loadJavascriptLib('md5.js');
 			}
