@@ -95,7 +95,7 @@ class tx_feedit_editpanel {
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 		$templateFile = ($conf['template']) ? $conf['template'] : $this->modTSconfig['properties']['template'];
 		if (!$templateFile) {
-			$templateFile = t3lib_extMgm::siteRelPath('fe_edit') . "res/template/feedit_advanced.tmpl";
+			$templateFile = t3lib_extMgm::siteRelPath('fe_edit') . "res/template/feedit.tmpl";
 		}
 		$this->template = $this->cObj->fileResource($templateFile);
 		$this->templateAction = $this->cObj->getSubpart($this->template, '###TEMPLATE_EDITPANEL_ACTION###');
