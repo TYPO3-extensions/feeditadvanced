@@ -707,7 +707,7 @@ var EditPanelAction = Class.create({
 
 		this.parent.getFormParameters();
 		var notification = new FrontendEditNotification(this._getNotificationMessage());
-		paramRequest = 'eID=fe_edit_advanced' + '&TSFE_EDIT[cmd]=' + this.cmd + '&TSFE_EDIT[record]=' + this.parent.record + '&pid=' + this.parent.pid;
+		paramRequest = 'eID=fe_edit' + '&TSFE_EDIT[cmd]=' + this.cmd + '&TSFE_EDIT[record]=' + this.parent.record + '&pid=' + this.parent.pid;
 		if (this.parent.params != undefined && this.parent.params != 0) {
 			paramRequest += '&' + this.parent.params;
 		}

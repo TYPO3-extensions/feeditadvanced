@@ -8,7 +8,7 @@ body {
 }
 
 #bodyattach {
-	behavior: url(typo3/sysext/fe_edit_advanced/res/css/csshover.htc);
+	behavior: url(typo3/sysext/fe_edit/res/css/csshover.htc);
 }
 
 img {

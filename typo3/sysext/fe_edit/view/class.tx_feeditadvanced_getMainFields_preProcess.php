@@ -32,9 +32,9 @@
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
  * @package TYPO3
- * @subpackage fe_edit_advanced
+ * @subpackage fe_edit
  */
-class tx_feeditadvanced_getMainFields_preProcess {
+class tx_feedit_getMainFields_preProcess {
 	
 	/**
 	 * @todo	What is this?
@@ -154,8 +154,8 @@ class tx_feeditadvanced_getMainFields_preProcess {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_getMainFields_preProcess.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_getMainFields_preProcess.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit/view/class.tx_feedit_getMainFields_preProcess.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit/view/class.tx_feedit_getMainFields_preProcess.php']);
 }
 
 ?>

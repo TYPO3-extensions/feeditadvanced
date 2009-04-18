@@ -1,7 +1,7 @@
 <?php
 
 ########################################################################
-# Extension Manager/Repository config file for ext: "fe_edit_advanced"
+# Extension Manager/Repository config file for ext: "fe_edit"
 #
 # Auto generated 04-08-2008 16:20
 #

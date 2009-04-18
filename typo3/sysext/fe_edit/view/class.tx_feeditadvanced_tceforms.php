@@ -47,7 +47,7 @@ require_once (PATH_t3lib . 'class.t3lib_tceforms.php');
 
 /*************************** class starts *************************************/
 
-class tx_feeditadvanced_tceforms extends t3lib_TCEforms {
+class tx_feedit_tceforms extends t3lib_TCEforms {
 	var $imagePath = ''; // image path for Forms on page frontend editing mode
 	var $backPath = '';
 
@@ -722,7 +722,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms {
 						(($GLOBALS['TCA'][$table]['ctrl']['type'] && !strcmp($field,$GLOBALS['TCA'][$table]['ctrl']['type'])) ||
 						($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'] && t3lib_div::inList($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'],$field)))
 						&& !$BE_USER->uc['noOnChangeAlertInTypeFields'])	{
-					$alertMsgOnChange = 'if (confirm(' . $GLOBALS['LANG']->JScharCode($GLOBALS['LANG']->sL('LLL:EXT:fe_edit_advanced/locallang.xml:alertChange')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR.submitForm(); };';
+					$alertMsgOnChange = 'if (confirm(' . $GLOBALS['LANG']->JScharCode($GLOBALS['LANG']->sL('LLL:EXT:fe_edit/locallang.xml:alertChange')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR.submitForm(); };';
 				} else {$alertMsgOnChange='';}
 
 					// Render as a hidden field?

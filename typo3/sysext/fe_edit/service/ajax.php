@@ -32,9 +32,9 @@
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
  * @package TYPO3
- * @subpackage fe_edit_advanced
+ * @subpackage fe_edit
  */
-class tx_feeditadvanced_ajax {
+class tx_feedit_ajax {
 	
 	/**
 	 * The page ID for editing.
@@ -72,7 +72,7 @@ class tx_feeditadvanced_ajax {
 			// Setup ajax object
 		require_once(PATH_typo3.'classes/class.typo3ajax.php');
 		$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
-		$this->ajaxObj = new $ajaxClass('fe_edit_advanced');
+		$this->ajaxObj = new $ajaxClass('fe_edit');
 		$this->ajaxObj->setContentFormat('jsonbody');
 			// @todo	Remove this line eventually.  Plain can be useful for testing though.
 		//$this->ajaxObj->setContentFormat('plain');
@@ -112,7 +112,7 @@ class tx_feeditadvanced_ajax {
 				// Setup ajax object
 			require_once(PATH_typo3.'classes/class.typo3ajax.php');
 			$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
-			$this->ajaxObj = new $ajaxClass('fe_edit_advanced');
+			$this->ajaxObj = new $ajaxClass('fe_edit');
 			$this->ajaxObj->setContentFormat('jsonbody');
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
 			//$this->ajaxObj->setContentFormat('plain');
@@ -657,7 +657,7 @@ class tx_feeditadvanced_ajax {
 	// exit, if script is called directly (must be included via eID in index_ts.php)
 if (!defined ('PATH_typo3conf')) die ('Could not access this script directly!');
 
-$feEditAjax = t3lib_div::makeInstance('tx_feeditadvanced_ajax');
+$feEditAjax = t3lib_div::makeInstance('tx_feedit_ajax');
 $feEditAjax->processAction();
 
 ?>
