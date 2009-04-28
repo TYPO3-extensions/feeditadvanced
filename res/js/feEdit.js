@@ -1314,7 +1314,7 @@ var Lightbox = Class.create({
 			// Add the overlay before the editWindow for IE.
 		this.hideAll();
 		overlay = new Element('div', {'id': 'overlay', 'style': 'display:none'});
-		editPanel.content.insert({'top': overlay});
+		$(document.body).insert({'bottom': overlay});
 		
 		headerElement  = new Element('div', {'id': 'editWindowHeader'}).update(headerText);
 		closeElement   = new Element('button', {'id': 'closeButton', 'value':' ', 'type':'submit'}).addClassName('closeAction');
@@ -1326,7 +1326,7 @@ var Lightbox = Class.create({
 		this.windowElement.insert({'bottom': headerElement});
 		this.windowElement.insert({'bottom': contentElement});
 
-		this.editPanel.content.insert({'bottom': this.windowElement});
+		$(document.body).insert({'bottom': this.windowElement});
 
 		this.updateContent(content);
 	},
