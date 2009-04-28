@@ -181,9 +181,13 @@ class tx_feeditadvanced_ajax {
 			list($table, $uid) = split(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['parentEditPanel']);
 			$this->ajaxObj->addContent('id', $table . ':' . $uid);
 		}
-
-		$editText = $this->renderContentElement($table, $uid);
-		$this->ajaxObj->addContent('content', $editText);
+		
+		if ($table == 'pages') {
+			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
+		} else {
+			$editText = $this->renderContentElement($table, $uid);
+			$this->ajaxObj->addContent('content', $editText);
+		}
 	}
 
 	/**
@@ -206,7 +210,6 @@ class tx_feeditadvanced_ajax {
 			$this->ajaxObj->addContent('newContent', $newText);
 			$this->ajaxObj->addContent('newUID', $newUID);
 		}
-
 	}
 
 	/**
@@ -222,8 +225,12 @@ class tx_feeditadvanced_ajax {
 			$this->ajaxObj->addContent('id', $table . ':' . $uid);
 		}
 		
-		$editText = $this->renderContentElement($table, $uid);
-		$this->ajaxObj->addContent('content', $editText);
+		if ($table == 'pages') {
+			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
+		} else {
+			$editText = $this->renderContentElement($table, $uid);
+			$this->ajaxObj->addContent('content', $editText);
+		}
 	}
 	
 	/**
@@ -654,6 +661,23 @@ class tx_feeditadvanced_ajax {
 		}
 
 		return $headerDataString;
+	}
+	
+	/**
+	 * Gets the absolute URL for the specified page ID.
+	 *
+	 * @param	integer	The page id.
+	 * @return	string
+	 */
+	protected function getPageURL($id) {
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
+		$cObj->start(array());
+		
+		$conf = array (
+			'parameter' => $id
+		);
+		
+		return $cObj->typolink_URL($conf);
 	}
 }
 
