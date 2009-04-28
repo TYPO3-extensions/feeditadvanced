@@ -516,7 +516,7 @@ var EditPanel = Class.create({
 		}).bind(this));
 
 			// Buttons at the bottom of the edit window
-		this.content.select('#editControls button').each((function(button) {
+		$('editControls').select('button').each((function(button) {
 			button.observe('click', this._handleButtonClick.bindAsEventListener(this));
 		}).bind(this));
 
