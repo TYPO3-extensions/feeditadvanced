@@ -5132,14 +5132,14 @@ class t3lib_TCEforms	{
 				$this->loadJavascriptLib('md5.js');
 			}
 
-			$GLOBALS['SOBE']->doc->loadPrototype();
+			$this->loadPrototype();
 			$this->loadJavascriptLib('../t3lib/jsfunc.evalfield.js');
 			// @TODO: Change to loadJavascriptLib(), but fix "TS = new typoScript()" issue first - see bug #9494
 			$jsFile[] = '<script type="text/javascript" src="'.$this->backPath.'jsfunc.tbe_editor.js"></script>';
 
 				// if IRRE fields were processed, add the JavaScript functions:
 			if ($this->inline->inlineCount) {
-				$GLOBALS['SOBE']->doc->loadScriptaculous();
+				$this->loadScriptaculous();
 				$this->loadJavascriptLib('../t3lib/jsfunc.inline.js');
 				$out .= '
 				inline.setPrependFormFieldNames("'.$this->inline->prependNaming.'");
@@ -5542,7 +5542,7 @@ class t3lib_TCEforms	{
 		return $out;
 	}
 
- 	/**
+	/**
 	 * Includes a javascript library that exists in the core /typo3/ directory. The
 	 * backpath is automatically applied.
 	 * This method acts as wrapper for $GLOBALS['SOBE']->doc->loadJavascriptLib($lib).
@@ -5554,7 +5554,25 @@ class t3lib_TCEforms	{
 		$GLOBALS['SOBE']->doc->loadJavascriptLib($lib);
 	}
 
+	/**
+	 * Includes the Prototype javascript library from /typo3/contrib.
+	 * This method acts as a wrapper for $GLOBALS['SOBE']->doc->loadPrototype().
+	 *
+	 * @return	void
+	 */
+	public function loadPrototype() {
+		$GLOBALS['SOBE']->doc->loadPrototype();
+	}
 
+	/**
+	 * Includes the Scriptaculous javascript library from /typo3/contrib.
+	 * This method acts as a wrapper for $GLOBALS['SOBE']->doc->loadScriptaculous().
+	 *
+	 * @return	void
+	 */
+	public function loadScriptaculous() {
+		$GLOBALS['SOBE']->doc->loadScriptaculous();
+	}
 
 
 

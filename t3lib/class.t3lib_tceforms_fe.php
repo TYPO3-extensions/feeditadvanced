@@ -135,6 +135,24 @@ class t3lib_TCEforms_FE extends t3lib_TCEforms {
 	}
 
 	/**
+	 * Includes the Prototype javascript library from /typo3/contrib.
+	 *
+	 * @return	void
+	 */
+	public function loadPrototype() {
+		$this->loadJavascriptLib('contrib/prototype/prototype.js');
+	}
+
+	/**
+	 * Includes the Scriptaculous javascript library from /typo3/contrib.
+	 *
+	 * @return	void
+	 */
+	public function loadScriptaculous() {
+		$this->loadJavascriptLib('contrib/scriptaculous/scriptaculous.js');
+	}
+
+	/**
 	 * Insert additional style sheet link
 	 *
 	 * @param	string		$key: some key identifying the style sheet
