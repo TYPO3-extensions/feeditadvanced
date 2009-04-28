@@ -646,7 +646,22 @@ class t3lib_frontendedit {
 			}
 		}
 	}
-	
+
+	/**
+	 * Saves a record based on its data array and closes it.
+	 *
+	 * @param	string		The table name for the record to save.
+	 * @param	integer		The UID for the record to save.
+	 * @return	void
+	 * @todo	This is only needed so that save and close can return a redirect
+	 *			URL in frontend editing, whereas save returns HTML content for
+	 *			an updated editing form. Can we handle this in fe_edit_advanced
+	 *			rather than having a pointless method here?
+	 */
+	public function doSaveAndClose($table, $uid) {
+		$this->doSave($table, $uid);
+	}
+
 	/**
 	 * Stub for closing a record. No real functionality needed since content
 	 * element rendering will take care of everything.
