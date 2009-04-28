@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="closeEditMode">close edit</label>
+			<label index="openEditMode">Edit Page</label>
+			<label index="toggle_advanced">Advanced</label>
+			<label index="toggle_simple">Simple</label>			
+			<label index="alertChange">This change will affect which fields are available in the form. Please save this record in order to get a new field set.</label>
+			<label index="fe_users.tx_wecfeedit_beuser">Backend User To Link To</label>
+
+			<label index="copyIcon">Copy</label>
+			<label index="copyTitle">Copy element</label>
+			<label index="cutIcon">Cut</label>
+			<label index="cutTitle">Cut this element</label>
+			<label index="deleteIcon">Delete</label>
+			<label index="deleteTitle">Delete this element</label>
+			<label index="downIcon">Down</label>
+			<label index="downTitle">Move this down</label>
+			<label index="editIcon">Edit</label>
+			<label index="editTitle">Edit this element by clicking on it</label>
+			<label index="hideIcon">Hide</label>
+			<label index="hideTitle">Hide this element</label>
+			<label index="newPageIcon">New Page</label>
+			<label index="newRecordIcon">New</label>
+			<label index="newRecordTitle">New content after this element</label>
+			<label index="pasteIcon">Paste</label>
+			<label index="pasteTitle">Paste element after existing element</label>
+			<label index="refTitle">Create reference</label>
+			<label index="unhideIcon">Show</label>
+			<label index="unhideTitle">Show this hidden element</label>
+			<label index="dragIcon">Drag</label>
+			<label index="dragTitle">Click to drag this element</label>
+			<label index="upIcon">Up</label>
+			<label index="upTitle">Move this up</label>
+
+			<label index="saveButton">Save</label>
+			<label index="saveCloseButton">Save &amp; Close</label>
+			<label index="closeButton">Close</label>
+
+		</languageKey>
+	</data>
+</T3locallang>
