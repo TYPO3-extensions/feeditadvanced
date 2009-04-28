@@ -1,0 +1,31 @@
+<!-- ###TEMPLATE_EDITPANEL### begin -->
+<div class="allWrapper###ALLWRAPPER_CLASS###" id="###EDITPANEL_ID###">
+	<!-- ###HOVERFORM### start -->
+	<form name="###FORM_NAME###" id="###FORM_NAME###" action="###FORM_URL###" method="post" enctype="###FORM_ENCTYPE###" onsubmit="###FORM_ONSUBMIT###">
+		###FORM_HIDDENFIELDS###
+		###FORM_CONTENT###	
+		<div class="editPanelDiv" style="display:block !important">
+			###EDITPANEL_ACTIONS###
+		</div>
+	</form>	
+	<!-- ###HOVERFORM### end -->
+	<div class="cWrapper###CWRAPPER_CLASS###" ###CWRAPPER_EXTRA###>
+				
+		<!-- ###EDITFORM### start -->
+		<form name="###EDITFORM_NAME###" id="###EDITFORM_NAME###" action="###EDITFORM_URL###" method="post" enctype="###FORM_ENCTYPE###">
+			###EDITFORM_HIDDENFIELDS###
+			###EDITFORM_CONTENT###
+		</form>
+		<!-- ###EDITFORM### end -->		
+		###CONTENT_ELEMENT###
+	</div>
+</div>
+<!-- ###TEMPLATE_EDITPANEL### end-->
+
+<!--- ###TEMPLATE_EDITPANEL_ACTION### start -->
+	<a class="button editBtn editAction">
+		<span class="button-text">Page Properties</span>
+	</a>
+<!--- ###TEMPLATE_EDITPANEL_ACTION### end -->
+
+<!-- ###sssTEMPLATE_EDITPANEL_ACTION### start --><input type="button" class="editBtn ###ACTION_CLASS###" value="###ACTION_VALUE###" title="###ACTION_LABEL###" ###ACTION_PARAMS###/><!-- ###sssTEMPLATE_EDITPANEL_ACTION### end -->
