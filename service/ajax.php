@@ -63,6 +63,9 @@ class tx_feeditadvanced_ajax {
 	 * @return		void
 	 */
 	public function __construct() {
+		// @todo Change this whole class to use typo3/ajax.php only
+		$GLOBALS['TYPO3_AJAX'] = true;
+
 		$this->pid = t3lib_div::_GP('pid');
 
 		tslib_eidtools::connectDB();
