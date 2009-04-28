@@ -43,11 +43,11 @@
  * @subpackage t3lib
  */
 
-require_once (PATH_t3lib . 'class.t3lib_tceforms.php');
+require_once (PATH_t3lib . 'class.t3lib_tceforms_fe.php');
 
 /*************************** class starts *************************************/
 
-class tx_feeditadvanced_tceforms extends t3lib_TCEforms {
+class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 	var $imagePath = ''; // image path for Forms on page frontend editing mode
 	var $backPath = '';
 
