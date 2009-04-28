@@ -744,6 +744,8 @@ var EditPanelAction = Class.create({
 				// @todo	Figure out how to handle errors.
 			if (json.error) {
 				alert(json.error);
+			} else if (json.url) {
+				window.location = json.url;
 			} else {
 				if (json.content) {
 					content = json.content;
@@ -1315,7 +1317,7 @@ var Lightbox = Class.create({
 		this.hideAll();
 		overlay = new Element('div', {'id': 'overlay', 'style': 'display:none'});
 		$(document.body).insert({'bottom': overlay});
-		
+
 		headerElement  = new Element('div', {'id': 'editWindowHeader'}).update(headerText);
 		closeElement   = new Element('button', {'id': 'closeButton', 'value':' ', 'type':'submit'}).addClassName('closeAction');
 		contentElement = new Element('div', {'id': 'editWindowContent'});
