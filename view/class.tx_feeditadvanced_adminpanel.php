@@ -198,9 +198,9 @@ class tx_feeditadvanced_adminpanel {
 			$this->menuBar = t3lib_div::makeInstance('tx_feeditadvanced_menu');
 
 				// add sections for menu
-			$this->menuBar->addToolbar('Actions', 'actionToolbar', false, '', true);
-			$this->menuBar->addToolbar('ContentType', 'contentTypeToolbar', false);
-			$this->menuBar->addToolbar('ContextActions','contextToolbar');
+			$this->menuBar->addToolbar('Actions', 'feEditAdvanced-actionToolbar', false, '', true);
+			$this->menuBar->addToolbar('ContentType', 'feEditAdvanced-contentTypeToolbar', false);
+			$this->menuBar->addToolbar('ContextActions','feEditAdvanced-contextToolbar');
 			$this->menuBar->addToolbar('Clipboard', 'clipboardToolbar', false, 'style="display:none;"');
 
 				// build the menus here
@@ -218,10 +218,10 @@ class tx_feeditadvanced_adminpanel {
 			}
 			if (in_array('type', $menuConfig)) {
 				$tsType = t3lib_div::trimExplode(',', $tsMenuBar['typeMenu']);
-				if (in_array('text', $tsType)) $this->menuBar->addItem('ContentType', 'Text', '', 'menubar/text.png', 'Drag widgets onto the page', '','contentTypeItem draggable', 'button-label', 'defVals[tt_content][CType]=text');
-				if (in_array('header', $tsType)) $this->menuBar->addItem('ContentType', 'Header', '', 'menubar/header.png', 'Drag widgets onto the page', '', 'contentTypeItem draggable', 'button-label', 'defVals[tt_content][CType]=header');
-				if (in_array('image', $tsType)) $this->menuBar->addItem('ContentType', 'Image', '', 'menubar/picture.png', 'Drag widgets onto the page', '', 'contentTypeItem draggable', 'button-label', 'defVals[tt_content][CType]=image');
-				if (in_array('html', $tsType)) $this->menuBar->addItem('ContentType', 'HTML', '', 'menubar/html.png', 'Drag widgets onto the page', '', 'contentTypeItem draggable', 'button-label', 'defVals[tt_content][CType]=html');
+				if (in_array('text', $tsType)) $this->menuBar->addItem('ContentType', 'Text', '', 'menubar/text.png', 'Drag widgets onto the page', '','feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=text');
+				if (in_array('header', $tsType)) $this->menuBar->addItem('ContentType', 'Header', '', 'menubar/header.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=header');
+				if (in_array('image', $tsType)) $this->menuBar->addItem('ContentType', 'Image', '', 'menubar/picture.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=image');
+				if (in_array('html', $tsType)) $this->menuBar->addItem('ContentType', 'HTML', '', 'menubar/html.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=html');
 			}
 			if (in_array('context', $menuConfig)) {
 				$tsContext = t3lib_div::trimExplode(',', $tsMenuBar['contextMenu']);

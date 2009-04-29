@@ -63,8 +63,8 @@ class tx_feeditadvanced_menu {
 			// if not open, then just show "open edit"  box
 		if (!$this->menuOpen) {
 			$menuOut = '
-				<div id="menubar" class="closedMenu">
-					<a class="smallbutton" href="#" onclick="' .
+				<div id="feEditAdvanced-menuBar" class="closedMenu">
+					<a class="feEditAdvanced-smallButton" href="#" onclick="' .
 					   htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=1; document.TSFE_ADMIN_PANEL_Form.submit(); return false;').
 					'" title="Close FrontEnd Editing">' . $this->extGetLL('openEditMode') . '
 					</a>
@@ -72,12 +72,12 @@ class tx_feeditadvanced_menu {
  		} else {
 				// else if open...
 
-			$menuOut = '<div id="menubar">';
+			$menuOut = '<div id="feEditAdvanced-menuBar">';
 
-			$menuOut .= '<div class="firstrow">';
+			$menuOut .= '<div class="feEditAdvanced-firstRow">';
 			
 			
-			$menuOut .= '<div class="menuToolbar">';
+			$menuOut .= '<div class="feEditAdvanced-menuToolbar">';
 
 				// @todo Temporary code to draw and "Edit Page" button.
 			require_once(PATH_tslib . 'class.tslib_content.php');
@@ -95,7 +95,7 @@ class tx_feeditadvanced_menu {
 			for ($i = 0; $i < count($this->sections); $i++) {
 				$sec = $this->sections[$i];
 				if (($total = count($this->itemList[$sec['name']])) && ($sec['firstRow'] == true)) {
-					$menuOut .= '<div id="'.$sec['cssID'] . '" class="menuToolbar" ' . ($sec['extraCSS'] ? $sec['extraCSS'] : '') . '>';
+					$menuOut .= '<div id="'.$sec['cssID'] . '" class="feEditAdvanced-menuToolbar" ' . ($sec['extraCSS'] ? $sec['extraCSS'] : '') . '>';
 					for ($j = 0; $j < $total; $j++) {
 						if ($sec['useSeparator']) {
 					 		$menuOut .= '<span class="separatorBar"> </span>';
@@ -107,12 +107,12 @@ class tx_feeditadvanced_menu {
 			}
 			$menuOut .= '</div>';
 
-			$menuOut .= '<div class="secondrow">';
+			$menuOut .= '<div class="feEditAdvanced-secondRow">';
 				// show all sections and accompanying items that are in the second row.
 			for ($i = 0; $i < count($this->sections); $i++) {
 				$sec = $this->sections[$i];
 				if (($total = count($this->itemList[$sec['name']])) && ($sec['firstRow'] == false)) {
-					$menuOut .= '<div id="'.$sec['cssID'] . '" class="menuToolbar" ' . ($sec['extraCSS'] ? $sec['extraCSS'] : '') . '>';
+					$menuOut .= '<div id="'.$sec['cssID'] . '" class="feEditAdvanced-menuToolbar" ' . ($sec['extraCSS'] ? $sec['extraCSS'] : '') . '>';
 					for ($j = 0; $j < $total; $j++) {
 						if ($sec['useSeparator']) {
 					 		$menuOut .= '<span class="separatorBar"> </span>';
@@ -125,10 +125,10 @@ class tx_feeditadvanced_menu {
 
 				// add section = showing users online
 			if ($this->userList) {
-				$menuOut .= '<span class="menuUserlist">Users on page: <span id="menu_userlisting">' . $this->userList . '</span></span>';
+				$menuOut .= '<span class="feEditAdvanced-menuUserlist">Users on page: <span id="menu_userlisting">' . $this->userList . '</span></span>';
 			}
 
-			$menuOut .= '<span class="logo"><a href="http://www.typo3.com/"><img src="' . t3lib_extMgm::siteRelPath('fe_edit_advanced') . '/res/icons/typo3logo_mini_transparent.gif" /></a></span>';
+			$menuOut .= '<span class="feEditAdvanced-logo"><a href="http://www.typo3.com/"><img src="' . t3lib_extMgm::siteRelPath('fe_edit_advanced') . '/res/icons/typo3logo_mini_transparent.gif" /></a></span>';
 			$menuOut .= '</div>';
 			$menuOut .= '</div>'; // end div menubar
 
@@ -154,7 +154,7 @@ class tx_feeditadvanced_menu {
 	/**
 	 * @todo	Add documentation
 	 */
-	function addItem($sec, $name, $action, $image, $title='', $onclick='', $btnClass='button', $labelClass='button-text', $additionalParams='') {
+	function addItem($sec, $name, $action, $image, $title='', $onclick='', $btnClass='feEditAdvanced-button', $labelClass='feEditAdvanced-feEditAdvanced-buttonText', $additionalParams='') {
 		$actionCode = strlen($action) ? ' id="' . $action . '"' : '';
 		$btnClassCode = strlen($btnClass) ? ' class="' . $btnClass . '"' : '';
 		$titleCode = strlen($title) ? ' title="' . $title . '"' : '' ;

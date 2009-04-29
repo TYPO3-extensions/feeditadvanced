@@ -17,7 +17,7 @@ img {
 }
 
 /* ---------------------- MENUBAR ---------------------------- */
-#menubar {
+#feEditAdvanced-menuBar {
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -30,43 +30,43 @@ img {
 	font-size: 90%;
 }
 
-#menubar .firstrow,
-#menubar .secondrow {
+#feEditAdvanced-menuBar .feEditAdvanced-firstRow,
+#feEditAdvanced-menuBar .feEditAdvanced-secondRow {
 	height: 34px;
 	width: 100%;
 }
 
-#menubar .firstrow {
+#feEditAdvanced-menuBar .feEditAdvanced-firstRow {
 	background: url(../icons/menubar/menu_back.png) repeat-x 0 0;
 }
 
-#menubar .secondrow {
+#feEditAdvanced-menuBar .feEditAdvanced-secondRow {
 	background: url(../icons/menubar/menu2_back.png) repeat-x 0 0;
 	clear: both;
 }
 
-#menubar .secondrow .logo {
+#feEditAdvanced-menuBar .feEditAdvanced-secondRow .feEditAdvanced-logo {
 	padding: 6px 15px;
 	float: right;
 }
 
-.menuToolbar {
+.feEditAdvanced-menuToolbar {
 	float: left;
 	padding: 1px;
 	height: 32px;
 }
 
-#actionToolbar {
+#feEditAdvanced-actionToolbar {
 	margin-right: 20px;
 }
 
-#contentTypeToolbar {
+#feEditAdvanced-contentTypeToolbar {
 	margin-right: 20px;
 	padding-top: 8px;
 	padding-bottom: 8px;
 }
 
-#contextToolbar {
+#feEditAdvanced-contextToolbar {
 	display: block;
 	position: fixed;
 	right: 0;
@@ -81,7 +81,7 @@ img {
 	background: url(../icons/menubar/clipboard_back.png) no-repeat;
 }
 
-.contentTypeItem,
+.feEditAdvanced-contentTypeItem,
 #clipboardToolbar .clipObj {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
@@ -93,7 +93,7 @@ img {
 	border-right: 1px dotted #afafaf;
 }
 
-.contentTypeItem img {
+.feEditAdvanced-contentTypeItem img {
 	vertical-align: middle;
 	margin-top: -3px;
 }
@@ -133,7 +133,7 @@ img {
 	background-color: #fcc;
 }
 
-.menuToolbar .separatorBar {
+.feEditAdvanced-menuToolbar .separatorBar {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
 	height: 24px;
@@ -141,25 +141,25 @@ img {
 	margin-right: 6px;
 }
 
-.menuToolbar .spacer {
+.feEditAdvanced-menuToolbar .spacer {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
 	width: 20px;
 }
 
-#menubar .button-text {
+#feEditAdvanced-menuBar .feEditAdvanced-buttonText {
 	display: inline-block;
 	font-size: 12px;
 }
 
-#menubar .button-label {
+#feEditAdvanced-menuBar .feEditAdvanced-buttonLabel {
 	color: black;
 	margin-left: 3px;
 	font-size: 11px;
 }
 
-#menubar .button,
-#menubar .smallbutton {
+#feEditAdvanced-menuBar .feEditAdvanced-button,
+#feEditAdvanced-menuBar .feEditAdvanced-smallButton {
 	display: inline-block;
 	padding-top: 7px;
 	margin: 2px 10px 0 0;
@@ -175,16 +175,16 @@ img {
 	-moz-border-radius: 5px;
 }
 
-#menubar a.disabled {
+#feEditAdvanced-menuBar a.disabled {
 	color: #888;
 	cursor: default;
 }
 
-#menubar a.disabled:hover {
+#feEditAdvanced-menuBar a.disabled:hover {
 	background-color: #ddd;
 }
 
-#menubar .smallbutton {
+#feEditAdvanced-menuBar .feEditAdvanced-smallButton {
 	color: #eee;
 	background: url(../icons/menubar/button_small.png) no-repeat 0 0;
 	padding: 3px 0 0 0;
@@ -195,12 +195,12 @@ img {
 }
 
 
-#menubar a.button:hover,
-#menubar a.smallbutton:hover {
+#feEditAdvanced-menuBar a.feEditAdvanced-button:hover,
+#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover {
 	color: white;
 }
 
-.notificationMsg {
+.feEditAdvanced-notificationMsg {
 	position: fixed;
 	top: 5px;
 	left: 75%;
@@ -212,14 +212,14 @@ img {
 }
 
 /* ---------------------- DROP ZONE for Draggable ---------------------------- */
-.dropzone {
+.feEditAdvanced-dropzone {
 	width: 100%;
 	min-height: 20px;
 	margin-bottom: 10px;
 }
 
-.dropzone-left,
-.dropzone-right {
+.feEditAdvanced-dropzoneLeft,
+.feEditAdvanced-dropzoneRight {
 	position: absolute;
 	display: inline-block;
 	width: 6px;
@@ -227,25 +227,25 @@ img {
 	height: 7px;
 }
 
-.dropzone-left {
+.feEditAdvanced-dropzoneLeft {
 	left: -6px;
 	background: transparent url(../icons/hovermenu/dropbar-left-inactive.png) no-repeat 0 50%;
 }
 
-.dropzone-active .dropzone-left {
+.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneLeft {
 	background: transparent url(../icons/hovermenu/dropbar-left.png) no-repeat 0 50%;
 }
 
-.dropzone-right {
+.feEditAdvanced-dropzoneRight {
 	right: -6px;
 	background: transparent url(../icons/hovermenu/dropbar-right-inactive.png) no-repeat 0 50%;
 }
 
-.dropzone-active .dropzone-right {
+.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneRight {
 	background: transparent url(../icons/hovermenu/dropbar-right.png) no-repeat 0 50%;
 }
 
-.dropzone-center {
+.feEditAdvanced-dropzoneCenter {
 	position: absolute;
 	display: inline-block;
 	width: 100%;
@@ -254,16 +254,16 @@ img {
 	background: transparent url(../icons/hovermenu/dropbar-inactive.png) repeat-x 0 50%;
 }
 
-.dropzone-active .dropzone-center {
+.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneCenter {
 	background: transparent url(../icons/hovermenu/dropbar.png) repeat-x 0 50%;
 }
 
-.dropzone-active .dropzone-left,
-.dropzone-active .dropzone-right {
+.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneLeft,
+.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneRight {
 	height: 6px;
 }
 
-span.menuUserlist {
+span.feEditAdvanced-menuUserlist {
 	font-size: 80%;
 	width: 100%;
 	margin-top: 2px;
@@ -271,8 +271,8 @@ span.menuUserlist {
 }
 
 /* ---------------------- HOVERMENU ---------------------------- */
-div.allWrapper,
-div.cWrapper {
+div.feEditAdvanced-allWrapper,
+div.feEditAdvanced-contentWrapper {
 	position: relative;
 	padding: 4px;
 	margin: 20px 0 4px 0;
@@ -280,33 +280,33 @@ div.cWrapper {
 	min-height: 0; /* Min height added for IE hasLayout issues. */
 }
 
-div.allWrapper form {
+div.feEditAdvanced-allWrapper form {
 	min-height: 0;
 }
 
-div.allWrapper {
+div.feEditAdvanced-allWrapper {
 	border: 1px dashed #bbb;
 	margin: 1px;
 	padding: 0;
 }
 
-div.allWrapperHover {
+div.feEditAdvanced-allWrapperHover {
 	border: 1px solid #888;
 	background-color: #e0e0e0 !important;
 	margin: 1px;
 	cursor: pointer;
 }
 
-div.cWrapper {
+div.feEditAdvanced-contentWrapper {
 	margin: 0;
 	padding: 0;
 }
 
-div.cWrapper .formsOnPage {
+div.feEditAdvanced-contentWrapper .formsOnPage {
 	background-color: white;
 }
 
-div.allWrapper div.editPanelDiv {
+div.feEditAdvanced-allWrapper div.feEditAdvanced-editPanelDiv {
 	position: absolute;
 	top: -20px;
 	left: 0;
@@ -324,29 +324,29 @@ div.allWrapper div.editPanelDiv {
 	background: url(../icons/hovermenu/background.png) repeat-x;
 }
 
-div.editPanelDiv a img,
+div.feEditAdvanced-editPanelDiv a img,
 .formsOnPage a img,
 .formsOnPage img {
 	border-width: 0;
 }
 
-div.cWrapper div.editPanelDiv {
+div.feEditAdvanced-contentWrapper div.feEditAdvanced-editPanelDiv {
 	position: static !important;
 }
 
-div.cWrapper .formsOnPage {
+div.feEditAdvanced-contentWrapper .formsOnPage {
 	position: relative;
 	z-index: 4;
 }
 
-.hiddenElement,
+.feEditAdvanced-hiddenElement,
 .hidden .formsOnPage {
 	background-color: #bbb !important;
 }
 
-.label,
-input.editBtn,
-.dragHandle {
+.feEditAdvanced-label,
+input.feEditAdvanced-editButton,
+.feEditAdvanced-dragHandle {
 	float: left !important;
 	padding: 2px 3px 0 22px;
 	margin: 2px 2px 0;
@@ -357,67 +357,67 @@ input.editBtn,
 	color: #646;
 }
 
-.label {
+.feEditAdvanced-label {
 	font-weight: bold;
 	padding-left: 0;
 }
 
-input.editBtn:hover,
-.dragHandle:hover {
+input.feEditAdvanced-editButton:hover,
+.feEditAdvanced-dragHandle:hover {
 	cursor: pointer;
 }
 
-input.editBtn.newRecordAction,
-input.editBtn.newPageAction {
+input.feEditAdvanced-editButton.newRecordAction,
+input.feEditAdvanced-editButton.newPageAction {
 	background: url(../icons/hovermenu/new.png) no-repeat 3px 50%;
 }
 
-input.editBtn.editAction {
+input.feEditAdvanced-editButton.editAction {
 	background: url(../icons/hovermenu/edit.png) no-repeat 3px 50%;
 }
 
-input.editBtn.cutAction {
+input.feEditAdvanced-editButton.cutAction {
 	background: url(../icons/hovermenu/cut.png) no-repeat 3px 50%;
 }
 
-input.editBtn.copyAction {
+input.feEditAdvanced-editButton.copyAction {
 	background: url(../icons/hovermenu/copy.png) no-repeat 3px 50%;
 }
 
-input.editBtn.hideAction {
+input.feEditAdvanced-editButton.hideAction {
 	background: url(../icons/hovermenu/hide.png) no-repeat 3px 50%;
 }
 
-input.editBtn.unhideAction {
+input.feEditAdvanced-editButton.unhideAction {
 	background: url(../icons/hovermenu/unhide.png) no-repeat 3px 50%;
 }
 
-input.editBtn.deleteAction {
+input.feEditAdvanced-editButton.deleteAction {
 	background: url(../icons/hovermenu/delete.png) no-repeat 3px 50%;
 }
 
-input.editBtn.dragAction,
-.dragHandle {
+input.feEditAdvanced-editButton.dragAction,
+.feEditAdvanced-dragHandle {
 	background: url(../icons/hovermenu/drag.png) no-repeat 3px 50%;
 }
 
-input.editBtn.upAction {
+input.feEditAdvanced-editButton.upAction {
 	background: url(../icons/hovermenu/up.png) no-repeat 3px 50%;
 }
 
-input.editBtn.downAction {
+input.feEditAdvanced-editButton.downAction {
 	background: url(../icons/hovermenu/down.png) no-repeat 3px 50%;
  }
 
 
-.dragHandle {
+.feEditAdvanced-dragHandle {
 	float: right !important;
 	border: none;
 	height: 16px;
 	padding: 2px 3px 0 25px;
 }
 
-button.actionBtn,
+button.feEditAdvanced-actionButton,
 button#closeButton {
 	border: 0;
 	cursor: pointer;
@@ -429,7 +429,7 @@ button#closeButton {
 	width: auto;
 	overflow: visible;
 }
-button.actionBtn span,
+button.feEditAdvanced-actionButton span,
 button#closeButton span {
 	position: relative;
 	display: block;
@@ -441,12 +441,12 @@ button#closeButton span {
 	margin-top: 2px;
 }
 
-button.actionBtn {
+button.feEditAdvanced-actionButton {
 	background: url(../icons/forms/action_btn_right.png) right no-repeat;
 	font-size: 12px;
 	font-weight: bold;
 }
-button.actionBtn span {
+button.feEditAdvanced-actionButton span {
 	height: 25px;
 	line-height: 25px;
 	background: url(../icons/forms/action_btn_left.png) left no-repeat;
@@ -470,13 +470,13 @@ button#closeButton {
 	background-color: #d8f0d8;
 }
 
-div.cWrapper form.typo3-editPanel {
+div.feEditAdvanced-contentWrapper form.typo3-editPanel {
 	float: right;
 	border-width: 0 !important;
 }
 
 /* ---------------------- LIGHT BOX ---------------------------- */
-#editWindow {
+#feEditAdvanced-editWindow {
 	display: block;
 	position: fixed;
 	margin: 0;
@@ -492,13 +492,13 @@ div.cWrapper form.typo3-editPanel {
 	-webkit-border-radius: 5px;
 }
 
-#editWindowHeader {
+#feEditAdvanced-editWindowHeader {
 	color: white;
 	font-size: 14px;
 	padding: 10px 0;
 }
 
-#editWindowContent {
+#feEditAdvanced-editWindowContent {
 	background-color: #FFF;
 	margin: 2px;
 	padding-bottom: 10px;
@@ -506,12 +506,12 @@ div.cWrapper form.typo3-editPanel {
 	min-width: 555px;
 }
 
-.editControls {
+.feEditAdvanced-editControls {
 	width: 100%;
 	height: 50px;
 }
 
-#overlay {
+#feEditAdvanced-overlay {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -526,27 +526,27 @@ div.cWrapper form.typo3-editPanel {
 }
 
 /*----------------- IE6 SPECIFIC STUFF ------------------*/
-* html #menubar {
+* html #feEditAdvanced-menuBar {
 	position: absolute;
 }
-* html #editWindow {
+* html #feEditAdvanced-editWindow {
 	position: absolute;
 }
-* html #contextToolbar {
+* html #feEditAdvanced-contextToolbar {
 	position: absolute;
 }
-* html #overlay {
+* html #feEditAdvanced-overlay {
 	position: absolute;
 }
 
-#menubar div.editPanelDiv {
+#feEditAdvanced-menuBar div.feEditAdvanced-editPanelDiv {
 	background: none;
 	border: none;
 	top: 0;
 	min-width: 0;
 }
 
-#menubar div.allWrapper {
+#feEditAdvanced-menuBar div.feEditAdvanced-allWrapper {
 	border: none;
 	margin-left: 12px;
 }
