@@ -95,6 +95,7 @@ img {
 
 .contentTypeItem img {
 	vertical-align: middle;
+	margin-top: -3px;
 }
 
 #clipboardToolbar .clipObj {
@@ -148,19 +149,19 @@ img {
 
 #menubar .button-text {
 	display: inline-block;
-	font-size: 100%;
+	font-size: 12px;
 }
 
 #menubar .button-label {
 	color: black;
 	margin-left: 3px;
-	vertical-align: middle;
+	font-size: 11px;
 }
 
 #menubar .button,
 #menubar .smallbutton {
 	display: inline-block;
-	padding-top: 5px;
+	padding-top: 7px;
 	margin: 2px 10px 0 0;
 	height: 21px;
 	text-decoration: none;
@@ -170,6 +171,7 @@ img {
 	background: url(../icons/menubar/button.png) no-repeat 0 0;
 	font-size: 12px;
 	width: 92px;
+
 	-moz-border-radius: 5px;
 }
 
@@ -185,8 +187,7 @@ img {
 #menubar .smallbutton {
 	color: #eee;
 	background: url(../icons/menubar/button_small.png) no-repeat 0 0;
-	padding: 0;
-	padding-top: 3px;
+	padding: 3px 0 0 0;
 	margin: 4px 8px 0 0;
 	height: 20px;
 	width: 70px;
@@ -274,9 +275,7 @@ div.allWrapper,
 div.cWrapper {
 	position: relative;
 	padding: 4px;
-	margin: 0;
-	margin-top: 20px;
-	margin-bottom: 4px;
+	margin: 20px 0 4px 0;
 	overflow: visible;
 	min-height: 0; /* Min height added for IE hasLayout issues. */
 }
@@ -488,6 +487,7 @@ div.cWrapper form.typo3-editPanel {
 	background-image: url(../icons/forms/back_opacity.png);
 	text-align: left;
 	z-index: 185 !important;
+
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 }
@@ -519,6 +519,7 @@ div.cWrapper form.typo3-editPanel {
 	height: 3420px;
 	z-index: 184;
 	background-color: #000;
+
 	-moz-opacity: 0.5;
 	opacity: .50;
 	filter: alpha(opacity=50);
