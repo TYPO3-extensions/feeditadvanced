@@ -172,7 +172,7 @@ class tx_feeditadvanced_editpanel {
 			$panel = '';
 			if (isset($allow['edit'])) {
 				if ($content) {
-					$markerArray['###CWRAPPER_CLASS###'] .= ' editBtn editAction';
+					$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-editButton editAction';
 					$this->panelItems['editClick'] = 'value="' . $GLOBALS['BE_USER']->extGetLL('editIcon') . '" title="' . $GLOBALS['BE_USER']->extGetLL('editTitle') . '" ';
 				}
 				
@@ -182,7 +182,7 @@ class tx_feeditadvanced_editpanel {
 			if (isset($allow['move']) && $sortField && $GLOBALS['BE_USER']->workspace===0)	{	// Hiding in workspaces because implementation is incomplete
 				$this->panelItems['up'] 	= $this->editIconLinkWrap('up', 'upIcon', 'upTitle', '');
 				$this->panelItems['down'] 	= $this->editIconLinkWrap('down', 'downIcon', 'downTitle', '');
-				$this->panelItems['drag'] 	= '<span class="dragHandle" title="' . $GLOBALS['BE_USER']->extGetLL('dragTitle') . '"></span>';
+				$this->panelItems['drag'] 	= '<span class="feEditAdvanced-dragHandle" title="' . $GLOBALS['BE_USER']->extGetLL('dragTitle') . '"></span>';
 				$this->panelItems['draggable'] = ' draggable';
 			}
 				// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case
@@ -340,7 +340,7 @@ class tx_feeditadvanced_editpanel {
 		
 		
 		if ($recordData['hidden']) {
-			$markerArray['###CWRAPPER_CLASS###'] .= ' hiddenElement';
+			$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-hiddenElement';
 		}
 		if (isset($this->panelItems['editClick']) && !empty($this->panelItems['editClick'])) {
 			if ($this->panelItems['editClick'] != 'return false;') {
@@ -476,10 +476,10 @@ class tx_feeditadvanced_editpanel {
 		$panel = '';
 
 			// add the save, saveClose, close buttons
-		$buttons = '<div class="editControls" id="editControls">';
-		$buttons .= '<button type="submit" name="TSFE_EDIT[update]" class="actionBtn saveAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveButton').'</span></button>';
-		$buttons .= '<button type="submit" name="TSFE_EDIT[update_close]" class="actionBtn saveCloseAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveCloseDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveCloseButton').'</span></button>';
-		$buttons .= '<button type="submit" name="TSFE_EDIT[cancel]" class="actionBtn closeAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.closeDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('closeButton').'</span></button>';
+		$buttons = '<div class="feEditAdvanced-editControls" id="feEditAdvanced-editControls">';
+		$buttons .= '<button type="submit" name="TSFE_EDIT[update]" class="feEditAdvanced-actionButton saveAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveButton').'</span></button>';
+		$buttons .= '<button type="submit" name="TSFE_EDIT[update_close]" class="feEditAdvanced-actionButton saveCloseAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveCloseDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveCloseButton').'</span></button>';
+		$buttons .= '<button type="submit" name="TSFE_EDIT[cancel]" class="feEditAdvanced-actionButton closeAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.closeDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('closeButton').'</span></button>';
 		$buttons .= '</div>';
 
 			// Buttons top

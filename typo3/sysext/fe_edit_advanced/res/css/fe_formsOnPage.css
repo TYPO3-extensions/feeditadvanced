@@ -320,7 +320,7 @@ table.typo3-dyntabmenu .disabled {
 	display: none;
 }
 
-#editWindowContent div.allWrapper {
+#feEditAdvanced-editWindowContent div.feEditAdvanced-allWrapper {
 	margin: 0;
 	padding: 0;
 	border: none;

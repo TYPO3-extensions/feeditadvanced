@@ -1,4 +1,4 @@
-#menubar {
+#feEditAdvanced-menuBar {
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -9,7 +9,7 @@
 	font-family: Helvetica, Arial, sans-serif;
 }
 
-#menubar .smallbutton {
+#feEditAdvanced-menuBar .feEditAdvanced-smallButton {
 	display: inline-block;
 	text-decoration: none;
 	cursor: pointer;
@@ -24,6 +24,6 @@
 	float: right;
 }
 
-#menubar a.smallbutton:hover {
+#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover {
 	color: white;
 }
