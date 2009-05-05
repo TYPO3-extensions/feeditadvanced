@@ -52,16 +52,16 @@ var ToolbarWidget = Class.create({
 
 				// Enable drop indicators when a drag is started.
 			onStart: function(element, event) {
-				editPanelsEnabled = false;
-				editPanels.each(function(hashItem) {
+				FrontendEditing.editPanelsEnabled = false;
+				FrontendEditing.editPanels.each(function(hashItem) {
 					(hashItem.value).addDropZone();
 				});
 			},
 
 				// Disable drop indicators when a drag is done
 			onEnd: function(element, event) {
-				editPanelsEnabled = true;
-				editPanels.each(function(hashItem) {
+				FrontendEditing.editPanelsEnabled = true;
+				FrontendEditing.editPanels.each(function(hashItem) {
 					panel = hashItem.value;
 					panel.enableHoverMenu();
 					panel.removeDropZone();
@@ -287,7 +287,7 @@ var AJAXJavascriptHandler = Class.create({
 					if (TBE_EDITOR.doSaveFieldName) {
 						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value=1;
 					}
-					editPanels.get($(TBE_EDITOR.formname).up().up().identify()).save();
+					FrontendEditing.editPanels.get($(TBE_EDITOR.formname).up().up().identify()).save();
 				};
 				TBE_EDITOR.submitForm = ajaxSubmitForm;
 			}
@@ -370,14 +370,14 @@ var EditPanel = Class.create({
 				new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0,
 					queue: {scope:'_draggable', position:'end' },
 					afterFinish: function() {
-						editPanelsEnabled = true;
+						FrontendEditing.editPanelsEnabled = true;
 					}
 				});
 			},
 				// Hide hover menus on drag.
 			onStart: function(draggableElement, event) {
-				editPanelsEnabled = false;
-				editPanels.each(function(hashItem) {
+				FrontendEditing.editPanelsEnabled = false;
+				FrontendEditing.editPanels.each(function(hashItem) {
 					panel = hashItem.value;
 					panel.hideMenu();
 					panel.disableHoverMenu();
@@ -392,7 +392,7 @@ var EditPanel = Class.create({
 				// Disable drop indicators when a drag is done
 			onEnd: function(draggableElement, event) {
 				//editPanelsEnabled = true;
-				editPanels.each(function(hashItem) {
+				FrontendEditing.editPanels.each(function(hashItem) {
 					panel = hashItem.value;
 					panel.enableHoverMenu();
 					panel.removeDropZone();
@@ -457,7 +457,7 @@ var EditPanel = Class.create({
 	},
 
 	showMenu: function(event) {
-		if (!this.hoverMenuAlwaysVisible && editPanelsEnabled && this.hoverMenuEnabled) {
+		if (!this.hoverMenuAlwaysVisible && FrontendEditing.editPanelsEnabled && this.hoverMenuEnabled) {
 			this.content.select('div.feEditAdvanced-editPanelDiv')[0].show();
 			this.content.addClassName('feEditAdvanced-allWrapperHover');
 		}
@@ -480,7 +480,7 @@ var EditPanel = Class.create({
 
 	editClick: function(event) {
 			// if in middle of dragging, exit
-		if (!editPanelsEnabled || !this.hoverMenuEnabled) {
+		if (!FrontendEditing.editPanelsEnabled || !this.hoverMenuEnabled) {
 			return;
 		}
 			// make sure on valid element
@@ -608,7 +608,7 @@ var DropZone = Class.create({
 				// Small hack to insert temporary element on drop
 			clonedElement = draggableElement.cloneNode(true);
 			this.element.insert({'bottom': clonedElement});
-			ep = editPanels.get(clonedElement.up().previous().identify());
+			ep = FrontendEditing.editPanels.get(clonedElement.up().previous().identify());
 			ep.create(draggableElement.getAttribute("href"));
 		} else if (draggableElement.hasClassName('feEditAdvanced-allWrapper')) {
 				// Move the dropped element outside the drop zone before it gets hidden.
@@ -616,8 +616,8 @@ var DropZone = Class.create({
 			droppableElement.insert({'before': draggableElement});
 			draggableElement.highlight({duration: 3});
 
-			source = editPanels.get(draggableElement.identify());
-			destination = editPanels.get(draggableElement.previous().identify());
+			source = FrontendEditing.editPanels.get(draggableElement.identify());
+			destination = FrontendEditing.editPanels.get(draggableElement.previous().identify());
 
 			recordFields = destination.record;
 			recordFields = recordFields.split(':');
@@ -628,13 +628,13 @@ var DropZone = Class.create({
 			cmd = draggableElement.select('form input[name="TSFE_EDIT[cmd]"]')[0].getValue();
 
 				// do a clear of element on clipboard
-			feClipboard.clearClipboard(draggableElement);
+			FrontendEditing.clipboard.clearClipboard(draggableElement);
 
 				// if source is on this page, then move it
 			if (srcElement) {
 					// set source and destination
-				source = editPanels.get(srcElement.identify());
-				destination = editPanels.get(droppableElement.previous().identify());
+				source = FrontendEditing.editPanels.get(srcElement.identify());
+				destination = FrontendEditing.editPanels.get(droppableElement.previous().identify());
 
 				srcElement.removeAttribute('style');
 					// do the actual cut/copy
@@ -654,7 +654,7 @@ var DropZone = Class.create({
 
 					clonedElement = srcElement.cloneNode(true);
 					droppableElement.insert({'after': clonedElement});
-					newSource = editPanels.get(clonedElement.identify());
+					newSource = FrontendEditing.editPanels.get(clonedElement.identify());
 					newSource.paste(destination.getDestinationPointer());
 				}
 			}
@@ -699,11 +699,11 @@ var EditPanelAction = Class.create({
 	trigger: function(additionalParams) {
 			// handle timeouts
 		//this.setupTimer();
-		if (actionRunning) {
+		if (FrontendEditing.actionRunning) {
 			var waitNotification = new FrontendEditNotification(this._getAlreadyProcessingMsg());
 			return;
 		}
-		actionRunning = true;
+		FrontendEditing.actionRunning = true;
 
 		this.parent.getFormParameters();
 		var notification = new FrontendEditNotification(this._getNotificationMessage());
@@ -723,7 +723,7 @@ var EditPanelAction = Class.create({
 				parameters: paramRequest,
 				requestHeaders: { Accept: 'application/json' },
 				onComplete: function(xhr) {
-					actionRunning = false;
+					FrontendEditing.actionRunning = false;
 					notification.hide();
 					if (waitNotification) {
 						waitNotification.hide();
@@ -731,7 +731,7 @@ var EditPanelAction = Class.create({
 					this._handleResponse(xhr);
 				}.bind(this),
 				onError: function(xhr) {
-					actionRunning = false;
+					FrontendEditing.actionRunning = false;
 					notification.hide();
 					alert('AJAX error: ' + xhr.responseText);
 				}.bind(this)
@@ -762,11 +762,11 @@ var EditPanelAction = Class.create({
 				this.parent.content = $(id);
 				
 				if (json.content) {
-					JSHandler.evaluate(content);
+					FrontendEditing.JSHandler.evaluate(content);
 				}
 				
 				if (json.newContent) {
-					JSHandler.evaluate(newContent);
+					FrontendEditing.JSHandler.evaluate(newContent);
 				}
 			}
 		}
@@ -837,8 +837,8 @@ var EditPanelAction = Class.create({
 });
 var NewRecordAction = Class.create(EditPanelAction, {
 	_process: function (json) {
-		editWindow = new Lightbox(this.parent, 'New Content Block', json.content);
-		editWindow.show();
+		FrontendEditing.editWindow = new Lightbox(this.parent, 'New Content Block', json.content);
+		FrontendEditing.editWindow.show();
 	},
 
 	_getCmd: function() {
@@ -852,8 +852,8 @@ var NewRecordAction = Class.create(EditPanelAction, {
 
 var EditAction = Class.create(EditPanelAction, {
 	_process: function(json) {
-		editWindow = new Lightbox(this.parent, 'Edit Content Block', json.content);
-		editWindow.show();
+		FrontendEditing.editWindow = new Lightbox(this.parent, 'Edit Content Block', json.content);
+		FrontendEditing.editWindow.show();
 	},
 
 	_getCmd: function() {
@@ -925,7 +925,7 @@ var UpAction = Class.create(EditPanelAction, {
 	},
 	
 	_process: function(json) {
-		editPanelsEnabled = true;
+		FrontendEditing.editPanelsEnabled = true;
 	},
 
 	_getNotificationMessage: function() {
@@ -947,7 +947,7 @@ var DownAction = Class.create(EditPanelAction, {
 	},
 	
 	_process: function(json) {
-		editPanelsEnabled = true;
+		FrontendEditing.editPanelsEnabled = true;
 	},
 
 	_getNotificationMessage: function() {
@@ -962,7 +962,7 @@ var DownAction = Class.create(EditPanelAction, {
 var MoveAfterAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 			// allow to edit again
-		editPanelsEnabled = true;
+		FrontendEditing.editPanelsEnabled = true;
 	},
 
 	_getNotificationMessage: function() {
@@ -989,8 +989,8 @@ var SaveAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		// @todo	Alert if the save was not successful.
 
-		if(editWindow) {
-			editWindow.updateContent(json.content);
+		if(FrontendEditing.editWindow) {
+			FrontendEditing.editWindow.updateContent(json.content);
 		}
 	},
 
@@ -1005,7 +1005,7 @@ var SaveAction = Class.create(EditPanelAction, {
 });
 var CloseAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
-		editWindow.close();
+		FrontendEditing.editWindow.close();
 
 			// If this EditPanel is nested inside another, find the ID of the parent EditPanel
 		if (this.parent.content.up('.feEditAdvanced-allWrapper')) {
@@ -1020,9 +1020,9 @@ var CloseAction = Class.create(EditPanelAction, {
 
 	_process: function(json) {
 		if (json.id) {
-			ep = editPanels.get(json.id);
+			ep = FrontendEditing.editPanels.get(json.id);
 			ep.replaceContent(json.content);
-			scanForEditPanels();
+			FrontendEditing.scanForEditPanels();
 		} else {
 			this.parent.replaceContent(json.content);
 			this.parent.setupEventListeners();
@@ -1032,7 +1032,7 @@ var CloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.content.insert({'after': json.newContent});
 			nextEditPanel = this.parent.content.next('div.feEditAdvanced-allWrapper');
-			editPanels.set(nextEditPanel.identify(), new EditPanel(nextEditPanel));
+			FrontendEditing.editPanels.set(nextEditPanel.identify(), new EditPanel(nextEditPanel));
 		}
 	},
 
@@ -1053,7 +1053,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 
 		if (TBE_EDITOR.checkSubmit(1)) {
 			formParams = $('feEditAdvanced-editWindow').select('form')[0].serialize();
-			editWindow.close();
+			FrontendEditing.editWindow.close();
 
 				// If this EditPanel is nested inside another, find the ID of the parent EditPanel
 			if (this.parent.content.up('.feEditAdvanced-allWrapper')) {
@@ -1068,9 +1068,9 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 
 		if (json.id) {
-			ep = editPanels.get(json.id);
+			ep = FrontendEditing.editPanels.get(json.id);
 			ep.replaceContent(json.content);
-			scanForEditPanels();
+			FrontendEditing.scanForEditPanels();
 		} else {
 			this.parent.replaceContent(json.content);
 			this.parent.setupEventListeners();
@@ -1080,7 +1080,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.content.insert({'after': json.newContent});
 			nextEditPanel = this.parent.content.next('div.feEditAdvanced-allWrapper');
-			editPanels.set(nextEditPanel.identify(), new EditPanel(nextEditPanel));
+			FrontendEditing.editPanels.set(nextEditPanel.identify(), new EditPanel(nextEditPanel));
 		}
 	},
 
@@ -1100,7 +1100,7 @@ var CopyAction = Class.create(EditPanelAction, {
 			// create new "copy" object in menubar clipboard
 		clipboardObj = $('clipboardToolbar');
 		if (clipboardObj) {
-			feClipboard.addToClipboard(this);
+			FrontendEditing.clipboard.addToClipboard(this);
 		}
 	},
 
@@ -1121,7 +1121,7 @@ var CutAction = Class.create(EditPanelAction, {
 			// create new "cut" object in menubar clipboard
 		clipboardObj = $('clipboardToolbar');
 		if (clipboardObj) {
-			feClipboard.addToClipboard(this);
+			FrontendEditing.clipboard.addToClipboard(this);
 		}
 	},
 
@@ -1354,7 +1354,7 @@ var Lightbox = Class.create({
 	},
 
 	show: function() {
-		editPanelsEnabled = false;
+		FrontendEditing.editPanelsEnabled = false;
 			
 			// fade in overlay
 		$('feEditAdvanced-overlay').appear({ duration: 0.25, from:0.0, to: 0.5});
@@ -1431,7 +1431,7 @@ var Lightbox = Class.create({
 		$('feEditAdvanced-overlay').fade({duration: 0.75, from: 0.5, to: 0.0});
 		$('feEditAdvanced-editWindow').remove();
 		
-		editPanelsEnabled = true;
+		FrontendEditing.editPanelsEnabled = true;
 		
 			// Reset elements to be validated by TBE_EDITOR.
 		if (TBE_EDITOR != undefined) {
@@ -1447,31 +1447,37 @@ var Lightbox = Class.create({
 	}
 });
 
-/*-----------------------------------------------------------------------------------------------*/
-
-var feClipboard = new ClipboardObj();
-var editPanels = new Hash();
-var editPanelsEnabled = true;
-var JSHandler = new AJAXJavascriptHandler();
-var toolbar;
-var editWindow;
-var actionRunning = false;
-
-	// @todo	We eventually want to encapsulate this in a class or something, but it
-	//			gives us a quick way to re-register all EditPanels when new content is added.
-function scanForEditPanels() {
-	// Create all the EditPanels and stick them in an array
-	$$('div.feEditAdvanced-allWrapper').each(function (element) {
-		editPanels.set(element.identify(), new EditPanel(element));
-	});
-}
 	// Set the edit panels and menu bar on window load
 	//	Note: dom:loaded was not used because did not work for IE6/IE7 as of Prototype v1.6.0.2
 Event.observe(window, 'load', function() {
 	$(document.body).addClassName('feEditAdvanced');
-	scanForEditPanels();
-	toolbar = new Toolbar('feEditAdvanced-menuBar');
+	FrontendEditing.scanForEditPanels();
+	FrontendEditing.initializeMenuBar();
 });
+
+var FrontendEditing = {
+	clipboard: new ClipboardObj(),
+	editPanels: new Hash(),
+	editPanelsEnabled: true,
+	JSHandler: new AJAXJavascriptHandler(),
+	toolbar: null,
+	editWindow: null,
+	actionRunning: false,
+
+		// @todo	We eventually want to encapsulate this in a class or something, but it
+		//			gives us a quick way to re-register all EditPanels when new content is added.
+	scanForEditPanels: function() {
+		// Create all the EditPanels and stick them in an array
+		$$('div.feEditAdvanced-allWrapper').each(function (element) {
+			FrontendEditing.editPanels.set(element.identify(), new EditPanel(element));
+		});
+	},
+
+	initializeMenuBar: function() {
+		FrontendEditing.toolbar = new Toolbar('feEditAdvanced-menuBar');
+	}
+};
+
 
 /*
  * @todo	Temporary fix for Webkit problems with tt_content:uid style IDs in CSS3 selects.
