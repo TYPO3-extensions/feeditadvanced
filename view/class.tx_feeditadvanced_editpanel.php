@@ -554,7 +554,8 @@ class tx_feeditadvanced_editpanel {
 		$formContent = $JSTop . $incFiles . $panel . $JSBottom . $buttons;
 
 			// Insert any header data from TCEForms.
-		$GLOBALS['SOBE']->doc->insertHeaderData();
+			// @todo	Temporarily commented out because some styles conflict with page content.
+		//$GLOBALS['SOBE']->doc->insertHeaderData();
 
 		$markerArray['###EDITFORM_CONTENT###'] = $formContent;
 		$markerArray['###EDITFORM_NAME###'] = $markerArray['###FORM_NAME###'];
