@@ -416,7 +416,7 @@ class tx_feeditadvanced_editpanel {
 			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['addAdditionalHeaderDataForFormsOnPage'] as $classRef) {
 				$hookObj= &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'addAdditionalHeaderDataForFormsOnPage'))
-					$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= $hookObj->addAdditionalHeaderDataForFormsOnPage();
+					$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-additionalHeaderDataForFormsOnPage'] = $hookObj->addAdditionalHeaderDataForFormsOnPage();
 			}
 		}
 
@@ -592,12 +592,13 @@ class tx_feeditadvanced_editpanel {
 		}
 
 			// load prototype/scriptaculous for FE editing and AJAX
-		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= '<script type="text/javascript" src="typo3/contrib/prototype/prototype.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= '<script type="text/javascript" src="typo3/contrib/scriptaculous/scriptaculous.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= '<script type="text/javascript" src="typo3/js/common.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['prototype.js'] = '<script type="text/javascript" src="typo3/contrib/prototype/prototype.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['scriptaculous.js'] = '<script type="text/javascript" src="typo3/contrib/scriptaculous/scriptaculous.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['common.js'] = '<script type="text/javascript" src="typo3/js/common.js"></script>';
 
 			// load AJAX handling functions
-		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/js/feEdit.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['feEdit.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/js/feEdit.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_advanced.css'] = '<link href="' .  t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/css/fe_edit_advanced.css" rel="stylesheet" type="text/css" />';
 
 			// @todo	Hack to make sure RTE styles are loaded properly in Safari.
 		/*
@@ -618,16 +619,16 @@ class tx_feeditadvanced_editpanel {
 		}
 
 			// include anything from controller
-		$feEditIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
-		if ($feEditIncludes) {
-			$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= $feEditIncludes;
+		$controllerIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
+		if ($controllerIncludes) {
+			$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-controllerIncludes'] = $controllerIncludes;
 		}
 			// hook to load in any extra / additional JS includes
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'])) {
 			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'] as $classRef) {
 				$hookObj= &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'addIncludes'))
-					$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= $hookObj->addIncludes();
+					$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-hookIncludes'] = $hookObj->addIncludes();
 			}
 		}
 	}
@@ -681,7 +682,7 @@ class tx_feeditadvanced_editpanel {
 		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/js/fe_logout_timer.js"></script>';
 
 		if (t3lib_div::_GP('eID') != 'fe_edit_advanced') {
-			$GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'] .= $incJS;
+			$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-formIncludes'] = $incJS;
 			$incJS = "";
 		}
 
