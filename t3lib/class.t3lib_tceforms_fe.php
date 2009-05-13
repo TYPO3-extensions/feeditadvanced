@@ -135,24 +135,6 @@ class t3lib_TCEforms_FE extends t3lib_TCEforms {
 	}
 
 	/**
-	 * Includes the Prototype javascript library from /typo3/contrib.
-	 *
-	 * @return	void
-	 */
-	public function loadPrototype() {
-		$this->loadJavascriptLib('contrib/prototype/prototype.js');
-	}
-
-	/**
-	 * Includes the Scriptaculous javascript library from /typo3/contrib.
-	 *
-	 * @return	void
-	 */
-	public function loadScriptaculous() {
-		$this->loadJavascriptLib('contrib/scriptaculous/scriptaculous.js');
-	}
-
-	/**
 	 * Insert additional style sheet link
 	 *
 	 * @param	string		$key: some key identifying the style sheet
@@ -167,6 +149,23 @@ class t3lib_TCEforms_FE extends t3lib_TCEforms {
 		}
 	 }
 }
+
+require_once(PATH_typo3 . 'template.php');
+$GLOBALS['TBE_TEMPLATE'] = t3lib_div::makeInstance('frontendDoc');
+
+/**
+ * Dummy class that mimics alt_doc and other backend modules, serving as a
+ * wrapper for the tsfeDoc instance. Called from tceforms.
+ */
+class t3lib_tceforms_dummy {
+	public $doc;
+	
+	public function __construct() {
+		$this->doc = $GLOBALS['TBE_TEMPLATE'];
+	}
+}
+$GLOBALS['SOBE'] = t3lib_div::makeInstance('t3lib_tceforms_dummy');
+
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_tceforms_fe.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_tceforms_fe.php']);
