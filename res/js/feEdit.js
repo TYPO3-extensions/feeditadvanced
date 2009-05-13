@@ -15,12 +15,14 @@
 var Toolbar = Class.create({
 	initialize: function(toolbarElement) {
 		toolbarElement = $(toolbarElement);
-		this.widgets = new Array();
+		if ($(toolbarElement)) {
+			this.widgets = new Array();
 
-			// Create all the draggable buttons in the toolbar
-		toolbarElement.select('.draggable').each((function(draggableElement) {
-			this.widgets.push(new ToolbarWidget(draggableElement));
-		}).bind(this));
+				// Create all the draggable buttons in the toolbar
+			toolbarElement.select('.draggable').each((function(draggableElement) {
+				this.widgets.push(new ToolbarWidget(draggableElement));
+			}).bind(this));
+		}
 	},
 
 	addDraggable: function(toolbarElement) {
@@ -418,7 +420,7 @@ var EditPanel = Class.create({
 		eventElement = $(Event.element(event));
 		if (eventElement.hasClassName('feEditAdvanced-editButton') ||
 		    eventElement.hasClassName('feEditAdvanced-actionButton') ||
-			(eventElement.identify() == 'closeButton')) {
+			(eventElement.identify() == 'feEditAdvanced-closeButton')) {
 			element = eventElement;
 		} else {
 			element = eventElement.up('.feEditAdvanced-actionButton, .feEditAdvanced-editButton');
@@ -521,7 +523,7 @@ var EditPanel = Class.create({
 		}).bind(this));
 
 			// Close button in the top right corner of the edit window
-		$('closeButton').observe('click', this._handleButtonClick.bindAsEventListener(this));
+		$('feEditAdvanced-closeButton').observe('click', this._handleButtonClick.bindAsEventListener(this));
 	},
 
 	setupEventListeners: function() {
@@ -699,14 +701,16 @@ var EditPanelAction = Class.create({
 	trigger: function(additionalParams) {
 			// handle timeouts
 		//this.setupTimer();
-		if (FrontendEditing.actionRunning) {
-			var waitNotification = new FrontendEditNotification(this._getAlreadyProcessingMsg());
-			return;
-		}
 		FrontendEditing.actionRunning = true;
 
 		this.parent.getFormParameters();
-		var notification = new FrontendEditNotification(this._getNotificationMessage());
+		
+		if (!FrontendEditing.editWindow) {
+			FrontendEditing.editWindow = new EditWindow(this.parent);
+		}
+		FrontendEditing.editWindow.displayLoadingMessage(this._getNotificationMessage());
+		FrontendEditing.editWindow.show();
+		
 		paramRequest = 'eID=fe_edit_advanced' + '&TSFE_EDIT[cmd]=' + this.cmd + '&TSFE_EDIT[record]=' + this.parent.record + '&pid=' + this.parent.pid;
 		if (this.parent.params != undefined && this.parent.params != 0) {
 			paramRequest += '&' + this.parent.params;
@@ -724,15 +728,10 @@ var EditPanelAction = Class.create({
 				requestHeaders: { Accept: 'application/json' },
 				onComplete: function(xhr) {
 					FrontendEditing.actionRunning = false;
-					notification.hide();
-					if (waitNotification) {
-						waitNotification.hide();
-					}
 					this._handleResponse(xhr);
 				}.bind(this),
 				onError: function(xhr) {
 					FrontendEditing.actionRunning = false;
-					notification.hide();
 					alert('AJAX error: ' + xhr.responseText);
 				}.bind(this)
 		});
@@ -741,9 +740,8 @@ var EditPanelAction = Class.create({
 	_handleResponse: function(xhr) {
 		if (xhr.responseText.isJSON()) {
 			var json = xhr.responseText.evalJSON(true);
-				// @todo	Figure out how to handle errors.
 			if (json.error) {
-				alert(json.error);
+				FrontendEditing.editWindow.displayStaticMessage(json.error);
 			} else if (json.url) {
 				window.location = json.url;
 			} else {
@@ -837,8 +835,7 @@ var EditPanelAction = Class.create({
 });
 var NewRecordAction = Class.create(EditPanelAction, {
 	_process: function (json) {
-		FrontendEditing.editWindow = new Lightbox(this.parent, 'New Content Block', json.content);
-		FrontendEditing.editWindow.show();
+		FrontendEditing.editWindow.displayEditingForm('New Content Block', json.content);
 	},
 
 	_getCmd: function() {
@@ -852,8 +849,7 @@ var NewRecordAction = Class.create(EditPanelAction, {
 
 var EditAction = Class.create(EditPanelAction, {
 	_process: function(json) {
-		FrontendEditing.editWindow = new Lightbox(this.parent, 'Edit Content Block', json.content);
-		FrontendEditing.editWindow.show();
+		FrontendEditing.editWindow.displayEditingForm('Edit Content Block', json.content);
 	},
 
 	_getCmd: function() {
@@ -866,6 +862,7 @@ var EditAction = Class.create(EditPanelAction, {
 });
 var DeleteAction = Class.create(EditPanelAction, {
 	_process: function(json) {
+		FrontendEditing.editWindow.close();
 		this.parent.removeContent();
 	},
 
@@ -885,6 +882,7 @@ var DeleteAction = Class.create(EditPanelAction, {
 });
 var HideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
+		FrontendEditing.editWindow.close();
 		this.parent.content.addClassName('feEditAdvanced-hiddenElement');
 		this.parent.content.select('input.hideAction')[0].hide();
 		this.parent.content.select('input.unhideAction')[0].show();
@@ -901,6 +899,7 @@ var HideAction = Class.create(EditPanelAction, {
 });
 var UnhideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
+		FrontendEditing.editWindow.close();
 		this.parent.content.removeClassName('feEditAdvanced-hiddenElement');
 		this.parent.content.select('input.unhideAction')[0].hide();
 		this.parent.content.select('input.hideAction')[0].show();
@@ -990,7 +989,7 @@ var SaveAction = Class.create(EditPanelAction, {
 		// @todo	Alert if the save was not successful.
 
 		if(FrontendEditing.editWindow) {
-			FrontendEditing.editWindow.updateContent(json.content);
+			FrontendEditing.editWindow.displayEditingForm("Edit Content Block", json.content);
 		}
 	},
 
@@ -1005,8 +1004,6 @@ var SaveAction = Class.create(EditPanelAction, {
 });
 var CloseAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
-		FrontendEditing.editWindow.close();
-
 			// If this EditPanel is nested inside another, find the ID of the parent EditPanel
 		if (this.parent.content.up('.feEditAdvanced-allWrapper')) {
 			parentID = this.parent.content.up('.feEditAdvanced-allWrapper').identify();
@@ -1019,6 +1016,8 @@ var CloseAction = Class.create(EditPanelAction, {
 	},
 
 	_process: function(json) {
+		FrontendEditing.editWindow.close();
+		
 		if (json.id) {
 			ep = FrontendEditing.editPanels.get(json.id);
 			ep.replaceContent(json.content);
@@ -1053,7 +1052,6 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 
 		if (TBE_EDITOR.checkSubmit(1)) {
 			formParams = $('feEditAdvanced-editWindow').select('form')[0].serialize();
-			FrontendEditing.editWindow.close();
 
 				// If this EditPanel is nested inside another, find the ID of the parent EditPanel
 			if (this.parent.content.up('.feEditAdvanced-allWrapper')) {
@@ -1066,6 +1064,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 	},
 
 	_process: function(json) {
+		FrontendEditing.editWindow.close();
 
 		if (json.id) {
 			ep = FrontendEditing.editPanels.get(json.id);
@@ -1309,75 +1308,161 @@ var ClipboardObj = Class.create({
 });
 
 
-var Lightbox = Class.create({
-	initialize: function(editPanel, headerText, content) {
+var EditWindow = Class.create({
+	initialize: function(editPanel) {
 		this.editPanel = editPanel;
-		
-			// Add the overlay before the editWindow for IE.
-		this.hideAll();
-		overlay = new Element('div', {'id': 'feEditAdvanced-overlay', 'style': 'display:none'});
-		$(document.body).insert({'bottom': overlay});
 
-		headerElement  = new Element('div', {'id': 'feEditAdvanced-editWindowHeader'}).update(headerText);
-		closeElement   = new Element('button', {'id': 'closeButton', 'value':' ', 'type':'submit'}).addClassName('closeAction');
-		contentElement = new Element('div', {'id': 'feEditAdvanced-editWindowContent'});
-		controlElement = new Element('div', {'id': 'feEditAdvanced-editWindowControls', 'style': 'width:100%; height:50px'});
+		if ($('overlay')) {
+			$('overlay').remove();
+		}
+
+			// Add the overlay before the editWindow for IE.
+		this.overlay = new Element('div', {'id': 'feEditAdvanced-overlay', 'style': 'display:none'});
+		$(document.body).insert({'bottom': this.overlay});
 
 		this.windowElement  = new Element('div', {'id': 'feEditAdvanced-editWindow', 'style': 'display: none'});
+		$(document.body).insert({'bottom': this.windowElement});
+	},
+	
+	displayLoadingMessage: function(message) {
+		this._reset();
+
+		this.windowElement.insert(new Element('div', {'id': 'feEditAdvanced-loading'}).hide());
+		$('feEditAdvanced-loading').insert(new Element('h3').update(message));
+		$('feEditAdvanced-loading').insert(new Element('div').insert(new Element('img', {'src': 'typo3/sysext/fe_edit_advanced/res/icons/spinner.gif'})));
+		this._sizeAndPosition('feEditAdvanced-loading');
+		$('feEditAdvanced-loading').appear();
+	},
+	
+	displayStaticMessage: function(message) {
+		this._reset();
+
+		this.windowElement.insert(new Element('div', {'id': 'feEditAdvanced-loading'}).hide());
+		$('feEditAdvanced-loading').insert(new Element('h3').update(message));
+		this._sizeAndPosition('feEditAdvanced-loading');
+		$('feEditAdvanced-loading').appear();
+	},
+	
+	displayEditingForm: function(headerText, content) {
+		this._reset();
+
+		headerElement  = new Element('div', {'id': 'feEditAdvanced-editWindowHeader'}).update(headerText).hide();
+		closeElement   = new Element('button', {'id': 'feEditAdvanced-closeButton', 'value':' ', 'type':'submit'}).addClassName('closeAction').hide();
+		contentElement = new Element('div', {'id': 'feEditAdvanced-editWindowContent'}).hide();
+		controlElement = new Element('div', {'id': 'feEditAdvanced-editWindowControls', 'style': 'width:100%; height:50px;'}).hide();
+
 		this.windowElement.insert({'top': closeElement});
 		this.windowElement.insert({'bottom': headerElement});
 		this.windowElement.insert({'bottom': contentElement});
 
-		$(document.body).insert({'bottom': this.windowElement});
-
-		this.updateContent(content);
-	},
-	
-	updateContent: function(content) {
-			// Get rid of any edit controls that already exist.
-		editButtons = $('feEditAdvanced-editControls');
-		if (editButtons) {
-			editButtons.remove();
-		}
-
 		$('feEditAdvanced-editWindowContent').update(content.stripScripts());
 
-			// Move new edit controls to bottom
-			// @todo	Can we change HTML output to support this out of the box?
-		editButtons = $('feEditAdvanced-editControls');
-		if (editButtons) {
-			editButtons.remove();
-			this.windowElement.insert({'bottom': editButtons});
-		}
-		
+		this.windowElement.insert({'bottom': $('feEditAdvanced-editControls').hide()});
+
+		this.setMaxContentSize();
+		this._sizeAndPosition('feEditAdvanced-editWindowContent');
+
+		new Effect.Parallel([
+			new Effect.Appear(headerElement, {sync: true}),
+			new Effect.Appear(closeElement, {sync: true}),
+			new Effect.Appear(contentElement, {sync: true}),
+			new Effect.Appear(controlElement, {sync: true}),
+			new Effect.Appear($('feEditAdvanced-editControls'), {sync: true})
+			], {
+				queue: 'end'
+			}
+		);
+
 		this.editPanel.createFormObservers();
+	},
+	
+	_reset: function() {
+		if ($('feEditAdvanced-editWindowContent')) {
+			$('feEditAdvanced-editWindowContent').remove();
+		}
+
+		if ($('feEditAdvanced-editWindowHeader')) {
+			$('feEditAdvanced-editWindowHeader').remove();
+		}
+
+		if ($('feEditAdvanced-loading')) {
+			$('feEditAdvanced-loading').remove();
+		}
+
+		if ($('feEditAdvanced-editControls')) {
+			$('feEditAdvanced-editControls').remove();
+		}
+
+		if ($('feEditAdvanced-closeButton')) {
+			$('feEditAdvanced-closeButton').remove();
+		}
+	},
+	
+	_sizeAndPosition: function(newElement) {
+		if (this.windowElement.visible()) {
+			newElement = $(newElement);
+
+			oldWidth = this.windowElement.getWidth();
+			oldHeight = this.windowElement.getHeight();
+			oldLeft = this.windowElement.offsetLeft;
+
+				// @todo	Magic numbers for min width need to be removed.
+			if (newElement.identify() == 'feEditAdvanced-loading') {
+				newWidth = 220;
+			} else {
+				newWidth = 555;
+			}
+
+				// Morph from loading box dimensions to editing form dimentions, keeping center the same.
+			this.windowElement.morph({
+				minWidth: newWidth + 'px',
+				left: (oldLeft - ((newWidth - oldWidth) / 2)) + 'px'
+			});
+		} else {
+				// Position the editWindow in the middle of the page.
+			this.windowElement.setStyle({
+				'left': ((document.viewport.getWidth() - this.windowElement.getWidth()) / 2) + 'px'
+			});
+		}
+	},
+	
+	_getBorder: function() {
+		editWindowHeight = this.windowElement.getHeight();
+		editWindowWidth = this.windowElement.getWidth();
+
+		if ($('feEditAdvanced-editWindowContent')) {
+			contentHeight = $('feEditAdvanced-editWindowContent').getHeight();
+			contentWidth = $('feEditAdvanced-editWindowContent').getWidth();
+		} else {
+			contentHeight = $('feEditAdvanced-loading').getHeight();
+			contentWidth = $('feEditAdvanced-loading').getWidth();
+		}
+
+		return {height: editWindowHeight - contentHeight, width: editWindowWidth - contentWidth};
 	},
 
 	show: function() {
-		FrontendEditing.editPanelsEnabled = false;
-			
-			// fade in overlay
-		$('feEditAdvanced-overlay').appear({ duration: 0.25, from:0.0, to: 0.5});
-		//$('feEditAdvanced-overlay').show();
-			// grow in lightbox window
-		//this.windowElement.grow({direction: 'center', duration: 0.5});
-		this.windowElement.show();
-		this.setMaxContentSize();
+		if (!this.windowElement.visible()) {
+			FrontendEditing.editPanelsEnabled = false;
+
+				// fade in overlay
+			this.overlay.appear({ duration: 0.25, from:0.0, to: 0.5});
+			this.windowElement.appear({ duration: 0.25, queue: 'end'});
+		}
 	},
 	
 	setMaxContentSize: function() {
+		topOffset = $('feEditAdvanced-menuBar').getHeight();
+		editWindowBorder = this._getBorder();
+
 		windowHeight = document.viewport.getHeight();
-		lightboxHeight = this.windowElement.getHeight();
-		contentHeight = $('feEditAdvanced-editWindowContent').getHeight();
-		maxLightboxHeight = windowHeight - 100;
-		maxContentHeight = maxLightboxHeight - (lightboxHeight - contentHeight);
-		
+		maxEditWindowHeight = windowHeight - topOffset;
+		maxContentHeight = maxEditWindowHeight - editWindowBorder.height;
+
 			// @todo	Max width is currently half the browser window.  Need to tweak this.
 		windowWidth = document.viewport.getWidth();
-		lightboxWidth = this.windowElement.getWidth();
-		contentWidth = $('feEditAdvanced-editWindowContent').getWidth();
-		maxLightboxWidth = windowWidth / 2;
-		maxContentWidth = maxLightboxWidth - (lightboxWidth - contentWidth);
+		maxEditWindowWidth = windowWidth / 2;
+		maxContentWidth = maxEditWindowWidth - editWindowBorder.width;
 
 		$('feEditAdvanced-editWindowContent').setStyle({
 			maxHeight: maxContentHeight + 'px',
@@ -1387,21 +1472,21 @@ var Lightbox = Class.create({
 
 		// @todo	Not currently working (and not called anywhere) due to timing issues.
 	resize: function() {
-			// determine lightbox size and location
+			// determine editWindow size and location
 		currentWindowHeight = document.viewport.getHeight();
 		currentWindowWidth  = document.viewport.getWidth();
-		currentLightboxHeight = this.windowElement.getHeight();
-		currentLightboxWidth  = this.windowElement.getWidth();
+		currentEditWindowHeight = this.windowElement.getHeight();
+		currentEditWindowWidth  = this.windowElement.getWidth();
 		currentContentHeight = $('feEditAdvanced-editWindowContent').getHeight();
 		currentContentWidth  = $('feEditAdvanced-editWindowContent').getWidth();
-		maxLightboxHeight = currentWindowHeight - 100;
-		maxLightboxWidth = currentWindowWidth - 100;
+		maxEditWindowHeight = currentWindowHeight - 100;
+		maxEditWindowWidth = currentWindowWidth - 100;
 
-			// If the lightbox is too tall for the browser window, scale it down
-		if (currentLightboxHeight > maxLightboxHeight) {
-			newHeight = maxLightboxHeight - (currentLightboxHeight - currentContentHeight);
+			// If the editWindow is too tall for the browser window, scale it down
+		if (currentEditWindowHeight > maxEditWindowHeight) {
+			newHeight = maxEditWindowHeight - (currentEditWindowHeight - currentContentHeight);
 				// If we're making the content area smaller, we need to account for scrollbars too.
-			newWidth = currentLightboxWidth + 20;
+			newWidth = currentEditWindowWidth + 20;
 
 			$('feEditAdvanced-editWindowContent').setStyle({
 				height: newHeight + 'px',
@@ -1409,30 +1494,30 @@ var Lightbox = Class.create({
 			});
 		}
 
-			// If the lightbox is too wide for the browser window, scale it down.
-		if (currentLightboxWidth > maxLightboxWidth) {
-			newWidth = maxLightboxWidth - (currentLightboxWidth - currentContentWidth);
-			newHeight = currentLightboxHeight + 20;
+			// If the editWindow is too wide for the browser window, scale it down.
+		if (currentEditWindowWidth > maxEditWindowWidth) {
+			newWidth = maxEditWindowWidth - (currentEditWindowWidth - currentContentWidth);
+			newHeight = currentEditWindowHeight + 20;
 			$('feEditAdvanced-editWindowContent').setStyle({
 				width: newWidth + 'px'
 			});
 		}
 
-			// Center the lightbox on the page.
+			// Center the editWindow on the page.
 		this.windowElement.setStyle({
 			position: 'fixed',
-			top: ((currentWindowHeight / 2) - (currentLightboxHeight / 2)) + 'px',
-			left: ((currentWindowWidth / 2) - (currentLightboxWidth / 2)) + 'px'
+			top: ((currentWindowHeight / 2) - (currentEditWindowHeight / 2)) + 'px',
+			left: ((currentWindowWidth / 2) - (currentEditWindowWidth / 2)) + 'px'
 		});
 	},
 
 	close: function() {
 		this.windowElement.shrink();
-		$('feEditAdvanced-overlay').fade({duration: 0.75, from: 0.5, to: 0.0});
-		$('feEditAdvanced-editWindow').remove();
-		
+		this.overlay.fade({duration: 0.75, from: 0.5, to: 0.0, afterFinish: function() {  FrontendEditing.editWindow = null; }});
+		this.windowElement.remove();
+
 		FrontendEditing.editPanelsEnabled = true;
-		
+
 			// Reset elements to be validated by TBE_EDITOR.
 		if (TBE_EDITOR != undefined) {
 			TBE_EDITOR.elements = {};
@@ -1441,8 +1526,9 @@ var Lightbox = Class.create({
 	},
 
 	hideAll: function() {
-		if ($('feEditAdvanced-overlay')) {
-			$('feEditAdvanced-overlay').remove();
+		if (this.overlay) {
+			this.overlay.remove();
+			this.overlay = undefined;
 		}
 	}
 });
@@ -1463,6 +1549,7 @@ var FrontendEditing = {
 	toolbar: null,
 	editWindow: null,
 	actionRunning: false,
+	editWindow: null,
 
 		// @todo	We eventually want to encapsulate this in a class or something, but it
 		//			gives us a quick way to re-register all EditPanels when new content is added.
