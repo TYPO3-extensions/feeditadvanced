@@ -80,7 +80,7 @@ class tx_feeditadvanced_adminpanel {
 		}
 
 			// initialize / force vars for FE Editing
-		$GLOBALS['BE_USER']->frontendEdit->forcePreview();
+		$GLOBALS['BE_USER']->adminPanel->forcePreview();
 		$GLOBALS['TSFE']->displayEditIcons = true;
 		$GLOBALS['TSFE']->showHiddenPage = 1;
 		$GLOBALS['TSFE']->showHiddenRecords = 1;
