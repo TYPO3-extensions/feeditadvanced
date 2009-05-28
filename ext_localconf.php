@@ -5,6 +5,9 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 $TYPO3_CONF_VARS['SC_OPTIONS']['typo3/classes/class.frontendedit.php']['admin'] = 'EXT:fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php:tx_feeditadvanced_adminpanel';
 $TYPO3_CONF_VARS['SC_OPTIONS']['typo3/classes/class.frontendedit.php']['edit']  = 'EXT:fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php:tx_feeditadvanced_editpanel';
 
+	// @note Temporarily using the hook at the end of frontend rendering to insert the top menu bar.  Not sure if this is a final solution or not.
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][] = 'EXT:fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php:tx_feeditadvanced_adminpanel->showMenuBar';
+
 	// Add AJAX support
 $TYPO3_CONF_VARS['FE']['eID_include']['fe_edit_advanced'] = 'EXT:fe_edit_advanced/service/ajax.php';
 
