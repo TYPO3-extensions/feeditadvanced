@@ -591,6 +591,7 @@ class tx_feeditadvanced_ajax {
 				$GLOBALS['TSFE']->beUserLogin = true;
 			}
 			if ($GLOBALS['BE_USER']->checkLockToIP() && $GLOBALS['BE_USER']->checkBackendAccessSettingsFromInitPhp() && $GLOBALS['BE_USER']->user['uid']) {
+				$GLOBALS['BE_USER']->initializeAdminPanel();
 				$GLOBALS['BE_USER']->initializeFrontendEdit();
 			} else {
 				$GLOBALS['BE_USER'] = '';
