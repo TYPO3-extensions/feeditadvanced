@@ -26,7 +26,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extMgm::extPath('fe_edit_advanced') . 'view/class.tx_feeditadvanced_menu.php');
+require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_menu.php');
 
 /**
  * Top menu bar for advanced frontend editing.
@@ -34,7 +34,7 @@ require_once(t3lib_extMgm::extPath('fe_edit_advanced') . 'view/class.tx_feeditad
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
  * @package TYPO3
- * @subpackage fe_edit_advanced
+ * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_adminpanel {
 
@@ -46,7 +46,7 @@ class tx_feeditadvanced_adminpanel {
 	protected $admPanelTSconfig = array();
 
 	/**
-	 * fe_edit_advanced TS configuration
+	 * feeditadvanced TS configuration
 	 *
 	 * @var 	array
 	 */
@@ -75,7 +75,7 @@ class tx_feeditadvanced_adminpanel {
 			// general configuration
 		if (empty($this->admPanelTSconfig)) {
 			$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
-			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'tx_fe_edit_advanced');
+			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'tx_feeditadvanced');
 			$GLOBALS['TSFE']->determineId();
 		}
 
@@ -121,9 +121,9 @@ class tx_feeditadvanced_adminpanel {
 		}
 
 			// hook to handle actions that define in menu
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']['actionHandler'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['actionHandler'])) {
 			$_params = array('action' => &$action, 'pObj' => &$this);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']['actionHandler'] as $_funcRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['actionHandler'] as $_funcRef) {
 				t3lib_div::callUserFunction($_funcRef,$_params,$this);
 			}
 		}
@@ -176,9 +176,9 @@ class tx_feeditadvanced_adminpanel {
 		';
 
 			// hook to add additional hidden fields
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'])) {
 			$_params = array('input' => &$input, 'pObj' => &$this);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'] as $_funcRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'] as $_funcRef) {
 				$out .= t3lib_div::callUserFunction($_funcRef,$_params,$this);
 			}
 		}
@@ -196,17 +196,17 @@ class tx_feeditadvanced_adminpanel {
 
 			// Add default CSS
 		if ($this->menuOpen) {
-			$cssFileName = ($cssfile = $this->modTSconfig['properties']['skin.']['cssFile']) ? $cssfile : t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/css/fe_edit_advanced.css';
+			$cssFileName = ($cssfile = $this->modTSconfig['properties']['skin.']['cssFile']) ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css';
 		}
 		else {
-			$cssFileName = ($cssFile = $this->modTSconfig['properties']['skin.']['cssClosedFile']) ? $cssfile : t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/css/fe_edit_closed.css';
+			$cssFileName = ($cssFile = $this->modTSconfig['properties']['skin.']['cssClosedFile']) ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_closed.css';
 		}
 		$out .= '<link href="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $cssFileName . '" rel="stylesheet" type="text/css" />';
 
 			// Allow to hook in new menu here...will overwrite existing
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'])) {
 			$_params = array('input' => &$input, 'pObj' => &$this);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'] as $_funcRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'] as $_funcRef) {
 				$menuOut = t3lib_div::callUserFunction($_funcRef,$_params,$this);
 			}
 		}
@@ -259,8 +259,8 @@ class tx_feeditadvanced_adminpanel {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_adminpanel.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']);
 }
 
 ?>

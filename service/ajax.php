@@ -32,7 +32,7 @@
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
  * @package TYPO3
- * @subpackage fe_edit_advanced
+ * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_ajax {
 	
@@ -75,7 +75,7 @@ class tx_feeditadvanced_ajax {
 			// Setup ajax object
 		require_once(PATH_typo3.'classes/class.typo3ajax.php');
 		$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
-		$this->ajaxObj = new $ajaxClass('fe_edit_advanced');
+		$this->ajaxObj = new $ajaxClass('feeditadvanced');
 		$this->ajaxObj->setContentFormat('jsonbody');
 			// @todo	Remove this line eventually.  Plain can be useful for testing though.
 		//$this->ajaxObj->setContentFormat('plain');
@@ -115,7 +115,7 @@ class tx_feeditadvanced_ajax {
 				// Setup ajax object
 			require_once(PATH_typo3.'classes/class.typo3ajax.php');
 			$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
-			$this->ajaxObj = new $ajaxClass('fe_edit_advanced');
+			$this->ajaxObj = new $ajaxClass('feeditadvanced');
 			$this->ajaxObj->setContentFormat('jsonbody');
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
 			//$this->ajaxObj->setContentFormat('plain');
