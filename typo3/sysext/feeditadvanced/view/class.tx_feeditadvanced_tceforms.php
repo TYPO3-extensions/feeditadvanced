@@ -722,7 +722,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 						(($GLOBALS['TCA'][$table]['ctrl']['type'] && !strcmp($field,$GLOBALS['TCA'][$table]['ctrl']['type'])) ||
 						($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'] && t3lib_div::inList($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'],$field)))
 						&& !$BE_USER->uc['noOnChangeAlertInTypeFields'])	{
-					$alertMsgOnChange = 'if (confirm(' . $GLOBALS['LANG']->JScharCode($GLOBALS['LANG']->sL('LLL:EXT:fe_edit_advanced/locallang.xml:alertChange')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR.submitForm(); };';
+					$alertMsgOnChange = 'if (confirm(' . $GLOBALS['LANG']->JScharCode($GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:alertChange')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR.submitForm(); };';
 				} else {$alertMsgOnChange='';}
 
 					// Render as a hidden field?

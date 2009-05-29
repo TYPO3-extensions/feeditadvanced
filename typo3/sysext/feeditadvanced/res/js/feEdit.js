@@ -711,7 +711,7 @@ var EditPanelAction = Class.create({
 		FrontendEditing.editWindow.displayLoadingMessage(this._getNotificationMessage());
 		FrontendEditing.editWindow.show();
 		
-		paramRequest = 'eID=fe_edit_advanced' + '&TSFE_EDIT[cmd]=' + this.cmd + '&TSFE_EDIT[record]=' + this.parent.record + '&pid=' + this.parent.pid;
+		paramRequest = 'eID=feeditadvanced' + '&TSFE_EDIT[cmd]=' + this.cmd + '&TSFE_EDIT[record]=' + this.parent.record + '&pid=' + this.parent.pid;
 		if (this.parent.params != undefined && this.parent.params != 0) {
 			paramRequest += '&' + this.parent.params;
 		}
@@ -1329,7 +1329,7 @@ var EditWindow = Class.create({
 
 		this.windowElement.insert(new Element('div', {'id': 'feEditAdvanced-loading'}).hide());
 		$('feEditAdvanced-loading').insert(new Element('h3').update(message));
-		$('feEditAdvanced-loading').insert(new Element('div').insert(new Element('img', {'src': 'typo3/sysext/fe_edit_advanced/res/icons/spinner.gif'})));
+		$('feEditAdvanced-loading').insert(new Element('div').insert(new Element('img', {'src': 'typo3/sysext/feeditadvanced/res/icons/spinner.gif'})));
 		this._sizeAndPosition('feEditAdvanced-loading');
 		$('feEditAdvanced-loading').appear();
 	},

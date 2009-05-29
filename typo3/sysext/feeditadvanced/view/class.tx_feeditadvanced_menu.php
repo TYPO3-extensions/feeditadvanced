@@ -32,7 +32,7 @@
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
  * @package TYPO3
- * @subpackage fe_edit_advanced
+ * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_menu {
 
@@ -49,7 +49,7 @@ class tx_feeditadvanced_menu {
 		$this->menuOpen = (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] !== '0')) ? true : false;
 		$this->username = $GLOBALS['TSFE']->fe_user->user['username'] ? $GLOBALS['TSFE']->fe_user->user['username'] : $GLOBALS['BE_USER']->user['username'];
 		$imgPath = $this->modTSconfig['properties']['skin.']['imagePath'];
-		$this->imagePath = $imgPath  ? $imgPath : t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/icons/';
+		$this->imagePath = $imgPath  ? $imgPath : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/';
 	}
 
 	/**
@@ -86,7 +86,7 @@ class tx_feeditadvanced_menu {
 			$cObj->start($data, 'pages');
 			$menuOut .= $cObj->editPanel('', array(
 				'allow' => 'edit',
-				'template' => t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/template/feedit_page.tmpl'
+				'template' => t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit_page.tmpl'
 			));
 
 			$menuOut .= '</div>';
@@ -128,14 +128,14 @@ class tx_feeditadvanced_menu {
 				$menuOut .= '<span class="feEditAdvanced-menuUserlist">Users on page: <span id="menu_userlisting">' . $this->userList . '</span></span>';
 			}
 
-			$menuOut .= '<span class="feEditAdvanced-logo"><a href="http://www.typo3.com/"><img src="' . t3lib_extMgm::siteRelPath('fe_edit_advanced') . '/res/icons/typo3logo_mini_transparent.gif" /></a></span>';
+			$menuOut .= '<span class="feEditAdvanced-logo"><a href="http://www.typo3.com/"><img src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . '/res/icons/typo3logo_mini_transparent.gif" /></a></span>';
 			$menuOut .= '</div>';
 			$menuOut .= '</div>'; // end div menubar
 
 				// hook to add additional menu features, including a sidebar
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
 				$_params = array('menuOut' => &$menuOut, 'pObj' => &$this);
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_menu.php']['build'] as $_funcRef) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'] as $_funcRef) {
 					$menuOut = t3lib_div::callUserFunction($_funcRef,$_params,$this);
 				}
 			}
@@ -158,7 +158,7 @@ class tx_feeditadvanced_menu {
 		$actionCode = strlen($action) ? ' id="' . $action . '"' : '';
 		$btnClassCode = strlen($btnClass) ? ' class="' . $btnClass . '"' : '';
 		$titleCode = strlen($title) ? ' title="' . $title . '"' : '' ;
-		$imageCode = strlen($image) ? '<img src="' . (($this->imagePath ? $this->imagePath : t3lib_extMgm::siteRelPath('fe_edit_advanced')."res/icons/") . $image) .'" />' : '';
+		$imageCode = strlen($image) ? '<img src="' . (($this->imagePath ? $this->imagePath : t3lib_extMgm::siteRelPath('feeditadvanced')."res/icons/") . $image) .'" />' : '';
 		$labelCode = strlen($labelClass) ? ' class="' . $labelClass . '"' : '';
 		$this->itemList[$sec][] =
 			'<a href="' . $additionalParams . '"' . $actionCode . $btnClassCode . $titleCode . '' . $onclick . '>' .
@@ -204,8 +204,8 @@ class tx_feeditadvanced_menu {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_menu.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_menu.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']);
 }
 
 ?>

@@ -26,7 +26,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extMgm::extPath('fe_edit_advanced') . 'view/class.tx_feeditadvanced_tceforms.php');
+require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_tceforms.php');
 
 /**
  * Edit panel for advanced frontend editing.
@@ -34,7 +34,7 @@ require_once(t3lib_extMgm::extPath('fe_edit_advanced') . 'view/class.tx_feeditad
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
  * @package TYPO3
- * @subpackage fe_edit_advanced
+ * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_editpanel {
 
@@ -57,7 +57,7 @@ class tx_feeditadvanced_editpanel {
 	protected $imagePath = '';
 
 	/**
-	 * fe_edit_advanced TS configuration from admPanel
+	 * feeditadvanced TS configuration from admPanel
 	 * @var		array
 	 */
 	protected $modTSconfig = 0;
@@ -80,7 +80,7 @@ class tx_feeditadvanced_editpanel {
 			return;
 		}
 
-		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'tx_fe_edit_advanced');
+		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'tx_feeditadvanced');
 
 			// set defaults for showIcons otherwise is set by $conf['allow']
 		if (!$this->modTSconfig['properties']['showIcons']) {
@@ -89,13 +89,13 @@ class tx_feeditadvanced_editpanel {
 
 			// image path for frontend editing related images - edit panel and edit icon icons
 		$imgPath = $this->modTSconfig['properties']['skin.']['imagePath'];
-		$this->imagePath = $imgPath  ? $imgPath  : t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/icons/';
+		$this->imagePath = $imgPath  ? $imgPath  : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/';
 
 			// load in the template
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 		$templateFile = ($conf['template']) ? $conf['template'] : $this->modTSconfig['properties']['template'];
 		if (!$templateFile) {
-			$templateFile = t3lib_extMgm::siteRelPath('fe_edit_advanced') . "res/template/feedit_advanced.tmpl";
+			$templateFile = t3lib_extMgm::siteRelPath('feeditadvanced') . "res/template/feedit_advanced.tmpl";
 		}
 		$this->template = $this->cObj->fileResource($templateFile);
 		$this->templateAction = $this->cObj->getSubpart($this->template, '###TEMPLATE_EDITPANEL_ACTION###');
@@ -138,7 +138,7 @@ class tx_feeditadvanced_editpanel {
 		$subpartMarker = array();
 
 		$formName = 'TSFE_EDIT_FORM_' . substr($GLOBALS['TSFE']->uniqueHash(), 0, 4);
-		$actionURL = (t3lib_div::_GP('eID') == 'fe_edit_advanced') ? '/' : htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI'));
+		$actionURL = (t3lib_div::_GP('eID') == 'feeditadvanced') ? '/' : htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI'));
 		$markerArray['###FORM_NAME###'] = $formName;
 		$markerArray['###FORM_URL###'] = $actionURL;
 		$markerArray['###FORM_ENCTYPE###'] = $GLOBALS['TYPO3_CONF_VARS']['SYS']['form_enctype'];
@@ -211,8 +211,8 @@ class tx_feeditadvanced_editpanel {
 
 				// hook to add any hidden fields
 			$hiddenFieldString = '';
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'])) {
-				foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'] as $classRef) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'])) {
+				foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'] as $classRef) {
 					$hookObj= &t3lib_div::getUserObj($classRef);
 					if (method_exists($hookObj, 'addHiddenFields'))
 						$hiddenFieldString .= $hookObj->addHiddenFields($dataArr);
@@ -601,15 +601,15 @@ class tx_feeditadvanced_editpanel {
 		$GLOBALS['TSFE']->additionalHeaderData['common.js'] = '<script type="text/javascript" src="typo3/js/common.js"></script>';
 
 			// load AJAX handling functions
-		$GLOBALS['TSFE']->additionalHeaderData['feEdit.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/js/feEdit.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_advanced.css'] = '<link href="' .  t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/css/fe_edit_advanced.css" rel="stylesheet" type="text/css" />';
+		$GLOBALS['TSFE']->additionalHeaderData['feEdit.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_advanced.css'] = '<link href="' .  t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css" rel="stylesheet" type="text/css" />';
 
 			// @todo	Hack to make sure RTE styles are loaded properly in Safari.
 		/*
 		$GLOBALS['TSFE']->additionalHeaderData['htmlarea-edited-content.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/t3skin/rtehtmlarea/htmlarea-edited-content.css" />';
 		$GLOBALS['TSFE']->additionalHeaderData['htmlarea.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/t3skin/rtehtmlarea/htmlarea.css" />';
 		$GLOBALS['TSFE']->additionalHeaderData['inline-htmlarea.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/rtehtmlarea/extensions/DefaultInline/skin/htmlarea.css" />';
-		$GLOBALS['TSFE']->additionalHeaderData['fe_formsOnPage.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/fe_edit_advanced/res/css/fe_formsOnPage.css" />';
+		$GLOBALS['TSFE']->additionalHeaderData['fe_formsOnPage.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/feeditadvanced/res/css/fe_formsOnPage.css" />';
 		$GLOBALS['TSFE']->additionalHeaderData['theme.css'] = '<link type="text/css" rel="stylesheet" href="typo3conf/ext/date2cal/js/jscalendar/skins/t3skin/theme.css" />';
 		$GLOBALS['TSFE']->additionalHeaderData['hash'] = '<link type="text/css" rel="stylesheet" href="typo3temp/rtehtmlarea/defaultPageStyle_99aa95ce2a2efbfbaa69.css" />';
 		$GLOBALS['TSFE']->additionalHeaderData['default.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/rtehtmlarea/res/contentcss/default.css" />';
@@ -628,8 +628,8 @@ class tx_feeditadvanced_editpanel {
 			$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-controllerIncludes'] = $controllerIncludes;
 		}
 			// hook to load in any extra / additional JS includes
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'])) {
-			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'] as $classRef) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'])) {
+			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'] as $classRef) {
 				$hookObj= &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'addIncludes'))
 					$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-hookIncludes'] = $hookObj->addIncludes();
@@ -646,11 +646,11 @@ class tx_feeditadvanced_editpanel {
 	*/
 	protected function addFormIncludes($tceforms=0) {
 			// code for dynamic tabs
-		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/js/getDynTabMenuJScode.js"></script>';
+		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/getDynTabMenuJScode.js"></script>';
 
 			// forms on page CSS
 		$cssfile = $this->modTSconfig['properties']['skin.']['cssFormFile'];
-		$cssFormFile =  $cssfile ? $cssfile : t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/css/fe_formsOnPage.css';
+		$cssFormFile =  $cssfile ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_formsOnPage.css';
 		$incJS .= '<link href="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $cssFormFile . '" rel="stylesheet" type="text/css" />';
 
 			// this allows toggling advanced/simple buttons on form
@@ -683,9 +683,9 @@ class tx_feeditadvanced_editpanel {
 		}
 
 			// @todo: Dave -- this is needed because top.busy is not defined for jsunc.tbe_editor.js -- needs a workaround
-		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('fe_edit_advanced') . 'res/js/fe_logout_timer.js"></script>';
+		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/fe_logout_timer.js"></script>';
 
-		if (t3lib_div::_GP('eID') != 'fe_edit_advanced') {
+		if (t3lib_div::_GP('eID') != 'feeditadvanced') {
 			$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-formIncludes'] = $incJS;
 			$incJS = "";
 		}
@@ -694,8 +694,8 @@ class tx_feeditadvanced_editpanel {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fe_edit_advanced/view/class.tx_feeditadvanced_editpanel.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']);
 }
 
 ?>
