@@ -91,19 +91,17 @@ class tx_feeditadvanced_adminpanel {
 	}
 	
 	/**
-	 * Static method for displaying the top menu bar. Echoes content directly.
+	 * Static method for displaying the top menu bar. 
 	 *
-	 * @note This method is a temporary solution to work around recent changes
-	 * to bring the admin panel back into the core. It works but its just a
-	 * stopgap until a real solution is in place.
+	 * @note edited the method to work with better than temporarily solution.
 	 *
 	 * @return void
 	 */
-	public static function showMenuBar() {
+	public static function showMenuBar($params,&$parent) {
 		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->beUserLogin) {
 				$adminPanel = t3lib_div::makeInstance('tx_feeditadvanced_adminpanel');
 				$adminPanel->init();
-				echo $adminPanel->display();
+				$parent->content  = str_replace('</body>',$adminPanel->display().'</body>',$parent->content);
 		}
 	}
 
