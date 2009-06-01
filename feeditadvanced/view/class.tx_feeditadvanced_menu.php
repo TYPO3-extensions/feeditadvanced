@@ -35,6 +35,18 @@
  * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_menu {
+	/**
+         * local copy of cObject to perform various template operations
+         * @var         array
+         */
+        protected $cObj = 0;
+	
+		/**
+	 * template for edit panel
+	 * @var		string
+	 */
+	protected $templateCode = '';
+
 
 	// @todo	Add docs for the member variables.
 	protected $menuOpen;
@@ -50,6 +62,16 @@ class tx_feeditadvanced_menu {
 		$this->username = $GLOBALS['TSFE']->fe_user->user['username'] ? $GLOBALS['TSFE']->fe_user->user['username'] : $GLOBALS['BE_USER']->user['username'];
 		$imgPath = $this->modTSconfig['properties']['skin.']['imagePath'];
 		$this->imagePath = $imgPath  ? $imgPath : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/';
+		
+		         // load in the template
+                $this->cObj = t3lib_div::makeInstance('tslib_cObj');
+                //$templateFile = ($conf['template']) ? $conf['template'] : $this->modTSconfig['properties']['template'];
+                //if (!$templateFile) {
+                        $templateFile = t3lib_extMgm::siteRelPath('feeditadvanced') . "res/template/feedit_menu.tmpl";
+                //}
+                $this->templateCode = $this->cObj->fileResource($templateFile);
+                $this->templateCode = $this->cObj->getSubPart($this->templateCode , '###MENU_'. ( $this->menuOpen ? 'OPENED' : 'CLOSED' ) .'###' );
+                
 	}
 
 	/**
@@ -62,76 +84,86 @@ class tx_feeditadvanced_menu {
 
 			// if not open, then just show "open edit"  box
 		if (!$this->menuOpen) {
-			$menuOut = '
-				<div id="feEditAdvanced-menuBar" class="closedMenu">
-					<a class="feEditAdvanced-smallButton" href="#" onclick="' .
-					   htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=1; document.TSFE_ADMIN_PANEL_Form.submit(); return false;').
-					'" title="Close FrontEnd Editing">' . $this->extGetLL('openEditMode') . '
-					</a>
-				</div>';
+		        $markerArray['ON_CLICK'] = htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=1; document.TSFE_ADMIN_PANEL_Form.submit(); return false;');
+		        $markerArray['OPEN_EDIT_MODE'] = $this->extGetLL('openEditMode');
+		        $menuOut = $this->cObj->substituteMarkerArray($this->templateCode ,$markerArray,'###|###');
+		        
  		} else {
 				// else if open...
 
-			$menuOut = '<div id="feEditAdvanced-menuBar">';
-
-			$menuOut .= '<div class="feEditAdvanced-firstRow">';
-			
-			
-			$menuOut .= '<div class="feEditAdvanced-menuToolbar">';
-
 				// @todo Temporary code to draw and "Edit Page" button.
 			require_once(PATH_tslib . 'class.tslib_content.php');
-			$cObj = t3lib_div::makeInstance('tslib_cObj');
 			$data = $GLOBALS['TSFE']->page;
-			$cObj->start($data, 'pages');
-			$menuOut .= $cObj->editPanel('', array(
+			$this->cObj->start($data, 'pages');
+			$markerArray['EDIT_PANEL'] .= $this->cObj->editPanel('', array(
 				'allow' => 'edit',
 				'template' => t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit_page.tmpl'
 			));
 
-			$menuOut .= '</div>';
 			
 				// show all sections and accompanying items that are in the first row
+			$sectionParts = $this->cObj->getSubpart($this->templateCode ,'###SECTIONS_FIRST_ROW###');
+			$sectionTemp = $this->cObj->getSubpart($sectionParts,'###SECTION###');
+			$itemTemp = $this->cObj->getSubpart($sectionParts,'###SINGLE_ITEM###');
+			$itemSeparator = $this->cObj->getSubpart($sectionParts,'###SEPARATOR###');
+			
+			$subPartArray['SECTIONS_FIRST_ROW'] = '';
+					
 			for ($i = 0; $i < count($this->sections); $i++) {
 				$sec = $this->sections[$i];
 				if (($total = count($this->itemList[$sec['name']])) && ($sec['firstRow'] == true)) {
-					$menuOut .= '<div id="'.$sec['cssID'] . '" class="feEditAdvanced-menuToolbar" ' . ($sec['extraCSS'] ? $sec['extraCSS'] : '') . '>';
+					$sectionArray['SECTION_CSSID'] = $sec['cssID'];
+					$sectionArray['SECTION_EXTRACSS'] = ($sec['extraCSS'] ? $sec['extraCSS'] : '');
+					$sectionArray['SECTION_ITEMS']='';
 					for ($j = 0; $j < $total; $j++) {
+						$itemArray= array();
 						if ($sec['useSeparator']) {
-					 		$menuOut .= '<span class="separatorBar"> </span>';
+					 		$itemArray['ITEM_SEPARATOR'] .= $itemSeparator;
+						} else {
+							$itemArray['ITEM_SEPARATOR'] = '';
 						}
-						$menuOut .= $this->itemList[$sec['name']][$j];
+						$itemArray['ITEM_NAME'] .= $this->itemList[$sec['name']][$j];
+						$sectionArray['SECTION_ITEMS'] .= $this->cObj->substituteMarkerArray($itemTemp,$itemArray,'###|###');
 					}
-					$menuOut .= '</div>';
+					$subPartArray['SECTIONS_FIRST_ROW'] .= $this->cObj->substituteMarkerArray($sectionTemp,$sectionArray,'###|###');
 				}
 			}
-			$menuOut .= '</div>';
 
-			$menuOut .= '<div class="feEditAdvanced-secondRow">';
 				// show all sections and accompanying items that are in the second row.
+			$subPartArray['SECTIONS_SECOND_ROW'] = '';
 			for ($i = 0; $i < count($this->sections); $i++) {
 				$sec = $this->sections[$i];
 				if (($total = count($this->itemList[$sec['name']])) && ($sec['firstRow'] == false)) {
-					$menuOut .= '<div id="'.$sec['cssID'] . '" class="feEditAdvanced-menuToolbar" ' . ($sec['extraCSS'] ? $sec['extraCSS'] : '') . '>';
+						$sectionArray['SECTION_CSSID'] = $sec['cssID'];
+					$sectionArray['SECTION_EXTRACSS'] = ($sec['extraCSS'] ? $sec['extraCSS'] : '');
+					$sectionArray['SECTION_ITEMS']='';
 					for ($j = 0; $j < $total; $j++) {
+						$itemArray= array();
 						if ($sec['useSeparator']) {
-					 		$menuOut .= '<span class="separatorBar"> </span>';
+					 		$itemArray['ITEM_SEPARATOR'] .= $itemSeparator;
+						} else {
+							$itemArray['ITEM_SEPARATOR'] = '';
 						}
-						$menuOut .= $this->itemList[$sec['name']][$j];
+						$itemArray['ITEM_NAME'] .= $this->itemList[$sec['name']][$j];
+						$sectionArray['SECTION_ITEMS'] .= $this->cObj->substituteMarkerArray($itemTemp,$itemArray,'###|###');
 					}
-					$menuOut .= '</div>';
+					$subPartArray['SECTIONS_SECOND_ROW'] .= $this->cObj->substituteMarkerArray($sectionTemp,$sectionArray,'###|###');
 				}
 			}
 
 				// add section = showing users online
 			if ($this->userList) {
-				$menuOut .= '<span class="feEditAdvanced-menuUserlist">Users on page: <span id="menu_userlisting">' . $this->userList . '</span></span>';
+				$subPartArray['USERLISTING'] = $this->cObj->getSubpart($this->templateCode ,'###USERLISTING###');
+				$subPartArray['USERLISTING'] = $this->cObj->substituteMarkerArray($subPartArray['USERLISTING'], array('USER_LIST' => $this->userList,'USER_LABEL'=> $this->extGetLL('USER_LABEL')),'###|###'); ;
+			} else {
+				$subPartArray['USERLISTING'] = '';
 			}
-
-			$menuOut .= '<span class="feEditAdvanced-logo"><a href="http://www.typo3.com/"><img src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . '/res/icons/typo3logo_mini_transparent.gif" /></a></span>';
-			$menuOut .= '</div>';
-			$menuOut .= '</div>'; // end div menubar
-
+			$markerArray['EXT_PATH'] = t3lib_extMgm::siteRelPath('feeditadvanced');
+			foreach ($subPartArray AS $key => $content) {
+				$this->templateCode = $this->cObj->substituteSubpart($this->templateCode ,'###' . $key . '###',$content);
+			}
+			$menuOut = $this->cObj->substituteMarkerArray($this->templateCode ,$markerArray,'###|###');
+		
 				// hook to add additional menu features, including a sidebar
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
 				$_params = array('menuOut' => &$menuOut, 'pObj' => &$this);
