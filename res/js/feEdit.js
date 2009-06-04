@@ -1344,6 +1344,7 @@ var EditWindow = Class.create({
 	},
 	
 	displayEditingForm: function(headerText, content) {
+console.debug(content);
 		this._reset();
 
 		headerElement  = new Element('div', {'id': 'feEditAdvanced-editWindowHeader'}).update(headerText).hide();
@@ -1357,7 +1358,9 @@ var EditWindow = Class.create({
 
 		$('feEditAdvanced-editWindowContent').update(content.stripScripts());
 
-		this.windowElement.insert({'bottom': $('feEditAdvanced-editControls').hide()});
+		if ($('feEditAdvanced-editControls')) {
+			this.windowElement.insert({'bottom': $('feEditAdvanced-editControls').hide()});
+		}
 
 		this.setMaxContentSize();
 		this._sizeAndPosition('feEditAdvanced-editWindowContent');
@@ -1373,7 +1376,7 @@ var EditWindow = Class.create({
 			}
 		);
 
-		this.editPanel.createFormObservers();
+		//this.editPanel.createFormObservers();
 	},
 	
 	_reset: function() {
