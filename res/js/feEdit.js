@@ -1519,7 +1519,7 @@ var EditWindow = Class.create({
 		FrontendEditing.editPanelsEnabled = true;
 
 			// Reset elements to be validated by TBE_EDITOR.
-		if (TBE_EDITOR != undefined) {
+		if (typeof(TBE_EDITOR) != "undefined") {
 			TBE_EDITOR.elements = {};
 			TBE_EDITOR.nested = {'field':{}, 'level':{}};
 		}
