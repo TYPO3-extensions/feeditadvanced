@@ -767,6 +767,8 @@ var EditPanelAction = Class.create({
 					FrontendEditing.JSHandler.evaluate(newContent);
 				}
 			}
+		} else {
+			FrontendEditing.editWindow.displayStaticMessage('It looks like we encountered some problems. Please reload the page and try again or contact your administrator.');
 		}
 		
 	},
@@ -1338,9 +1340,14 @@ var EditWindow = Class.create({
 		this._reset();
 
 		this.windowElement.insert(new Element('div', {'id': 'feEditAdvanced-loading'}).hide());
+		closeElement   = new Element('button', {'id': 'feEditAdvanced-closeButton', 'value':' ', 'type':'submit'}).addClassName('closeAction');
+		this.windowElement.insert({'top': closeElement});
+		
 		$('feEditAdvanced-loading').insert(new Element('h3').update(message));
 		this._sizeAndPosition('feEditAdvanced-loading');
 		$('feEditAdvanced-loading').appear();
+		
+		closeElement.observe('click', this.close.bindAsEventListener(this));
 	},
 	
 	displayEditingForm: function(headerText, content) {
