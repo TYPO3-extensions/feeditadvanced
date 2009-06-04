@@ -80,11 +80,11 @@ class tx_feeditadvanced_adminpanel {
 		}
 
 			// initialize / force vars for FE Editing
-		//$GLOBALS['BE_USER']->adminPanel->forcePreview();
-		//$GLOBALS['TSFE']->displayEditIcons = true;
-		//$GLOBALS['TSFE']->showHiddenPage = 1;
-		//$GLOBALS['TSFE']->showHiddenRecords = 1;
-		//$GLOBALS['TSFE']->fePreview = 1;
+		$GLOBALS['BE_USER']->adminPanel->forcePreview();
+		$GLOBALS['TSFE']->displayEditIcons = true;
+		$GLOBALS['TSFE']->showHiddenPage = 1;
+		$GLOBALS['TSFE']->showHiddenRecords = 1;
+		$GLOBALS['TSFE']->fePreview = 1;
 
 		$this->menuOpen = (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] !== '0')) ? true : false;
 		$this->actionHandler();
