@@ -284,7 +284,7 @@ var AJAXJavascriptHandler = Class.create({
 			}
 		} else {
 				// If we're done loading JS, add some custom TBE_EDITOR code.
-			if (TBE_EDITOR != undefined) {
+			if (typeof(TBE_EDITOR) != "undefined") {
 				var ajaxSubmitForm = function() {
 					if (TBE_EDITOR.doSaveFieldName) {
 						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value=1;
