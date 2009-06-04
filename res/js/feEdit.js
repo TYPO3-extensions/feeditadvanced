@@ -708,8 +708,10 @@ var EditPanelAction = Class.create({
 		if (!FrontendEditing.editWindow) {
 			FrontendEditing.editWindow = new EditWindow(this.parent);
 		}
-		FrontendEditing.editWindow.displayLoadingMessage(this._getNotificationMessage());
-		FrontendEditing.editWindow.show();
+			
+		if (this._isModalAction) {
+			FrontendEditing.editWindow.displayLoadingMessage(this._getNotificationMessage());
+		}
 		
 		paramRequest = 'eID=feeditadvanced' + '&TSFE_EDIT[cmd]=' + this.cmd + '&TSFE_EDIT[record]=' + this.parent.record + '&pid=' + this.parent.pid;
 		if (this.parent.params != undefined && this.parent.params != 0) {
@@ -833,7 +835,9 @@ var EditPanelAction = Class.create({
 	},
 	showFailureMessage: function() {
 		alert('Network problems -- please try again shortly.');
-	}
+	},
+	
+	_isModalAction: true
 });
 var NewRecordAction = Class.create(EditPanelAction, {
 	_process: function (json) {
@@ -880,7 +884,9 @@ var DeleteAction = Class.create(EditPanelAction, {
 
 	_getNotificationMessage: function() {
 		return "Deleting content.";
-	}
+	},
+	
+	_isModalAction: false
 });
 var HideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
@@ -897,7 +903,9 @@ var HideAction = Class.create(EditPanelAction, {
 	_getNotificationMessage: function() {
 		return "Hiding content.";
 
-	}
+	},
+	
+	_isModalAction: false
 });
 var UnhideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
@@ -913,7 +921,9 @@ var UnhideAction = Class.create(EditPanelAction, {
 
 	_getNotificationMessage: function() {
 		return "Unhiding content.";
-	}
+	},
+
+	_isModalAction: false
 });
 
 var UpAction = Class.create(EditPanelAction, {
@@ -935,7 +945,9 @@ var UpAction = Class.create(EditPanelAction, {
 
 	_getCmd: function() {
 		return 'up';
-	}
+	},
+
+	_isModalAction: false
 });
 
 var DownAction = Class.create(EditPanelAction, {
@@ -957,7 +969,9 @@ var DownAction = Class.create(EditPanelAction, {
 
 	_getCmd: function() {
 		return 'down';
-	}
+	},
+
+	_isModalAction: false
 });
 
 var MoveAfterAction = Class.create(EditPanelAction, {
@@ -972,7 +986,9 @@ var MoveAfterAction = Class.create(EditPanelAction, {
 
 	_getCmd: function() {
 		return 'moveAfter';
-	}
+	},
+
+	_isModalAction: false
 });
 var SaveAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
@@ -1334,6 +1350,10 @@ var EditWindow = Class.create({
 		$('feEditAdvanced-loading').insert(new Element('div').insert(new Element('img', {'src': 'typo3/sysext/feeditadvanced/res/icons/spinner.gif'})));
 		this._sizeAndPosition('feEditAdvanced-loading');
 		$('feEditAdvanced-loading').appear();
+		
+		if (!this.windowElement.visible()) {
+			this.show();
+		}
 	},
 	
 	displayStaticMessage: function(message) {
@@ -1348,6 +1368,10 @@ var EditWindow = Class.create({
 		$('feEditAdvanced-loading').appear();
 		
 		closeElement.observe('click', this.close.bindAsEventListener(this));
+		
+		if (!this.windowElement.visible()) {
+			this.show();
+		}
 	},
 	
 	displayEditingForm: function(headerText, content) {
@@ -1381,6 +1405,10 @@ var EditWindow = Class.create({
 		);
 
 		this.editPanel.createFormObservers();
+		
+		if (!this.windowElement.visible()) {
+			this.show();
+		}
 	},
 	
 	_reset: function() {
