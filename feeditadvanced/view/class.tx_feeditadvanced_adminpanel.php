@@ -27,6 +27,7 @@
 ***************************************************************/
 
 require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_menu.php');
+require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_newcontentelements.php');
 
 /**
  * Top menu bar for advanced frontend editing.
@@ -231,13 +232,10 @@ class tx_feeditadvanced_adminpanel {
 				if (in_array('addplugin', $tsActions)) $this->menuBar->addItem('Actions','Add Plugin','feAddPlugin', '', 'Add Plugin', '');
 				if (count($tsActions)) $this->menuBar->addItem('Actions', '', '', '', '', '', 'spacer');
 			}
-			if (in_array('type', $menuConfig)) {
-				$tsType = t3lib_div::trimExplode(',', $tsMenuBar['typeMenu']);
-				if (in_array('text', $tsType)) $this->menuBar->addItem('ContentType', 'Text', '', 'menubar/text.png', 'Drag widgets onto the page', '','feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=text');
-				if (in_array('header', $tsType)) $this->menuBar->addItem('ContentType', 'Header', '', 'menubar/header.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=header');
-				if (in_array('image', $tsType)) $this->menuBar->addItem('ContentType', 'Image', '', 'menubar/picture.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=image');
-				if (in_array('html', $tsType)) $this->menuBar->addItem('ContentType', 'HTML', '', 'menubar/html.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=html');
-			}
+			
+			// render new content element icons
+			$this->renderNewContentElementIcons($menuConfig, $tsMenuBar);
+			
 			if (in_array('context', $menuConfig)) {
 				$tsContext = t3lib_div::trimExplode(',', $tsMenuBar['contextMenu']);
 				if (in_array('preview', $tsContext)) $this->menuBar->addItem('ContextActions', 'Preview', '', '', 'Preview this page', '', 'button disabled');
@@ -253,6 +251,40 @@ class tx_feeditadvanced_adminpanel {
 		$out .= $menuOut;
 
 		return $out;
+	}
+	
+	protected function renderNewContentElementIcons($menuConfig, $tsMenuBar) {
+		// get new content elements from cms wizard
+		$newCE = t3lib_div::makeInstance('tx_feeditadvanced_newcontentelements');
+		$newCE->main();
+		#debug($newCE->menuItems);
+		debug($GLOBALS['TBE_STYLES']);
+		foreach ($newCE->menuItems as $group => $items) {
+			foreach ($items['ce'] as $ce) {
+ 				#debug(t3lib_iconWorks::skinImg('', $ce['icon'], ''));
+ 				$this->menuBar->addItem(
+ 					'ContentType', 
+ 					$ce['tt_content_defValues']['CType'],
+ 					'', 
+ 					'../../../../../typo3/' . $ce['icon'], 
+ 					'Drag widgets onto the page', 
+ 					'',
+ 					'feEditAdvanced-contentTypeItem draggable', 
+ 					'feEditAdvanced-buttonLabel', 
+ 					substr($ce['params'], 1)
+ 					);			
+			}
+		}
+		
+		/*
+		if (in_array('type', $menuConfig)) {
+				$tsType = t3lib_div::trimExplode(',', $tsMenuBar['typeMenu']);
+				if (in_array('text', $tsType)) $this->menuBar->addItem('ContentType', 'Text', '', 'menubar/text.png', 'Drag widgets onto the page', '','feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=text');
+				if (in_array('header', $tsType)) $this->menuBar->addItem('ContentType', 'Header', '', 'menubar/header.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=header');
+				if (in_array('image', $tsType)) $this->menuBar->addItem('ContentType', 'Image', '', 'menubar/picture.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=image');
+				if (in_array('html', $tsType)) $this->menuBar->addItem('ContentType', 'HTML', '', 'menubar/html.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=html');
+		}
+		*/
 	}
 
 }
