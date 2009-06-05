@@ -257,15 +257,14 @@ class tx_feeditadvanced_adminpanel {
 		// get new content elements from cms wizard
 		$newCE = t3lib_div::makeInstance('tx_feeditadvanced_newcontentelements');
 		$newCE->main();
-		
+
 		foreach ($newCE->menuItems as $group => $items) {
 			foreach ($items['ce'] as $ce) {
- 				#debug(t3lib_iconWorks::skinImg('', $ce['icon'], ''));
  				$this->menuBar->addItem(
  					'ContentType', 
- 					$ce['tt_content_defValues']['CType'],
+ 					$ce['title'],
  					'', 
- 					'../../../../../typo3/' . $ce['icon'], 
+ 					t3lib_div::resolveBackPath('../../../../../typo3/' . $ce['icon']), 
  					'Drag widgets onto the page', 
  					'',
  					'feEditAdvanced-contentTypeItem draggable', 
@@ -275,15 +274,7 @@ class tx_feeditadvanced_adminpanel {
 			}
 		}
 		
-		/*
-		if (in_array('type', $menuConfig)) {
-				$tsType = t3lib_div::trimExplode(',', $tsMenuBar['typeMenu']);
-				if (in_array('text', $tsType)) $this->menuBar->addItem('ContentType', 'Text', '', 'menubar/text.png', 'Drag widgets onto the page', '','feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=text');
-				if (in_array('header', $tsType)) $this->menuBar->addItem('ContentType', 'Header', '', 'menubar/header.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=header');
-				if (in_array('image', $tsType)) $this->menuBar->addItem('ContentType', 'Image', '', 'menubar/picture.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=image');
-				if (in_array('html', $tsType)) $this->menuBar->addItem('ContentType', 'HTML', '', 'menubar/html.png', 'Drag widgets onto the page', '', 'feEditAdvanced-contentTypeItem draggable', 'feEditAdvanced-buttonLabel', 'defVals[tt_content][CType]=html');
-		}
-		*/
+		
 	}
 
 }
