@@ -71,7 +71,8 @@ class tx_feeditadvanced_menu {
                 //}
                 $this->templateCode = $this->cObj->fileResource($templateFile);
                 $this->templateCode = $this->cObj->getSubPart($this->templateCode , '###MENU_'. ( $this->menuOpen ? 'OPENED' : 'CLOSED' ) .'###' );
-                
+      $this->pid = $GLOBALS['TSFE']->id;
+		$this->getUserListing();       
 	}
 
 	/**
@@ -154,7 +155,7 @@ class tx_feeditadvanced_menu {
 				// add section = showing users online
 			if ($this->userList) {
 				$subPartArray['USERLISTING'] = $this->cObj->getSubpart($this->templateCode ,'###USERLISTING###');
-				$subPartArray['USERLISTING'] = $this->cObj->substituteMarkerArray($subPartArray['USERLISTING'], array('USER_LIST' => $this->userList,'USER_LABEL'=> $this->extGetLL('USER_LABEL')),'###|###'); ;
+				$subPartArray['USERLISTING'] = $this->cObj->substituteMarkerArray($subPartArray['USERLISTING'], array('USER_LIST' => $this->userList,'USER_LABEL'=> $this->extGetLL('usersOnPage')),'###|###'); ;
 			} else {
 				$subPartArray['USERLISTING'] = '';
 			}
@@ -233,7 +234,81 @@ class tx_feeditadvanced_menu {
 			// Return the result
 		return $labelStr;
 	}
-
+	
+	protected function getUserListing() {
+		$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'locks.*, user.realName',
+			'sys_lockedrecords AS locks LEFT JOIN be_users AS user ON locks.userid=user.uid',
+			'locks.userid!='.intval($GLOBALS['BE_USER']->user['uid']).'
+			AND locks.tstamp > '.($GLOBALS['EXEC_TIME']-2*3600) .' 
+			AND ( (locks.record_pid='.intval($this->pid) .' AND  locks.record_table!=\'pages\') OR
+			(locks.record_uid='.intval($this->pid) .' AND  locks.record_table=\'pages\') )'
+			);
+		$oldUser = 0;
+		$user = 0;
+		$userList = array();
+		$openedRecords = array();
+		foreach($records AS $lockedRecord) {
+			$user = $lockedRecord['userid'];
+			
+			if($user != $oldUser) {
+				$userList[$user] = ($lockedRecord['realName'] != '' ? $lockedRecord['realName'] : $lockedRecord['username']);
+				$openedRecords[$user] = array('page' => 99999999999, 'content' => 99999999999, 'data' =>99999999999);		
+			}
+			switch ($lockedRecord['record_table']) {
+				case 'pages':
+					if( $lockedRecord['tstamp'] < $openedRecords[$user]['page'] ) {
+						$openedRecords[$user]['page'] = $lockedRecord['tstamp'];
+					}
+					break;
+				case 'tt_content':
+					if( $lockedRecord['tstamp'] < $openedRecords[$user]['content'] ) {
+						$openedRecords[$user]['content'] = $lockedRecord['tstamp'];
+					}
+				default:
+					if( $lockedRecord['tstamp'] < $openedRecords[$user]['data'] ) {
+						$openedRecords[$user]['data'] = $lockedRecord['tstamp'];
+					}
+					break;
+			}
+			$oldUser = $user;	
+		}
+		$renderedListing = array();
+		foreach($userList AS $userID => $userName) {
+			if ($openedRecords[$userID]['page'] < 99999999999) {
+				$time = $openedRecords[$userID]['page'];
+				$openedRecords[$userID]['page'] = 'Page-Information (since ';
+				$openedRecords[$userID]['page'] .= t3lib_BEfunc::calcAge($GLOBALS['EXEC_TIME']-$time, $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.minutesHoursDaysYears'));
+				$openedRecords[$userID]['page'] .= ')';
+			} else {
+				unset($openedRecords[$userID]['page']);
+			}
+			if ($openedRecords[$userID]['content'] < 99999999999) {
+				$time = $openedRecords[$userID]['content'];
+				$openedRecords[$userID]['content'] = 'Contents (since ';
+				$openedRecords[$userID]['content'] .= t3lib_BEfunc::calcAge($GLOBALS['EXEC_TIME']-$time, $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.minutesHoursDaysYears'));
+				$openedRecords[$userID]['content'] .= ')';
+			} else {
+				unset($openedRecords[$userID]['content']);
+			}
+			if ($openedRecords[$userID]['data'] < 99999999999) {
+				$time = $openedRecords[$userID]['data'];
+				$openedRecords[$userID]['data'] = 'Data (since ';
+				$openedRecords[$userID]['data'] .= t3lib_BEfunc::calcAge($GLOBALS['EXEC_TIME']-$time, $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.minutesHoursDaysYears'));
+				$openedRecords[$userID]['data'] .= ')';
+			} else {
+				unset($openedRecords[$userID]['data']);
+			}
+			$message = $userName. ' currently editing: '. implode(', ',$openedRecords[$userID]);
+		
+			$renderedListing[$userID] = '<span title="'. $message . '">';
+			$renderedListing[$userID] .= $userName;
+			$renderedListing[$userID] .= '</span>';
+		}
+		
+		$this->userList = implode(', ',$renderedListing);
+	}
+			
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']) {
