@@ -250,7 +250,7 @@ class tx_feeditadvanced_editpanel {
 
 			// load in template for edit panel
 			// if special template for table is present, use it, else use default
-		$templateEditPanel = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_'.strtoupper($table).'###') ? $code :$this->cObj->getSubpart($this->template, '###EDITPANEL###') );
+		$templateEditPanel = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_'.strtoupper($table).'###')) ? $code : $this->cObj->getSubpart($this->template, '###EDITPANEL###');
 
 			// then substitute all the markers in the template into appropriate places
 		$output = $this->cObj->substituteMarkerArrayCached($templateEditPanel, $markerArray, $subpartMarker, array());
