@@ -8,7 +8,7 @@
 			<label index="toggle_simple">Simple</label>			
 			<label index="alertChange">This change will affect which fields are available in the form. Please save this record in order to get a new field set.</label>
 			<label index="fe_users.tx_wecfeedit_beuser">Backend User To Link To</label>
-
+			<label index="usersOnPage">WARNING: Following users are editing this page:</label>
 			<label index="copyIcon">Copy</label>
 			<label index="copyTitle">Copy element</label>
 			<label index="cutIcon">Cut</label>
