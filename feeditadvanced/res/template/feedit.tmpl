@@ -1,0 +1,114 @@
+<h1>Main Template</h1>
+
+<!-- ###MAIN_TEMPLATE### begin -->
+###INCLUDES###
+<!-- this allows csshover.htc to be put at top of page -->
+<div id="bodyattach"></div>
+<div id="typo3-feEditAdvanced">
+###MENU_BAR###
+###HIDDEN_FORM###
+</div>
+<!-- ###MAIN_TEMPLATE### end -->
+
+<h1>Template, to show the button "open editing" when editing is enabled but
+not activce</h1>
+<!-- ###MENU_CLOSED### begin -->
+<div id="feEditAdvanced-menuBar" class="closedMenu">
+	<a class="feEditAdvanced-smallButton" href="#" onclick="###ON_CLICK###" title="###OPEN_EDIT_MODE###">###OPEN_EDIT_MODE###</a>
+</div>
+<!-- ###MENU_CLOSED### end -->
+
+<h1>Template, holding the menubar</h1>
+<!-- ###MENU_OPENED### begin -->
+<div id="feEditAdvanced-menuBar">
+	<div class="feEditAdvanced-firstRow">
+		<div class="feEditAdvanced-menuToolbar">###PAGE_EDIT_PANEL###</div>
+		
+		<!-- ###SECTIONS_FIRST_ROW### begin -->
+			<!-- ###SECTION### begin -->
+				<div id="###SECTION_CSSID###" class="feEditAdvanced-menuToolbar" ###SECTION_EXTRACSS###>###SECTION_ITEMS###</div>
+			<!-- ###SECTION### end -->
+			<!-- ###SINGLE_ITEM### begin -->###ITEM_SEPARATOR######ITEM_NAME###<!-- ###SINGLE_ITEM### end -->
+			<!-- ###SEPARATOR### begin --><span class="separatorBar"> </span><!-- ###SEPARATOR### end -->
+				
+		<!-- ###SECTIONS_FIRST_ROW### end -->
+		
+		<!-- ###USERLISTING### begin -->
+				<dl class="feEditAdvanced-menuUserlist"><dt>###USER_LABEL###</dt><dd>###USER_LIST###</dd></dl>
+			<!-- ###USERLISTING### end -->
+	</div>
+	<div class="feEditAdvanced-secondRow">
+	<!-- ###SECTIONS_SECOND_ROW### begin -->
+		Templates from first Row are used!
+	<!-- ###SECTIONS_SECOND_ROW### end-->
+		<span class="feEditAdvanced-logo"><a href="http://www.typo3.com/"><img src="###EXT_PATH###/res/icons/typo3logo_mini_transparent.gif" /></a></span>
+	</div>
+	
+</div>
+<!-- ###MENU_OPENED### end -->
+
+<h1>Default edit-panel</h1>
+<!-- ###EDITPANEL### begin -->
+<div class="feEditAdvanced-allWrapper###ALLWRAPPER_CLASS###" id="###EDITPANEL_ID###">
+	<!-- ###HOVERFORM### start -->
+	<form name="###FORM_NAME###" id="###FORM_NAME###" action="###FORM_URL###" method="post" enctype="###FORM_ENCTYPE###" onsubmit="###FORM_ONSUBMIT###">
+		###FORM_HIDDENFIELDS###
+		###FORM_CONTENT###	
+		<div class="feEditAdvanced-editPanelDiv" style="display: none;">
+			###EDITPANEL_ACTIONS###
+		</div>
+	</form>	
+	<!-- ###HOVERFORM### end -->
+	<div class="feEditAdvanced-contentWrapper###CWRAPPER_CLASS###" ###CWRAPPER_EXTRA###>
+				
+		<!-- ###EDITFORM### start -->
+		<form name="###EDITFORM_NAME###" id="###EDITFORM_NAME###" action="###EDITFORM_URL###" method="post" enctype="###FORM_ENCTYPE###">
+			###EDITFORM_HIDDENFIELDS###
+			###EDITFORM_CONTENT###
+		</form>
+		<!-- ###EDITFORM### end -->		
+		###CONTENT_ELEMENT###
+	</div>
+</div>
+<!-- ###EDITPANEL### end-->
+
+<h1>Default editpanel Action</h1>
+<!-- ###EDITPANEL_ACTION### start -->
+<input type="button" class="feEditAdvanced-editButton ###ACTION_CLASS###" value="###ACTION_VALUE###" title="###ACTION_LABEL###" ###ACTION_PARAMS###/>
+<!-- ###EDITPANEL_ACTION### end -->
+
+
+<h1>Overwriting Editpanel Action for table pages</h1>
+<h2>works with any other db table: just put EDITPANEL_tablenameInUppercase or EDITPANEL_ACTION_tablenameInUppercase subparts to the templatefile</h2
+<!-- ###EDITPANEL_PAGES### begin -->
+<div class="feEditAdvanced-allWrapper###ALLWRAPPER_CLASS###" id="###EDITPANEL_ID###">
+	<!-- ###HOVERFORM### start -->
+	<form name="###FORM_NAME###" id="###FORM_NAME###" action="###FORM_URL###" method="post" enctype="###FORM_ENCTYPE###" onsubmit="###FORM_ONSUBMIT###">
+		###FORM_HIDDENFIELDS###
+		###FORM_CONTENT###	
+		<div class="feEditAdvanced-editPanelDiv" style="display: none;">
+		<a class="feEditAdvanced-button feEditAdvanced-editButton editAction">
+		<span class="feEditAdvanced-buttonText">edit Page</span>
+	</a>
+		</div>
+	</form>	
+	<!-- ###HOVERFORM### end -->
+	<div class="feEditAdvanced-contentWrapper###CWRAPPER_CLASS###" ###CWRAPPER_EXTRA###>
+				
+		<!-- ###EDITFORM### start -->
+		<form name="###EDITFORM_NAME###" id="###EDITFORM_NAME###" action="###EDITFORM_URL###" method="post" enctype="###FORM_ENCTYPE###">
+			###EDITFORM_HIDDENFIELDS###
+			###EDITFORM_CONTENT###
+		</form>
+		<!-- ###EDITFORM### end -->		
+	</div>
+</div>
+<!-- ###EDITPANEL_PAGES### end-->
+
+<h1>Overwriting Editpanel Action for table pages</h1>
+<h2>works with any other db table: just put EDITPANEL_tablenameInUppercase or EDITPANEL_ACTION_tablenameInUppercase subparts to the templatefile</h2
+<!-- ###EDITPANEL_ACTION_PAGES### start -->
+	<a class="feEditAdvanced-button feEditAdvanced-editButton editAction">
+		<span class="feEditAdvanced-buttonText">edit Page</span>
+	</a>
+<!-- ###EDITPANEL_ACTION_PAGES### end -->

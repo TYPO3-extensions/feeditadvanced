@@ -80,7 +80,7 @@ class tx_feeditadvanced_editpanel {
 			return;
 		}
 
-		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'tx_feeditadvanced');
+		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'FeEdit');
 
 			// set defaults for showIcons otherwise is set by $conf['allow']
 		if (!$this->modTSconfig['properties']['showIcons']) {
@@ -93,12 +93,13 @@ class tx_feeditadvanced_editpanel {
 
 			// load in the template
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$templateFile = ($conf['template']) ? $conf['template'] : $this->modTSconfig['properties']['template'];
+		$templateFile = ($conf['template']) ? $conf['template'] : $this->modTSconfig['properties']['skin.']['templateFile'];
 		if (!$templateFile) {
-			$templateFile = t3lib_extMgm::siteRelPath('feeditadvanced') . "res/template/feedit_advanced.tmpl";
+			$templateFile = t3lib_extMgm::siteRelPath('feeditadvanced') . "res/template/feedit.tmpl";
 		}
+		
 		$this->template = $this->cObj->fileResource($templateFile);
-		$this->templateAction = $this->cObj->getSubpart($this->template, '###TEMPLATE_EDITPANEL_ACTION###');
+		$this->templateAction = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_ACTION_'.strtoupper($this->table). '###') != '' ? $code : $this->cObj->getSubpart($this->template, '###EDITPANEL_ACTION###') );
 
 			// need to set this, otherwise do not see edit icons or process them right
 		$GLOBALS['TSFE']->displayEditIcons = true;
@@ -127,7 +128,13 @@ class tx_feeditadvanced_editpanel {
 		if (isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) && ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] == 0))  {
 			return $content;
 		}
-
+		// extract $table and $uid from current record
+		if (!$currentRecord) {
+			$currentRecord=$this->currentRecord;
+		}
+		list($table,$uid) = explode(':', $currentRecord);
+		$this->table = $table;
+		
 		$this->init($conf);
 
 			// Special content is about to be shown, so the cache must be disabled.
@@ -157,12 +164,7 @@ class tx_feeditadvanced_editpanel {
 			$theCmd = '';
 		}
 
-			// extract $table and $uid from current record
-		if (!$currentRecord) {
-			$currentRecord=$this->currentRecord;
-		}
-		list($table,$uid) = explode(':', $currentRecord);
-
+		
 			// @todo button order? $allowOrder?
 		$btnOrder = $this->modTSconfig['properties']['showIcons'] ? $this->modTSconfig['properties']['showIcons'] : $conf['allow'];
 		$allowOrder = t3lib_div::trimExplode(',', $btnOrder, 1);
@@ -247,7 +249,8 @@ class tx_feeditadvanced_editpanel {
 		}
 
 			// load in template for edit panel
-		$templateEditPanel = $this->cObj->getSubpart($this->template, '###TEMPLATE_EDITPANEL###');
+			// if special template for table is present, use it, else use default
+		$templateEditPanel = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_'.strtoupper($table).'###') ? $code :$this->cObj->getSubpart($this->template, '###EDITPANEL###') );
 
 			// then substitute all the markers in the template into appropriate places
 		$output = $this->cObj->substituteMarkerArrayCached($templateEditPanel, $markerArray, $subpartMarker, array());
@@ -419,7 +422,7 @@ class tx_feeditadvanced_editpanel {
 					$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-additionalHeaderDataForFormsOnPage'] = $hookObj->addAdditionalHeaderDataForFormsOnPage();
 			}
 		}
-
+		$this->table=$table;
 		$this->init($conf);
 		$tceforms = t3lib_div::makeInstance('tx_feeditadvanced_tceforms');
 		$tceforms->prependFormFieldNames = 'TSFE_EDIT[data]';

@@ -30,6 +30,26 @@ img {
 	font-size: 90%;
 }
 
+
+
+#feEditAdvanced-menuBar .feEditAdvanced-smallButton {
+	display: inline-block;
+	text-decoration: none;
+	cursor: pointer;
+	text-align: center;
+	color: #eee;
+	background: url(../icons/menubar/button_small.png) no-repeat 0 0;
+	padding: 3px 0 0 0;
+	margin: 4px 8px 0 0;
+	height: 20px;
+	width: 70px;
+	font-size: 10px;
+	float: right;
+}
+
+#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover {
+	color: white;
+}
 #feEditAdvanced-menuBar .feEditAdvanced-firstRow,
 #feEditAdvanced-menuBar .feEditAdvanced-secondRow {
 	height: 34px;

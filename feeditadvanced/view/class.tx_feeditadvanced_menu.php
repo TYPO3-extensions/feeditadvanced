@@ -36,12 +36,12 @@
  */
 class tx_feeditadvanced_menu {
 	/**
-         * local copy of cObject to perform various template operations
-         * @var         array
-         */
-        protected $cObj = 0;
+    * local copy of cObject to perform various template operations
+    * @var         array
+    */
+	protected $cObj = 0;
 	
-		/**
+	/**
 	 * template for edit panel
 	 * @var		string
 	 */
@@ -58,21 +58,23 @@ class tx_feeditadvanced_menu {
 	 * @todo	Any reason this isn't a constructor?
 	 */
 	public function init() {
+		$this->pid = $GLOBALS['TSFE']->id;
+		$this->getUserListing();
+		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'FeEdit');
+		
 		$this->menuOpen = (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] !== '0')) ? true : false;
 		$this->username = $GLOBALS['TSFE']->fe_user->user['username'] ? $GLOBALS['TSFE']->fe_user->user['username'] : $GLOBALS['BE_USER']->user['username'];
+		
 		$imgPath = $this->modTSconfig['properties']['skin.']['imagePath'];
 		$this->imagePath = $imgPath  ? $imgPath : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/';
 		
-		         // load in the template
-                $this->cObj = t3lib_div::makeInstance('tslib_cObj');
-                //$templateFile = ($conf['template']) ? $conf['template'] : $this->modTSconfig['properties']['template'];
-                //if (!$templateFile) {
-                        $templateFile = t3lib_extMgm::siteRelPath('feeditadvanced') . "res/template/feedit_menu.tmpl";
-                //}
-                $this->templateCode = $this->cObj->fileResource($templateFile);
-                $this->templateCode = $this->cObj->getSubPart($this->templateCode , '###MENU_'. ( $this->menuOpen ? 'OPENED' : 'CLOSED' ) .'###' );
-      $this->pid = $GLOBALS['TSFE']->id;
-		$this->getUserListing();       
+		  	// loading template
+		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->template = ($templateFile = $this->modTSconfig['properties']['skin.']['templateFile']) ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl';
+		$this->template = $this->cObj->fileResource($this->template);
+		
+      $this->templateCode = $this->cObj->getSubPart($this->template , '###MENU_'. ( $this->menuOpen ? 'OPENED' : 'CLOSED' ) .'###' );
+            
 	}
 
 	/**
@@ -88,20 +90,15 @@ class tx_feeditadvanced_menu {
 		        $markerArray['ON_CLICK'] = htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=1; document.TSFE_ADMIN_PANEL_Form.submit(); return false;');
 		        $markerArray['OPEN_EDIT_MODE'] = $this->extGetLL('openEditMode');
 		        $menuOut = $this->cObj->substituteMarkerArray($this->templateCode ,$markerArray,'###|###');
-		        
  		} else {
 				// else if open...
 
 				// @todo Temporary code to draw and "Edit Page" button.
-			require_once(PATH_tslib . 'class.tslib_content.php');
+				// @todo does not work by now
 			$data = $GLOBALS['TSFE']->page;
 			$this->cObj->start($data, 'pages');
-			$markerArray['EDIT_PANEL'] .= $this->cObj->editPanel('', array(
-				'allow' => 'edit',
-				'template' => t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit_page.tmpl'
-			));
-
-			
+			$markerArray['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('',array('allow'=>'edit'));
+				
 				// show all sections and accompanying items that are in the first row
 			$sectionParts = $this->cObj->getSubpart($this->templateCode ,'###SECTIONS_FIRST_ROW###');
 			$sectionTemp = $this->cObj->getSubpart($sectionParts,'###SECTION###');
