@@ -257,8 +257,7 @@ class tx_feeditadvanced_adminpanel {
 		// get new content elements from cms wizard
 		$newCE = t3lib_div::makeInstance('tx_feeditadvanced_newcontentelements');
 		$newCE->main();
-		#debug($newCE->menuItems);
-		debug($GLOBALS['TBE_STYLES']);
+		
 		foreach ($newCE->menuItems as $group => $items) {
 			foreach ($items['ce'] as $ce) {
  				#debug(t3lib_iconWorks::skinImg('', $ce['icon'], ''));
