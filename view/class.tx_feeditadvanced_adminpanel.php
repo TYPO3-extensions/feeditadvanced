@@ -38,6 +38,7 @@ require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadva
  * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_adminpanel {
+	// @todo	Add docs for the member variables.
 
 	/**
 	 * Admin panel related configuration.
@@ -76,17 +77,22 @@ class tx_feeditadvanced_adminpanel {
 			// general configuration
 		if (empty($this->admPanelTSconfig)) {
 			$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
-			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'tx_feeditadvanced');
+			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
 			$GLOBALS['TSFE']->determineId();
 		}
 
-			// initialize / force vars for FE Editing
+		// initialize / force vars for FE Editing
 		$GLOBALS['BE_USER']->adminPanel->forcePreview();
 		$GLOBALS['TSFE']->displayEditIcons = true;
 		$GLOBALS['TSFE']->showHiddenPage = 1;
 		$GLOBALS['TSFE']->showHiddenRecords = 1;
 		$GLOBALS['TSFE']->fePreview = 1;
 
+			// loading template
+		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->template = ($templateFile = $this->modTSconfig['properties']['skin.']['templateFile']) ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl';
+		$this->template = $this->cObj->fileResource($this->template);
+		
 		$this->menuOpen = (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] !== '0')) ? true : false;
 		$this->actionHandler();
 	}
@@ -136,23 +142,18 @@ class tx_feeditadvanced_adminpanel {
 	public function display() {
 		$this->init();
 
-			// this allows csshover.htc to be put at top of page
-		$out = '<div id="bodyattach"></div>';
+		
+		$cssFileName = ($cssfile = $this->modTSconfig['properties']['skin.']['cssFile']) ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css';
+		$markerArray['###INCLUDES###'] = '<link href="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $cssFileName . '" rel="stylesheet" type="text/css" />';
 
 			// have a form for adminPanel processing and saving of vars
-		$out .= '<form id="TSFE_ADMIN_PANEL_Form" name="TSFE_ADMIN_PANEL_Form" action="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '" method="post" style="margin: 0 0 0 0;">';
-			// add any hidden form fields to save values
-		$out .= $this->getAdmPanelFields();
-		$out .= '</form>';
+		$markerArray['###HIDDEN_FORM###'] = '<form id="TSFE_ADMIN_PANEL_Form" name="TSFE_ADMIN_PANEL_Form" action="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '" method="post">';
+		$markerArray['###HIDDEN_FORM###'] .= $this->getAdmPanelFields();
+		$markerArray['###HIDDEN_FORM###'] .= '</form>';
 
-		$out .= '<div class="typo3-adminPanel">';
+		$markerArray['###MENU_BAR###'] = $this->buildMenu();
 
-			// build the menu code here
-		$out .= $this->buildMenu();
-		
-		$out .= '</div>';
-
-		return $out;
+		return $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template,'###MAIN_TEMPLATE###'),$markerArray);
 	}
 
 	/**
@@ -191,16 +192,6 @@ class tx_feeditadvanced_adminpanel {
 	 * @return	string		HTML to display the menu
 	 */
 	function buildMenu() {
-		$out = '';
-
-			// Add default CSS
-		if ($this->menuOpen) {
-			$cssFileName = ($cssfile = $this->modTSconfig['properties']['skin.']['cssFile']) ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css';
-		}
-		else {
-			$cssFileName = ($cssFile = $this->modTSconfig['properties']['skin.']['cssClosedFile']) ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_closed.css';
-		}
-		$out .= '<link href="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $cssFileName . '" rel="stylesheet" type="text/css" />';
 
 			// Allow to hook in new menu here...will overwrite existing
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'])) {

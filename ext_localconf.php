@@ -20,10 +20,13 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsC
 
 	// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
 t3lib_extMgm::addPageTSConfig('
-	tx_feeditadvanced {
+	FeEdit {
 		useAjax = 1
 		showIcons = edit, new, copy, cut, hide, delete, draggable
 		skin {
+			#cssFile = typo3/sysext/feeditadvanced/res/feedit.css
+			#templateFile = EXT:feeditadvanced/res/template/feedit.tmpl
+			
 			imageType = GIF
 		}
 		menuBar {
