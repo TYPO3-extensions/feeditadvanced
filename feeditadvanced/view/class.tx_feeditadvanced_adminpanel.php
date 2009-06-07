@@ -81,12 +81,6 @@ class tx_feeditadvanced_adminpanel {
 			$GLOBALS['TSFE']->determineId();
 		}
 
-		// initialize / force vars for FE Editing
-		$GLOBALS['BE_USER']->adminPanel->forcePreview();
-		$GLOBALS['TSFE']->displayEditIcons = true;
-		$GLOBALS['TSFE']->showHiddenPage = 1;
-		$GLOBALS['TSFE']->showHiddenRecords = 1;
-		$GLOBALS['TSFE']->fePreview = 1;
 
 			// loading template
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
