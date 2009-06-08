@@ -48,4 +48,19 @@ t3lib_extMgm::addUserTSConfig('
 	}
 ');
 
+	// Temporary home for TemplaVoila changes to make testing easier. Should eventually be rolled into TemplaVoila itself.
+if (t3lib_extMgm::isLoaded('templavoila')) {
+		// XCLASS for necessary code changes in tx_templavoila_pi1->renderElement.
+	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/templavoila/pi1/class.tx_templavoila_pi1.php'] = t3lib_extMgm::extPath('feeditadvanced').'templavoila/class.ux_tx_templavoila_pi1.php';
+
+		// TemplaVoila frontend editing controller is the default when TemplaVoila is installed.
+	t3lib_extMgm::addPageTSConfig('TSFE.frontendEditingController = templavoila');
+
+		// Register the TemplaVoila frontend editing controller.
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tsfebeuserauth.php']['frontendEditingController']['templavoila'] = 'EXT:feeditadvanced/templavoila/class.tx_templavoila_frontendedit.php:tx_templavoila_frontendedit';
+
+		// Needs to be included to avoid errors when editing page properties.
+	include_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_handlestaticdatastructures.php');
+}
+
 ?>
