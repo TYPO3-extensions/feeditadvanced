@@ -67,6 +67,15 @@ class tx_feeditadvanced_adminpanel {
 	 * @var		object
 	 */
 	protected $menuBar = 0;
+	
+	/**
+	 * Indicates if mod was disabled
+	 *
+	 * @var		boolean
+	 */
+	protected $disabled = false;
+	
+	
 
 	/**
 	 * Initialize the adminPanel. Handle actions here.
@@ -81,6 +90,10 @@ class tx_feeditadvanced_adminpanel {
 			$GLOBALS['TSFE']->determineId();
 		}
 
+		if ($this->modTSconfig['properties']['disable']) {
+			$this->disabled = true;
+			return;
+		}
 
 			// loading template
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
@@ -135,7 +148,9 @@ class tx_feeditadvanced_adminpanel {
 	 */
 	public function display() {
 		$this->init();
-
+		if ($this->disabled) {
+			return;
+		}
 		
 		$cssFileName = ($cssfile = $this->modTSconfig['properties']['skin.']['cssFile']) ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css';
 		$markerArray['###INCLUDES###'] = '<link href="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $cssFileName . '" rel="stylesheet" type="text/css" />';
