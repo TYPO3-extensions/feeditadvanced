@@ -21,6 +21,9 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsC
 	// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
 t3lib_extMgm::addPageTSConfig('
 	FeEdit {
+		#possible disable complete with set FeEdit.disable=1
+		disable = 0
+		
 		useAjax = 1
 		showIcons = edit, new, copy, cut, hide, delete, draggable
 		skin {
@@ -42,7 +45,7 @@ t3lib_extMgm::addUserTSConfig('
 	admPanel {
 			display_preview = 0
 			override.preview = 0
-			override.edit.displayIcons = 1
+			override.edit.displayIcons = 0
 			override.preview.showHiddenRecords = 1
 			override.preview.showHiddenPages = 1
 	}

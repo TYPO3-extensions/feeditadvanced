@@ -69,6 +69,13 @@ class tx_feeditadvanced_editpanel {
 	protected $templateCode = '';
 
 	/**
+	 * Indicates if mod was disabled
+	 *
+	 * @var		boolean
+	 */
+	protected $disabled = false;
+	
+	/**
 	 * Initializes the edit panel.
 	 *
 	 * @param		array 	configuration array
@@ -81,7 +88,10 @@ class tx_feeditadvanced_editpanel {
 		}
 
 		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'FeEdit');
-
+		if ($this->modTSconfig['properties']['disable']) {
+			$this->disabled = true;
+			return;
+		}
 			// set defaults for showIcons otherwise is set by $conf['allow']
 		if (!$this->modTSconfig['properties']['showIcons']) {
 			$this->modTSconfig['properties']['showIcons'] = 'edit,move,new,copy,cut,hide,delete,drag,draggable';
@@ -136,6 +146,9 @@ class tx_feeditadvanced_editpanel {
 		$this->table = $table;
 		
 		$this->init($conf);
+		if ($this->disabled) {
+			return;
+		}
 
 			// Special content is about to be shown, so the cache must be disabled.
 		$GLOBALS['TSFE']->set_no_cache();
