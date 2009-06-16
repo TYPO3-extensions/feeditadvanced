@@ -616,6 +616,18 @@ class tx_feeditadvanced_editpanel {
 		$GLOBALS['TSFE']->additionalHeaderData['scriptaculous.js'] = '<script type="text/javascript" src="typo3/contrib/scriptaculous/scriptaculous.js"></script>';
 		$GLOBALS['TSFE']->additionalHeaderData['common.js'] = '<script type="text/javascript" src="typo3/js/common.js"></script>';
 
+			// loading ext JS, rudimentary for now (should be skinnable etc and only include the JS that is needed)
+		$GLOBALS['TSFE']->additionalHeaderData['ext-base.js'] = '<script type="text/javascript" src="typo3/contrib/extjs/adapter/ext/ext-base.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['ext-all.js'] = '<script type="text/javascript" src="typo3/contrib/extjs/ext-all-debug.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['extjs.css'] = '<script type="text/javascript">
+			/*<![CDATA[*/
+				Ext.BLANK_IMAGE_URL = "typo3/gfx/clear.gif";
+			/*]]>*/
+			</script>
+			<link rel="stylesheet" type="text/css" href="typo3/contrib/extjs/resources/css/ext-all.css" />
+			<link rel="stylesheet" type="text/css" href="typo3/contrib/extjs/resources/css/xtheme-gray.css" />
+';
+
 			// load AJAX handling functions
 		$GLOBALS['TSFE']->additionalHeaderData['feEdit.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js"></script>';
 		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_advanced.css'] = '<link href="' .  t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css" rel="stylesheet" type="text/css" />';
