@@ -11,35 +11,70 @@
 		- Lightbox
  */
 
-	// Class for Toolbars and Draggable Widgets within the toolbars.
-var Toolbar = Class.create({
-	initialize: function(toolbarElement) {
-		toolbarElement = $(toolbarElement);
-		if ($(toolbarElement)) {
-			this.widgets = new Array();
+// TODO: make all classes created via Ext JS (not a Class.create)
+// TODO: make all classes namespaced
+Ext.namespace('TYPO3.FeEdit');
 
-				// Create all the draggable buttons in the toolbar
-			toolbarElement.select('.draggable').each((function(draggableElement) {
+// TODO: go through every part (also CSS and PHP) and use this base class for every class and ID
+TYPO3.FeEdit.baseCls = 'feeditadvanced';
+
+/*
+ * Class for Toolbars and Draggable Widgets within the toolbars.
+ */
+var Toolbar = Class.create({
+	el: false,
+	widgets: [],
+
+	/*
+	 * initializes the toolbar element and finds all dragable buttons
+	 **/
+	initialize: function(toolbarElementId) {
+		this.el = Ext.get(toolbarElementId);
+		console.debug(this.el);
+		if (this.el) {
+			// This does not work in Ext JS, thus it's a bug in the contrib library
+			// @todo: send this issue to Ext JS
+			// Problem: selecting items with multiple classes while having a different root node
+			// than the original document results in nothing
+			// var allWidgets = Ext.DomQuery.select('.draggable', this.el);
+			var allWidgets = Ext.DomQuery.select('#' + this.el.id + ' .draggable');
+			// Create all the draggable buttons in the toolbar
+			allWidgets.each(function(draggableElement) {
 				this.widgets.push(new ToolbarWidget(draggableElement));
-			}).bind(this));
+			}, this);
 		}
 	},
 
+	/**
+	 * adds a draggable object and registers the toolbar widget
+	 **/
 	addDraggable: function(toolbarElement) {
-		toolbarElement.select('.draggable').each((function(draggableElement) {
+		// get draggable item
+		// var draggableElements = Ext.DomQuery.select('.draggable', toolbarElement);
+		var draggableElements = Ext.DomQuery.select('#' + toolbarElement.id + ' .draggable');
+		draggableElements.each(function(draggableElement) {
 			this.widgets.push(new ToolbarWidget(draggableElement));
-		}).bind(this));
+		}, this);
 	}
-
 });
+
+
+
+/** 
+ * Class for the toolbar item that is on top of the page
+ * needs 
+ */
 var ToolbarWidget = Class.create({
 	initialize: function(draggableElement) {
+		draggableElement = Ext.get(draggableElement);
 
-			// Override clicks on any elements that are also draggable. This may eventually trigger an add in the main content area instead.
-		draggableElement.observe('click', function(event) { Event.stop(event);});
+			// Override clicks on any elements that are also draggable. 
+			// This may eventually trigger an add in the main content area instead.
+		draggableElement.addListener('click', function(evt) { evt.stopEvent(); });
 
+			// TODO: use Ext D&D
 			// Create a Draggable for the toolbar widget.
-		new Draggable(draggableElement, {
+		new Draggable(draggableElement.id, {
 			ghosting: true,
 			revert: true,
 			scroll: window,
@@ -73,22 +108,29 @@ var ToolbarWidget = Class.create({
 	}
 });
 
-	// Object for notification popups. Creating a new instances triggers the popup.
+/*
+ * Object for notification popups. Creating a new instances triggers the popup.
+ */
 var FrontendEditNotification = Class.create({
-	initialize: function(content) {
-			// Changing addClassName call to work around IE8 problems.
-		this.notificationElement = new Element(
-			'div',
-			{'style': 'display: none;'}
-		).addClassName('feEditAdvanced-notificationMsg').update(content);
+	el: false,
 
-		body = $(document.getElementsByTagName('body')[0]);
-		body.insert(this.notificationElement);
-		this.notificationElement.appear({ duration: 0.75 });
+	initialize: function(content) {
+		var o = {
+			'tag': 'div',
+			'style': 'display: none',
+			'html': content,
+			'cls': 'feEditAdvanced-notificationMsg'
+		};
+		this.el = Ext.getBody().append(o);
+		this.show();
+	},
+
+	show: function() {
+		this.el.fadeIn({ duration: 0.75 });
 	},
 
 	hide: function() {
-		this.notificationElement.fade({ duration: 0.35});
+		this.el.fadeOut({ duration: 0.35 });
 	}
 });
 
@@ -300,19 +342,21 @@ var AJAXJavascriptHandler = Class.create({
 
 	// Object for an entire content element and its EditPanel.
 var EditPanel = Class.create({
+	el: null,
 
 	initialize: function(wrapperElement) {
 		this.content = $(wrapperElement);
+		this.el = Ext.get(wrapperElement);
 		this.hoverMenuEnabled = true;
 		this.getFormParameters();
 		this.setupEventListeners();
 		
-		if (this.content.hasClassName('draggable')) {
+		if (this.el.hasClass('draggable')) {
 			this.sortable = true;
 			this._makeDraggable();
 		}
 		
-		if (this.content.hasClassName('alwaysVisible')) {
+		if (this.el.hasClass('alwaysVisible')) {
 			this.alwaysVisible = true;
 		}
 		
@@ -691,7 +735,12 @@ var DropZone = Class.create({
 	}
 });
 
-	// Define classes for each edit action
+
+// ==== Define classes for each edit action ====
+
+/**
+ * default action that every action inherits from
+ */
 var EditPanelAction = Class.create({
 	initialize: function(parent) {
 		this.parent = parent;
@@ -839,6 +888,9 @@ var EditPanelAction = Class.create({
 	
 	_isModalAction: true
 });
+
+
+
 var NewRecordAction = Class.create(EditPanelAction, {
 	_process: function (json) {
 		FrontendEditing.editWindow.displayEditingForm('New Content Block', json.content);
@@ -1341,7 +1393,7 @@ var EditWindow = Class.create({
 		this.windowElement  = new Element('div', {'id': 'feEditAdvanced-editWindow', 'style': 'display: none'});
 		$(document.body).insert({'bottom': this.windowElement});
 	},
-	
+
 	displayLoadingMessage: function(message) {
 		this._reset();
 
@@ -1568,14 +1620,10 @@ var EditWindow = Class.create({
 	}
 });
 
-	// Set the edit panels and menu bar on window load
-	//	Note: dom:loaded was not used because did not work for IE6/IE7 as of Prototype v1.6.0.2
-Event.observe(window, 'load', function() {
-	$(document.body).addClassName('feEditAdvanced');
-	FrontendEditing.scanForEditPanels();
-	FrontendEditing.initializeMenuBar();
-});
-
+/*
+ * Main class for storing all current values
+ * relevant for frontend editing
+ */
 var FrontendEditing = {
 	clipboard: new ClipboardObj(),
 	editPanels: new Hash(),
@@ -1585,20 +1633,29 @@ var FrontendEditing = {
 	editWindow: null,
 	actionRunning: false,
 	editWindow: null,
+	
+	init: function() {
+		Ext.getBody().addClass('feEditAdvanced');
+		this.scanForEditPanels();
+		this.initializeMenuBar();
+	},
 
 		// @todo	We eventually want to encapsulate this in a class or something, but it
-		//			gives us a quick way to re-register all EditPanels when new content is added.
+		//		gives us a quick way to re-register all EditPanels when new content is added.
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
-		$$('div.feEditAdvanced-allWrapper').each(function (element) {
+		Ext.DomQuery.select('div.feEditAdvanced-allWrapper').each(function (element) {
 			FrontendEditing.editPanels.set(element.identify(), new EditPanel(element));
 		});
 	},
 
 	initializeMenuBar: function() {
-		FrontendEditing.toolbar = new Toolbar('feEditAdvanced-menuBar');
+		this.toolbar = new Toolbar('feEditAdvanced-menuBar');
 	}
 };
+
+// Set the edit panels and menu bar on window load
+Ext.onReady(FrontendEditing.init, FrontendEditing);
 
 
 /*
