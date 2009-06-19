@@ -30,7 +30,6 @@ var Toolbar = Class.create({
 	 **/
 	initialize: function(toolbarElementId) {
 		this.el = Ext.get(toolbarElementId);
-		console.debug(this.el);
 		if (this.el) {
 			// This does not work in Ext JS, thus it's a bug in the contrib library
 			// @todo: send this issue to Ext JS
@@ -342,11 +341,24 @@ var AJAXJavascriptHandler = Class.create({
 
 	// Object for an entire content element and its EditPanel.
 var EditPanel = Class.create({
+		// the DOM element (actually it's a Ext.get) of the wrapper Element of the content element
 	el: null,
+		// the DOM element of the editPanel or the hover menu of this content element
+	menuEl: null,
+		// the DOM element of the form object of the editPanel of this content element
+	formEl: null,
+	_extraElements: [],
+	
+	sortable: false,
+	hoverMenuEnabled: false,
+	alwaysVisible: false,
 
 	initialize: function(wrapperElement) {
 		this.content = $(wrapperElement);
 		this.el = Ext.get(wrapperElement);
+		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv:first').item(0));
+		this.formEl = Ext.get(this.el.select('form:first').item(0));	// todo: we should use a class here
+
 		this.hoverMenuEnabled = true;
 		this.getFormParameters();
 		this.setupEventListeners();
@@ -369,23 +381,30 @@ var EditPanel = Class.create({
 		}
 	},
 	
+	// TODO: use Ext D&D
 	addDropZone: function() {
-		if(this.sortable) {
+		if (this.sortable) {
 			this.dropZone = new DropZone(this);
 		}
 	},
 
+	// TODO: use Ext D&D
 	removeDropZone: function() {
-		if(this.sortable && this.dropZone) {
+		if (this.sortable && this.dropZone) {
 			this.dropZone.remove();
 		}
 	},
 
+	/*
+	 * writes all form parameters needed to identify the element to a
+	 * a parameter string
+	 */
 	getFormParameters: function() {
 			// Extract values from hidden form fields
-		this._extraElements = new Array();
-		this.content.select('form')[0].select('input').each(( function(formElement) {
-			switch(formElement.readAttribute('name')) {
+		this.formEl.select('input').each(function(formElement) {
+			formElement = Ext.get(formElement);
+			// @todo getAttribute call is not working properly in IE.
+			switch(formElement.getAttribute('name')) {
 				case 'TSFE_EDIT[cmd]':
 					// do nothing
 					break;
@@ -399,10 +418,12 @@ var EditPanel = Class.create({
 					this._extraElements.push(formElement);
 					break;
 			}
-		}).bind(this));
+		}, this);
+		// TODO: find the corresponding Ext method here
 		this.params = Form.serializeElements(this._extraElements);
 	},
-	
+
+	// TODO: use Ext DD
 	_makeDraggable: function() {
 			// Make the edit panel draggable
 		new Draggable(this.content, {
@@ -460,83 +481,81 @@ var EditPanel = Class.create({
 		});
 	},
 
-	_handleButtonClick: function(event) {
-		eventElement = $(Event.element(event));
-		if (eventElement.hasClassName('feEditAdvanced-editButton') ||
-		    eventElement.hasClassName('feEditAdvanced-actionButton') ||
-			(eventElement.identify() == 'feEditAdvanced-closeButton')) {
-			element = eventElement;
-		} else {
-			element = eventElement.up('.feEditAdvanced-actionButton, .feEditAdvanced-editButton');
+	_handleButtonClick: function(evt) {
+		var targetEl = evt.getTarget();
+		targetEl = Ext.get(targetEl);
+		if (!targetEl.hasClass('feEditAdvanced-editButton') &&
+		    !targetEl.hasClass('feEditAdvanced-actionButton') &&
+			targetEl.id != 'feEditAdvanced-closeButton') {
+			targetEl = Ext.get(targetEl).up('.feEditAdvanced-actionButton, .feEditAdvanced-editButton');
+			targetEl = Ext.get(targetEl);
 		}
 
-		if(element) {
-			if (element.hasClassName('editAction')) {
+		if (targetEl) {
+			if (targetEl.hasClass('editAction')) {
 				this.edit();
-			} else if (element.hasClassName('upAction')) {
+			} else if (targetEl.hasClass('upAction')) {
 				this.up();
-			} else if (element.hasClassName('downAction')) {
+			} else if (targetEl.hasClass('downAction')) {
 				this.down();
-			} else if (element.hasClassName('newRecordAction')) {
+			} else if (targetEl.hasClass('newRecordAction')) {
 				this.create();
-			} else if (element.hasClassName('hideAction')) {
+			} else if (targetEl.hasClass('hideAction')) {
 				this.hide();
-			} else if (element.hasClassName('unhideAction')) {
+			} else if (targetEl.hasClass('unhideAction')) {
 				this.unhide();
-			} else if (element.hasClassName('deleteAction')) {
+			} else if (targetEl.hasClass('deleteAction')) {
 				this.remove();
-			} else if (element.hasClassName('saveAction')) {
+			} else if (targetEl.hasClass('saveAction')) {
 				this.save();
-			} else if (element.hasClassName('saveCloseAction')) {
+			} else if (targetEl.hasClass('saveCloseAction')) {
 				this.saveAndClose();
-			} else if (element.hasClassName('closeAction')) {
+			} else if (targetEl.hasClass('closeAction')) {
 				this.close();
-			} else if (element.hasClassName('cutAction')) {
+			} else if (targetEl.hasClass('cutAction')) {
 				this.cut();
-			} else if (element.hasClassName('copyAction')) {
+			} else if (targetEl.hasClass('copyAction')) {
 				this.copy();
 			}
 		}
 		
-		Event.stop(event);
+		evt.stopEvent();
 		return false;
 	},
 
-	showMenu: function(event) {
+	showMenu: function(evt) {
 		if (!this.hoverMenuAlwaysVisible && FrontendEditing.editPanelsEnabled && this.hoverMenuEnabled) {
-			this.content.select('div.feEditAdvanced-editPanelDiv')[0].show();
-			this.content.addClassName('feEditAdvanced-allWrapperHover');
+			this.menuEl.show();
+			this.el.addClass('feEditAdvanced-allWrapperHover');
 		}
-
-		if (event != undefined) {
-			Event.stop(event);
+		if (evt != undefined) {
+			evt.stopEvent();
 		}
 	},
 
-	hideMenu: function(event) {
+	hideMenu: function(evt) {
 		if (!this.hoverMenuAlwaysVisible) {
-			this.content.select('div.feEditAdvanced-editPanelDiv')[0].hide();
-			this.content.removeClassName('feEditAdvanced-allWrapperHover');
+			this.menuEl.hide();
+			this.el.removeClass('feEditAdvanced-allWrapperHover');
 		}
-		
-		if (event != undefined) {
-			Event.stop(event);
+		if (evt != undefined) {
+			evt.stopEvent();
 		}
 	},
 
-	editClick: function(event) {
+	editClick: function(evt) {
 			// if in middle of dragging, exit
 		if (!FrontendEditing.editPanelsEnabled || !this.hoverMenuEnabled) {
 			return;
 		}
 			// make sure on valid element
-		element = Event.element(event);
-		if (element.hasClassName('editableOnClick') || element.up('div.editableOnClick')) {
+		var targetEl = evt.getTarget();
+		if (targetEl.hasClassName('editableOnClick') || targetEl.up('div.editableOnClick')) {
 			this.edit();
 		}
 
-		if (event != undefined) {
-			Event.stop(event);
+		if (evt != undefined) {
+			evt.stopEvent();
 		}
 	},
 
@@ -552,70 +571,74 @@ var EditPanel = Class.create({
 	},
 
 	isHoverMenuVisible: function() {
-		return this.content.select('div.feEditAdvanced-editPanelDiv')[0].visible();
+		return this.menuEl.isVisible();
 	},
 
 	createFormObservers: function() {
-		this.content.select('form').each((function(element) {
-			element.removeAttribute('onsubmit');
-			element.observe('submit', function(event) { Event.stop(event); });
-		}).bind(this));
+		this.el.select('form').each(function(formEl) {
+			formEl = Ext.get(formEl);
+			// @todo Find a better way to remove the attribute completely.
+			formEl.set({'onsubmit':''});
+			formEl.addListener('submit', function(evt) { evt.stopEvent(); });
+		}, this);
 
 			// Buttons at the bottom of the edit window
-		$('feEditAdvanced-editControls').select('button').each((function(button) {
-			button.observe('click', this._handleButtonClick.bindAsEventListener(this));
-		}).bind(this));
+		Ext.DomQuery.select('#feEditAdvanced-editControls button').each(function(button) {
+			Ext.get(button).addListener('click', this._handleButtonClick, this);
+		}, this);
 
 			// Close button in the top right corner of the edit window
-		$('feEditAdvanced-closeButton').observe('click', this._handleButtonClick.bindAsEventListener(this));
+		Ext.get('feEditAdvanced-closeButton').addListener('click', this._handleButtonClick, this);
 	},
 
 	setupEventListeners: function() {
 			// Show and hide the menu based on mouseovers
-		this.content.observe('mouseover', this.showMenu.bindAsEventListener(this));
-		this.content.observe('mouseout', this.hideMenu.bindAsEventListener(this));
+		this.el.addListener('mouseover', this.showMenu, this);
+		this.el.addListener('mouseout',  this.hideMenu, this);
 		
-		editPanelToolbar = this.content.firstDescendant();
+		var editPanelToolbar = this.el.first();
 
 			// Set up event handlers for the hover menu buttons
-		editPanelToolbar.select('.feEditAdvanced-editButton').each((function(button) {
-			button.observe('click', this._handleButtonClick.bindAsEventListener(this));
-		}).bind(this));
+		editPanelToolbar.query('.feEditAdvanced-editButton').each(function(button) {
+			Ext.get(button).addListener('click', this._handleButtonClick, this);
+		}, this);
 
 			// Setup event handler for edit on click
 		if (editPanelToolbar.next('.editableOnClick')) {
-			editPanelToolbar.next('.editableOnClick').observe('click', this.editClick.bindAsEventListener(this));
+			var editableOnClick = editPanelToolbar.next('.editableOnClick');
+			Ext.get(editableOnClick).addListener('click', this.editClick, this);
 		} else {
-				// Not editable on click means there's no visible content and so the hover menu should always be visible.
+				// Not editable on click means there's no visible content
+				// and so the hover menu should always be visible.
 			this.hoverMenuAlwaysVisible = true;
 		}
 	},
-	
+
 	replaceContent: function(newContent) {
-		id = this.content.identify();
-		this.content.replace(newContent);
-		this.content = $(id);
+		var elId = this.el.id;
+		this.el = this.el.replaceWith(newContent);
+		this.el.id = elId;
 	},
 	
 	removeContent: function() {
-		this.content.remove();
-		this.content = null;
+		this.el.remove();
+		this.el = null;
 	},
 	
 	previous: function() {
-		return this.content.previous();
+		return this.el.prev();
 	},
 	
 	next: function() {
-		return this.content.next();
+		return this.el.next();
 	},
 	
 	hideUpButton: function() {
-		this.content.select('input.upAction').invoke('hide');
+		Ext.get(this.el.query('input.upAction')).hide();
 	},
-	
+
 	hideDownButton: function() {
-		this.content.select('input.downAction').invoke('hide');
+		Ext.get(this.el.query('input.downAction')).hide();
 	}
 
 });
@@ -800,16 +823,16 @@ var EditPanelAction = Class.create({
 					content = json.content;
 					json.content = content.stripScripts();
 				}
-				
+
 				if (json.newContent) {
 					newContent = json.newContent;
 					json.newContent = newContent.stripScripts();
 				}
 				
-				id = this.parent.content.identify();
+				id = this.parent.el.id;
 				this._process(json);
-				this.parent.content = $(id);
-				
+				this.parent.el = Ext.get(id);
+
 				if (json.content) {
 					FrontendEditing.JSHandler.evaluate(content);
 				}
@@ -901,7 +924,7 @@ var NewRecordAction = Class.create(EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
-		return "Loading editing form.";
+		return 'Loading editing form.';
 	}
 });
 
@@ -943,9 +966,9 @@ var DeleteAction = Class.create(EditPanelAction, {
 var HideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		this.parent.content.addClassName('feEditAdvanced-hiddenElement');
-		this.parent.content.select('input.hideAction')[0].hide();
-		this.parent.content.select('input.unhideAction')[0].show();
+		this.parent.el.addClass('feEditAdvanced-hiddenElement');
+		this.parent.el.select('input.hideAction').hide();
+		this.parent.el.select('input.unhideAction').show();
 	},
 
 	_getCmd: function() {
