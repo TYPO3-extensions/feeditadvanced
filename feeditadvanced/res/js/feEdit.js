@@ -64,46 +64,50 @@ var Toolbar = Class.create({
  * needs 
  */
 var ToolbarWidget = Class.create({
-	initialize: function(draggableElement) {
-		draggableElement = Ext.get(draggableElement);
+	el: null,
+	dd: null,
+
+	initialize: function(draggableEl) {
+		this.el = Ext.get(draggableEl);
 
 			// Override clicks on any elements that are also draggable. 
 			// This may eventually trigger an add in the main content area instead.
-		draggableElement.addListener('click', function(evt) { evt.stopEvent(); });
+		this.el.addListener('click', function(evt) { evt.stopEvent(); });
 
-			// TODO: use Ext D&D
-			// Create a Draggable for the toolbar widget.
-		new Draggable(draggableElement.id, {
-			ghosting: true,
-			revert: true,
-			scroll: window,
-				// @todo	The z-index is set to 0 so that an inline style isn't added when an invalid drop occurs.
-			zindex: 0,	
+		this.dd = new Ext.dd.DragSource(this.el.id, {
+			ddGroup: 'feeditadvanced-toolbar',
+//			dropAllowed: 'feEditAdvanced-dropzone'
+		});
 
-			reverteffect: function (element, top_offset, left_offset) {
-				new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0,
-					queue: {scope:'_draggable', position:'end'}
-				});
-			},
+		this.dd.startDrag = function(x, y) {
+			var dragEl = Ext.get(this.getDragEl());
+			var el = Ext.get(this.getEl());
+
+			dragEl.applyStyles({'opacity':'0.6','z-index':2000});
+			dragEl.update(el.dom.innerHTML);
+			dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
 
 				// Enable drop indicators when a drag is started.
-			onStart: function(element, event) {
-				FrontendEditing.editPanelsEnabled = false;
-				FrontendEditing.editPanels.each(function(hashItem) {
-					(hashItem.value).addDropZone();
-				});
-			},
+			FrontendEditing.editPanelsEnabled = false;
+			FrontendEditing.editPanels.each(function(hashItem) {
+				(hashItem.value).addDropZone();
+			});
+		};
 
+		this.dd.onDragOver = function(evt, id) {
+			// id is the ID of the drop zone
+		};
+
+		this.dd.afterDragDrop = function(evt, id) {
 				// Disable drop indicators when a drag is done
-			onEnd: function(element, event) {
-				FrontendEditing.editPanelsEnabled = true;
-				FrontendEditing.editPanels.each(function(hashItem) {
-					panel = hashItem.value;
-					panel.enableHoverMenu();
-					panel.removeDropZone();
-				});
-			}
-		});
+			FrontendEditing.editPanelsEnabled = true;
+			FrontendEditing.editPanels.each(function(hashItem) {
+				panel = hashItem.value;
+				panel.enableHoverMenu();
+				panel.removeDropZone();
+			});
+		};
+		Ext.dd.Registry.register(this.dd);
 	}
 });
 
@@ -114,13 +118,12 @@ var FrontendEditNotification = Class.create({
 	el: false,
 
 	initialize: function(content) {
-		var o = {
+		this.el = Ext.getBody().append({
 			'tag': 'div',
 			'style': 'display: none',
 			'html': content,
 			'cls': 'feEditAdvanced-notificationMsg'
-		};
-		this.el = Ext.getBody().append(o);
+		});
 		this.show();
 	},
 
@@ -328,9 +331,9 @@ var AJAXJavascriptHandler = Class.create({
 			if (typeof(TBE_EDITOR) != "undefined") {
 				var ajaxSubmitForm = function() {
 					if (TBE_EDITOR.doSaveFieldName) {
-						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value=1;
+						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value = 1;
 					}
-					FrontendEditing.editPanels.get($(TBE_EDITOR.formname).up().up().identify()).save();
+					FrontendEditing.editPanels.get(Ext.get(TBE_EDITOR.formname).parent().parent().id).save();
 				};
 				TBE_EDITOR.submitForm = ajaxSubmitForm;
 			}
@@ -354,7 +357,6 @@ var EditPanel = Class.create({
 	alwaysVisible: false,
 
 	initialize: function(wrapperElement) {
-		this.content = $(wrapperElement);
 		this.el = Ext.get(wrapperElement);
 		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv:first').item(0));
 		this.formEl = Ext.get(this.el.select('form:first').item(0));	// todo: we should use a class here
@@ -381,14 +383,12 @@ var EditPanel = Class.create({
 		}
 	},
 	
-	// TODO: use Ext D&D
 	addDropZone: function() {
 		if (this.sortable) {
-			this.dropZone = new DropZone(this);
+			this.dropZone = new TYPO3.FeEdit.DropZone(this);
 		}
 	},
 
-	// TODO: use Ext D&D
 	removeDropZone: function() {
 		if (this.sortable && this.dropZone) {
 			this.dropZone.remove();
@@ -404,7 +404,7 @@ var EditPanel = Class.create({
 		this.formEl.select('input').each(function(formElement) {
 			formElement = Ext.get(formElement);
 			// @todo getAttribute call is not working properly in IE.
-			switch(formElement.getAttribute('name')) {
+			switch (formElement.getAttribute('name')) {
 				case 'TSFE_EDIT[cmd]':
 					// do nothing
 					break;
@@ -423,62 +423,61 @@ var EditPanel = Class.create({
 		this.params = Form.serializeElements(this._extraElements);
 	},
 
-	// TODO: use Ext DD
 	_makeDraggable: function() {
-			// Make the edit panel draggable
-		new Draggable(this.content, {
-			revert: 'failure',
-			scroll: window,
-				// @todo	The z-index is set to 0 so that an inline style isn't added when an invalid drop occurs.
-			zindex: 0,
-			delay: 100,
 
-			reverteffect: function (element, top_offset, left_offset) {
-				new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0,
-					queue: {scope:'_draggable', position:'end' },
-					afterFinish: function() {
-						FrontendEditing.editPanelsEnabled = true;
-					}
-				});
-			},
-				// Hide hover menus on drag.
-			onStart: function(draggableElement, event) {
-				FrontendEditing.editPanelsEnabled = false;
-				FrontendEditing.editPanels.each(function(hashItem) {
-					panel = hashItem.value;
-					panel.hideMenu();
-					panel.disableHoverMenu();
-
-						// Don't add a drop zone under the element being dragged.
-					if (draggableElement.element.identify() != panel.content.identify()) {
-						panel.addDropZone();
-					}
-				});
-			},
-
-				// Disable drop indicators when a drag is done
-			onEnd: function(draggableElement, event) {
-				//editPanelsEnabled = true;
-				FrontendEditing.editPanels.each(function(hashItem) {
-					panel = hashItem.value;
-					panel.enableHoverMenu();
-					panel.removeDropZone();
-				});
-			},
-
-			onDrag: function(draggableElement, event) {
-				if(event) {
-					Position.prepare();
-					var point = [Event.pointerX(event), Event.pointerY(event)];
-				
-					Droppables.drops.each( function(drop) {
-						if(!Droppables.isAffected(point, draggableElement, drop)) {
-							drop.element.setStyle({height: 'auto'});
-						}
-					});
-				}
-			}
+		this.dd = new Ext.dd.DragSource(this.el.parent(), {
+			// TODO: different group please
+			ddGroup: 'feeditadvanced-toolbar',
+//			dropAllowed: 'feEditAdvanced-dropzone'
 		});
+		
+		// find the handle and give the handle an ID
+		var dragHandle = Ext.get(this.el.select('.feEditAdvanced-dragHandle').item(0));
+		var dragHandleId = Ext.id(dragHandle, 'feEditAdvanced-dragHandle-');
+		dragHandle.set({'id': dragHandleId});
+		this.dd.setHandleElId(dragHandleId);
+
+		this.dd.startDrag = function(x, y) {
+			var dragEl = Ext.get(this.getDragEl());
+			var el = Ext.get(this.getEl());
+
+			FrontendEditing.editPanelsEnabled = false;
+			FrontendEditing.editPanels.each(function(hashItem) {
+				panel = hashItem.value;
+				panel.hideMenu();
+				panel.disableHoverMenu();
+
+					// Don't add a drop zone under the element being dragged.
+				if (el.id != panel.el.id) {
+					panel.addDropZone();
+				}
+			});
+		};
+
+		this.dd.onDragOver = function(evt, id) {
+			// id is the ID of the drop zone
+			/*
+							Position.prepare();
+				var point = [Event.pointerX(event), Event.pointerY(event)];
+			
+				Droppables.drops.each( function(drop) {
+					if(!Droppables.isAffected(point, draggableElement, drop)) {
+						drop.element.setStyle({height: 'auto'});
+					}
+				});
+			*/
+		};
+
+		this.dd.afterDragDrop = function(evt, id) {
+				// Disable drop indicators when a drag is done
+			FrontendEditing.editPanelsEnabled = true;
+			FrontendEditing.editPanels.each(function(hashItem) {
+				panel = hashItem.value;
+				panel.enableHoverMenu();
+				panel.removeDropZone();
+			});
+		};
+		Ext.dd.Registry.register(this.dd);
 	},
 
 	_handleButtonClick: function(evt) {
@@ -643,87 +642,84 @@ var EditPanel = Class.create({
 
 });
 
-var DropZone = Class.create({
+
+TYPO3.FeEdit.DropZone = Class.create({
+	// the ad-hoc created element
+	el: null,
+	dz: null,
+
 	initialize: function(editPanel) {
 			//  Use an ID that relate the dropzone element back to the edit panel.
-		dropZoneElement = new Element('div', {
-			'id': 'feEditAdvanced-dropzone-' + editPanel.content.identify()
-		}).addClassName('feEditAdvanced-dropzone').update('<span class="feEditAdvanced-dropzoneLeft"></span><span class="feEditAdvanced-dropzoneCenter"> </span><span class="feEditAdvanced-dropzoneRight"></span>');
-
 			// Insert the drop zone after the edit panel.
-		editPanel.content.insert({'after': dropZoneElement});
+		var editPanelEl = editPanel.el;
+		this.el = Ext.DomHelper.append(editPanelEl.parent(), {
+			'tag': 'div',
+			'id': 'feEditAdvanced-dropzone-' + editPanelEl.id,
+			'cls': 'feEditAdvanced-dropzone',
+			'html': '<span class="feEditAdvanced-dropzoneLeft"></span><span class="feEditAdvanced-dropzoneCenter"> </span><span class="feEditAdvanced-dropzoneRight"></span>'
+		}, true);
 
-		this.element = dropZoneElement;
-		this._makeDroppable();
-	},
-	
-	remove: function() {
-		if(this.element && this.element.parentNode) {
-			this.element.remove();
-		}
-	},
-
-	_makeDroppable: function() {
-		Droppables.add(this.element, {
-			hoverclass: 'feEditAdvanced-dropzoneActive',
-			overlap: 'vertical',
-			onDrop: this.onDrop.bind(this),
-			onHover: this.onHover.bind(this)
+		// create the drop zone
+		this.dz = new Ext.dd.DropZone('feEditAdvanced-dropzone-' + editPanelEl.id, {
+			ddGroup: 'feeditadvanced-toolbar',
+			overClass: 'feEditAdvanced-dropzoneActive',
 		});
+		this.dz.notifyEnter = this.onHover;
+		this.dz.notifyDrop = this.onDrop;
+		Ext.dd.Registry.register(this.dz);
 	},
 
-	onDrop: function(draggableElement, droppableElement, event) {
-		if (draggableElement.hasClassName('feEditAdvanced-contentTypeItem')) {
-				// Small hack to insert temporary element on drop
-			clonedElement = draggableElement.cloneNode(true);
-			this.element.insert({'bottom': clonedElement});
-			ep = FrontendEditing.editPanels.get(clonedElement.up().previous().identify());
-			ep.create(draggableElement.getAttribute("href"));
-		} else if (draggableElement.hasClassName('feEditAdvanced-allWrapper')) {
+	onDrop: function(dragSource, evt, data) {
+		var linkedDragEl = Ext.get(dragSource.getEl());
+		var dropZoneEl = Ext.get(this.getEl());
+
+		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
+			// create a new record
+			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
+			ep.create(linkedDragEl.getAttribute('href'));
+
+		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 				// Move the dropped element outside the drop zone before it gets hidden.
-			draggableElement.removeAttribute('style');
-			droppableElement.insert({'before': draggableElement});
-			draggableElement.highlight({duration: 3});
+			linkedDragEl.setAttribute('style', '');
+			dropZoneEl.insertBefore(linkedDragEl);
+			//TODO: Ext? linkedDragEl.highlight({ duration: 3 });
 
-			source = FrontendEditing.editPanels.get(draggableElement.identify());
-			destination = FrontendEditing.editPanels.get(draggableElement.previous().identify());
+			source = FrontendEditing.editPanels.get(linkedDragEl.id);
+			destination = FrontendEditing.editPanels.get(linkedDragEl.prev().id);
 
-			recordFields = destination.record;
-			recordFields = recordFields.split(':');
-			moveAfterUID = recordFields[1];
-			source.moveAfter(moveAfterUID);
-		} else if (draggableElement.hasClassName('clipObj')) {
-			srcElement = $(draggableElement.select('form input[name="TSFE_EDIT[record]"]')[0].getValue());
-			cmd = draggableElement.select('form input[name="TSFE_EDIT[cmd]"]')[0].getValue();
+			var recordFields = destination.record.split(':');
+			source.moveAfter(recordFields[1]);
+
+		} else if (linkedDragEl.hasClass('clipObj')) {
+			srcElement = linkedDragEl.select('form input[name="TSFE_EDIT[record]"]')[0].getValue();
+			cmd = linkedDragEl.select('form input[name="TSFE_EDIT[cmd]"]')[0].getValue();
 
 				// do a clear of element on clipboard
-			FrontendEditing.clipboard.clearClipboard(draggableElement);
+			FrontendEditing.clipboard.clearClipboard(linkedDragEl);
 
 				// if source is on this page, then move it
 			if (srcElement) {
 					// set source and destination
-				source = FrontendEditing.editPanels.get(srcElement.identify());
-				destination = FrontendEditing.editPanels.get(droppableElement.previous().identify());
+				source = FrontendEditing.editPanels.get(srcElement.id);
+				destination = FrontendEditing.editPanels.get(dropZoneEl.prev().id);
 
-				srcElement.removeAttribute('style');
+				srcElement.setAttribute('style', '');
 					// do the actual cut/copy
 				if (cmd == 'cut') {
 						// move the element to where it is dropped
 					source.paste(destination.getDestinationPointer());
-					srcElement.removeClassName('doCut');
-					droppableElement.insert({'after': srcElement});
-					draggableElement.highlight({duration: 5});
+					srcElement.removeClass('doCut');
+					dropZoneEl.insertAfter(srcElement);
+					//TODO: Ext? linkedDragEl.highlight({duration: 5});
 
-						// now trigger the cut action
-
-				}
-				else if (cmd == 'copy') {
+					// now trigger the cut action
+				} else if (cmd == 'copy') {
 						// display the element where it is dropped
-					srcElement.removeClassName('doCopy');
+					srcElement.removeClass('doCopy');
 
 					clonedElement = srcElement.cloneNode(true);
-					droppableElement.insert({'after': clonedElement});
-					newSource = FrontendEditing.editPanels.get(clonedElement.identify());
+					dropZoneEl.insertAfter(clonedElement);
+					newSource = FrontendEditing.editPanels.get(clonedElement.id);
 					newSource.paste(destination.getDestinationPointer());
 				}
 			}
@@ -734,27 +730,30 @@ var DropZone = Class.create({
 			alert("hmm, doesn't look like we can handle this drag.");
 		}
 	},
-
-		// New elements are inserted on hover.
-	onHover: function(draggableElement, droppableElement, overlap) {
-			// If we're hovering over ourself, stop
-		if (draggableElement.parentNode.identify() == droppableElement.identify()) {
-			return;
+	
+	onHover: function(dragSource, evt, data) {
+		var dragEl = Ext.get(dragSource.getDragEl());
+			// used for moving editpanels around
+			// If we're hovering over a dropzone,
+			// make the dropzone large enough to accomodate the element
+		if (dragEl.hasClass('feEditAdvanced-allWrapper')) {
+			this.el.setStyle('height', dragEl.getHeight() + 'px');
 		}
-
-			// If we're hovering over a dropzone, make the dropzone large enough to accomodate the element
-		if (draggableElement.hasClassName('feEditAdvanced-allWrapper')) {
-			draggableHeight = draggableElement.getHeight() + 'px';
-			droppableElement.setStyle({height: draggableHeight});
+	},
+	
+	remove: function() {
+		Ext.dd.Registry.unregister(this.dz);
+		if (this.el && this.el.parent()) {
+			this.el.remove();
 		}
 	},
 
 	show: function() {
-		this.element.appear();
+		this.el.fadeIn();
 	},
 
 	hide: function() {
-		this.element.fade();
+		this.el.fadeOut();
 	}
 });
 
@@ -985,9 +984,9 @@ var HideAction = Class.create(EditPanelAction, {
 var UnhideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		this.parent.content.removeClassName('feEditAdvanced-hiddenElement');
-		this.parent.content.select('input.unhideAction')[0].hide();
-		this.parent.content.select('input.hideAction')[0].show();
+		this.parent.el.removeClass('feEditAdvanced-hiddenElement');
+		Ext.get(this.parent.el.select('input.unhideAction:first').item(0)).hide();
+		Ext.get(this.parent.el.select('input.hideAction:first').item(0)).show();
 	},
 
 	_getCmd: function() {
@@ -1003,9 +1002,9 @@ var UnhideAction = Class.create(EditPanelAction, {
 
 var UpAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
-		previousEditPanel = this.parent.previous();
+		previousEditPanel = this.parent.prev();
 		if (previousEditPanel) {
-			previousEditPanel.insert({'before': this.parent.content});
+			previousEditPanel.insertBefore(this.parent.el);
 			$super();
 		}
 	},
@@ -1029,7 +1028,7 @@ var DownAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 		nextEditPanel = this.parent.next();
 		if (nextEditPanel) {
-			nextEditPanel.insert({'after': this.parent.content});
+			nextEditPanel.insertAfter(this.parent.el);
 			$super();
 		}
 	},
@@ -1068,8 +1067,9 @@ var MoveAfterAction = Class.create(EditPanelAction, {
 var SaveAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 			// Set the doSave element.
-		this.parent.content.select('input[name="TSFE_EDIT[doSave]"]').each(function(element) {
-			element.writeAttribute("value", 1);
+		var content = $(this.parent.el.dom);
+		content.select('input[name="TSFE_EDIT[doSave]"]').each(function(el) {
+			el.writeAttribute("value", 1);
 		});
 
 		if (TBE_EDITOR.checkSubmit(1)) {
@@ -1098,8 +1098,8 @@ var SaveAction = Class.create(EditPanelAction, {
 var CloseAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 			// If this EditPanel is nested inside another, find the ID of the parent EditPanel
-		if (this.parent.content.up('.feEditAdvanced-allWrapper')) {
-			parentID = this.parent.content.up('.feEditAdvanced-allWrapper').identify();
+		if (this.parent.el.up('.feEditAdvanced-allWrapper')) {
+			parentID = this.parent.el.up('.feEditAdvanced-allWrapper').id;
 			formParams = '&TSFE_EDIT[parentEditPanel]=' + parentID;
 		} else {
 			formParams = '';
@@ -1122,8 +1122,8 @@ var CloseAction = Class.create(EditPanelAction, {
 		
 		if (json.newUID) {
 				// Insert the HTML and register the new edit panel.
-			this.parent.content.insert({'after': json.newContent});
-			nextEditPanel = this.parent.content.next('div.feEditAdvanced-allWrapper');
+			this.parent.el.insertAfter(json.newContent);
+			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
 			FrontendEditing.editPanels.set(nextEditPanel.identify(), new EditPanel(nextEditPanel));
 		}
 	},
@@ -1139,16 +1139,18 @@ var CloseAction = Class.create(EditPanelAction, {
 var SaveAndCloseAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 			// Set the doSave element.
-		this.parent.content.select('input[name="TSFE_EDIT[doSave]"]').each(function(element) {
-			element.writeAttribute("value", 1);
+		var content = $(this.parent.el.dom);
+		content.select('input[name=TSFE_EDIT[doSave]]').each(function(el) {
+			Ext.get(el).setAttribute("value", 1);
 		});
 
 		if (TBE_EDITOR.checkSubmit(1)) {
-			formParams = $('feEditAdvanced-editWindow').select('form')[0].serialize();
+			formObj = $$('#feEditAdvanced-editWindow form')[0];
+			formParams = $$('#feEditAdvanced-editWindow form')[0].serialize();
 
 				// If this EditPanel is nested inside another, find the ID of the parent EditPanel
-			if (this.parent.content.up('.feEditAdvanced-allWrapper')) {
-				parentID = this.parent.content.up('.feEditAdvanced-allWrapper').identify();
+			if (this.parent.el.up('.feEditAdvanced-allWrapper')) {
+				parentID = this.parent.el.up('.feEditAdvanced-allWrapper').id;
 				formParams += '&TSFE_EDIT[parentEditPanel]=' + parentID;
 			}
 
@@ -1170,9 +1172,9 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 
 		if (json.newUID) {
 				// Insert the HTML and register the new edit panel.
-			this.parent.content.insert({'after': json.newContent});
-			nextEditPanel = this.parent.content.next('div.feEditAdvanced-allWrapper');
-			FrontendEditing.editPanels.set(nextEditPanel.identify(), new EditPanel(nextEditPanel));
+			this.parent.el.insertAfter(json.newContent);
+			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
+			FrontendEditing.editPanels.set(nextEditPanel.id, new EditPanel(nextEditPanel));
 		}
 	},
 
@@ -1187,7 +1189,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 var CopyAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 			// put "copy" selector around
-		this.parent.content.addClassName('doCopy');
+		this.parent.el.addClass('doCopy');
 
 			// create new "copy" object in menubar clipboard
 		clipboardObj = $('clipboardToolbar');
@@ -1208,7 +1210,7 @@ var CopyAction = Class.create(EditPanelAction, {
 var CutAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 			// put "cut" selector around
-		this.parent.content.addClassName('doCut');
+		this.parent.el.addClass('doCut');
 
 			// create new "cut" object in menubar clipboard
 		clipboardObj = $('clipboardToolbar');
@@ -1228,7 +1230,7 @@ var CutAction = Class.create(EditPanelAction, {
 
 var PasteAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
-		formParams = this.parent.content.select('form')[1].serialize();
+		formParams = this.parent.el.select('form')[1].serialize();
 			// add setCopyMode
 			// add sourcePointer
 		$super(formParams);
@@ -1332,7 +1334,7 @@ var ClipboardObj = Class.create({
 	addToClipboard: function(obj) {
 		this.showClipboard(true);
 			// create & cleanup "display" string
-		strVal = obj.parent.content.select('.feEditAdvanced-contentWrapper')[0].innerHTML;
+		strVal = obj.parent.el.select('.feEditAdvanced-contentWrapper')[0].innerHTML;
 			 // strip tags
 		strVal = strVal.replace(/(<([^>]+)>)/ig,"");
 			 // trim spaces
@@ -1667,8 +1669,8 @@ var FrontendEditing = {
 		//		gives us a quick way to re-register all EditPanels when new content is added.
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
-		Ext.DomQuery.select('div.feEditAdvanced-allWrapper').each(function (element) {
-			FrontendEditing.editPanels.set(element.identify(), new EditPanel(element));
+		Ext.DomQuery.select('div.feEditAdvanced-allWrapper').each(function (el) {
+			FrontendEditing.editPanels.set(el.id, new EditPanel(el));
 		});
 	},
 

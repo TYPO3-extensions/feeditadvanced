@@ -1,52 +1,51 @@
-DropZone.addMethods({
-	onDrop: function(draggableElement, droppableElement, event) {
-		if (draggableElement.hasClassName('feEditAdvanced-contentTypeItem')) {
-				// Small hack to insert temporary element on drop
-			clonedElement = draggableElement.cloneNode(true);
-			this.element.insert({bottom: clonedElement});
-			ep = FrontendEditing.editPanels.get(clonedElement.up().previous().identify());
-			ep.create(draggableElement.getAttribute("href"));
-		} else if (draggableElement.hasClassName('feEditAdvanced-allWrapper')) {
-				// Move the dropped element outside the drop zone before it gets hidden.
-			draggableElement.removeAttribute('style');
-			droppableElement.insert({before: draggableElement});
-			draggableElement.highlight({duration: 5});
+TYPO3.FeEdit.DropZone.addMethods({
+	onDrop: function(dragSource, evt, data) {
+		var linkedDragEl = Ext.get(dragSource.getEl());
+		var dropZoneEl = Ext.get(this.getEl());
 
-			source = FrontendEditing.editPanels.get(draggableElement.identify());
-			destination = FrontendEditing.editPanels.get(draggableElement.previous().identify());
+		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
+			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
+			ep.create(linkedDragEl.getAttribute('href'));
+		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
+				// Move the dropped element outside the drop zone before it gets hidden.
+			linkedDragEl.setAttribute('style', '');
+			dropZoneEl.insertBefore(linkedDragEl);
+			// TODO: linkedDragEl.highlight({duration: 5});
+
+			source = FrontendEditing.editPanels.get(linkedDragEl.id);
+			destination = FrontendEditing.editPanels.get(linkedDragEl.prev().id);
 			source.moveAfter(destination.getDestinationPointer());
-		} else if (draggableElement.hasClassName('clipObj')) {
-			srcElement = $(draggableElement.select('form input[name="TSFE_EDIT[record]"]')[0].getValue());
-			cmd = draggableElement.select('form input[name="TSFE_EDIT[cmd]"]')[0].getValue();
+		} else if (linkedDragEl.hasClass('clipObj')) {
+			srcElement = linkedDragEl.select('form input[name="TSFE_EDIT[record]"]')[0].getValue();
+			cmd = linkedDragEl.select('form input[name="TSFE_EDIT[cmd]"]')[0].getValue();
 
 				// do a clear of element on clipboard
-			feClipboard.clearClipboard(draggableElement);
+			feClipboard.clearClipboard(linkedDragEl);
 
 				// if source is on this page, then move it
 			if (srcElement) {
 					// set source and destination
-				source = FrontendEditing.editPanels.get(srcElement.identify());
-				destination = FrontendEditing.editPanels.get(droppableElement.previous().identify());
+				source = FrontendEditing.editPanels.get(srcElement.id);
+				destination = FrontendEditing.editPanels.get(dropZoneEl.prev().id);
 
 				srcElement.removeAttribute('style');
 					// do the actual cut/copy				
 				if (cmd == 'cut') {
 						// move the element to where it is dropped
 					source.paste(destination.getDestinationPointer());
-					srcElement.removeClassName('doCut');
-					droppableElement.insert({after: srcElement});
-					draggableElement.highlight({duration: 5});
+					srcElement.removeClass('doCut');
+					dropZoneEl.insertAfter(srcElement);
+					// TODO: draggableElement.highlight({duration: 5});
 
 						// now trigger the cut action
 
-				}
-				else if (cmd == 'copy') {
+				} else if (cmd == 'copy') {
 						// display the element where it is dropped
-					srcElement.removeClassName('doCopy');
+					srcElement.removeClass('doCopy');
 
 					clonedElement = srcElement.cloneNode(true);
-					droppableElement.insert({after: clonedElement});
-					newSource = FrontendEditing.editPanels.get(clonedElement.identify());
+					dropZoneEl.insertAfter(clonedElement);
+					newSource = FrontendEditing.editPanels.get(clonedElement.id);
 					newSource.paste(destination.getDestinationPointer());
 				}
 			}
@@ -61,15 +60,15 @@ DropZone.addMethods({
 
 EditPanel.addMethods({
 	getFlexformPointer: function() {
-		return this.content.select('form input[name="TSFE_EDIT[flexformPointer]"]').first().getValue();
+		return this.el.select('form input[name="TSFE_EDIT[flexformPointer]"]').first().getValue();
 	},
 
 	getDestinationPointer: function() {
-		return this.content.select('form input[name="TSFE_EDIT[destinationPointer]"]').first().getValue();
+		return this.el.select('form input[name="TSFE_EDIT[destinationPointer]"]').first().getValue();
 	},
 
 	setDestinationPointer: function(destinationPointer) {
-		this.content.select('form input[name="TSFE_EDIT[destinationPointer]"]').first().setAttribute('value', destinationPointer);
+		this.el.select('form input[name="TSFE_EDIT[destinationPointer]"]').first().setAttribute('value', destinationPointer);
 	},
 
 	moveAfter: function(destinationPointerString) {
@@ -99,27 +98,42 @@ var MoveAfterAction = Class.create(EditPanelAction, {
 });
 
 FrontendEditing.addFlexformPointers = function() {
-	$$('input.flexformPointers').each( function(pointerElement) {
-		containerName = pointerElement.identify();
-		pointerArray = 	$(pointerElement).getValue().split(',');
+	Ext.DomQuery.select('input.flexformPointers').each(function(pointerElement) {
+		var pointerElement = Ext.get(pointerElement);
+		var containerName = pointerElement.id;
+		var pointerArray = pointerElement.getValue().split(',');
 
-		pointerElementArray = pointerElement.adjacent('.feEditAdvanced-allWrapper').toArray();
+		var pointerElementArray = pointerElement.parent().select('.feEditAdvanced-allWrapper');
 
 		if ((pointerArray.length > 0) && pointerElementArray.length > 0) {
-			counter = 0;
-			pointerArray.each ( function(pointerValue) {
+			var counter = 0;
+			pointerArray.each(function(pointerValue) {
 				counter++;
 				firstElement = pointerElementArray.first();
 				if (firstElement) {
 					recordElement = firstElement.select('form input[name="TSFE_EDIT[record]"]').first();
 					if (recordElement.getValue() == 'tt_content:' + pointerValue) {
 							// flexformPointer element
-						recordElement.insert({'after': new Element('input', {'type': 'hidden', 'name': 'TSFE_EDIT[flexformPointer]', 'value': containerName + ':' + counter + '/tt_content:' + pointerValue})});
+						recordElement.insertAfter({
+							'tag': 'input',
+							'type': 'hidden',
+							'name': 'TSFE_EDIT[flexformPointer]',
+							'value': containerName + ':' + counter + '/tt_content:' + pointerValue
+						});
 							// sourcePointer element
-						recordElement.insert({'after': new Element('input', {'type': 'hidden', 'name': 'TSFE_EDIT[sourcePointer]', 'value': containerName + ':' + counter})});
+						recordElement.insertAfter({
+							'tag': 'input',
+							'type': 'hidden',
+							'name': 'TSFE_EDIT[sourcePointer]',
+							'value': containerName + ':' + counter
+						});
 							// destinationPointer element
-						recordElement.insert({'after': new Element('input', {'type': 'hidden', 'name': 'TSFE_EDIT[destinationPointer]', 'value': containerName + ':' + counter})});
-
+						recordElement.insertAfter({
+							'tag': 'input',
+							'type': 'hidden',
+							'name': 'TSFE_EDIT[destinationPointer]',
+							'value': containerName + ':' + counter
+						});
 						pointerElementArray.shift();
 					}
 				}
@@ -127,7 +141,4 @@ FrontendEditing.addFlexformPointers = function() {
 		}
 	});
 };
-
-Event.observe(window, 'load', function() {
-	FrontendEditing.addFlexformPointers();
-});
+Ext.onReady(FrontendEditing.addFlexformPointers, FrontendEditing);
