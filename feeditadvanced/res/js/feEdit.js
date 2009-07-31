@@ -11,51 +11,46 @@
 		- Lightbox
  */
 
-// TODO: make all classes created via Ext JS (not a Class.create)
-// TODO: make all classes namespaced ("TYPO3.FeEdit")
 Ext.namespace('TYPO3.FeEdit');
 
 // TODO: go through every part (also CSS and PHP) and use this base class for every class and ID
 TYPO3.FeEdit.baseCls = 'feeditadvanced';
 
+TYPO3.FeEdit.Base = function() {};
+
 /*
  * Class for Toolbars and Draggable Widgets within the toolbars.
  */
-var Toolbar = Class.create({
-	el: false,
-	widgets: [],
+TYPO3.FeEdit.Toolbar = function(toolbarElementId) {
+	this.el = Ext.get(toolbarElementId);
+	this.widgets = [];
 
-	/*
-	 * initializes the toolbar element and finds all dragable buttons
-	 **/
-	initialize: function(toolbarElementId) {
-		this.el = Ext.get(toolbarElementId);
-		if (this.el) {
-			// This does not work in Ext JS, thus it's a bug in the contrib library
-			// @todo: send this issue to Ext JS
-			// Problem: selecting items with multiple classes while having a different root node
-			// than the original document results in nothing
-			// var allWidgets = Ext.DomQuery.select('.draggable', this.el);
-			var allWidgets = Ext.DomQuery.select('#' + this.el.id + ' .draggable');
-			// Create all the draggable buttons in the toolbar
-			allWidgets.each(function(draggableElement) {
-				this.widgets.push(new ToolbarWidget(draggableElement));
-			}, this);
-		}
-	},
+	// initialize the toolbar element and finds all draggable buttons
+	if (this.el) {
+		// This does not work in Ext JS, thus it's a bug in the contrib library
+		// @todo: send this issue to Ext JS
+		// Problem: selecting items with multiple classes while having a different root node
+		// than the original document results in nothing
+		// var allWidgets = Ext.DomQuery.select('.draggable', this.el);
+		var allWidgets = Ext.DomQuery.select('#' + this.el.id + ' .draggable');
+		// Create all the draggable buttons in the toolbar
+		allWidgets.each(function(draggableElement) {
+			this.widgets.push(new TYPO3.FeEdit.ToolbarWidget(draggableElement));
+		}, this);
+	}
 
 	/**
 	 * adds a draggable object and registers the toolbar widget
 	 **/
-	addDraggable: function(toolbarElement) {
+	this.addDraggable = function(toolbarElement) {
 		// get draggable item
 		// var draggableElements = Ext.DomQuery.select('.draggable', toolbarElement);
 		var draggableElements = Ext.DomQuery.select('#' + toolbarElement.id + ' .draggable');
 		draggableElements.each(function(draggableElement) {
-			this.widgets.push(new ToolbarWidget(draggableElement));
+			this.widgets.push(new TYPO3.FeEdit.ToolbarWidget(draggableElement));
 		}, this);
 	}
-});
+};
 
 
 
@@ -63,84 +58,56 @@ var Toolbar = Class.create({
  * Class for the toolbar item that is on top of the page
  * needs 
  */
-var ToolbarWidget = Class.create({
-	el: null,
-	dd: null,
+TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
+	this.el = Ext.get(draggableEl);
 
-	initialize: function(draggableEl) {
-		this.el = Ext.get(draggableEl);
+		// Override clicks on any elements that are also draggable. 
+		// This may eventually trigger an add in the main content area instead.
+	this.el.addListener('click', function(evt) {
+		evt.stopEvent();
+	});
 
-			// Override clicks on any elements that are also draggable. 
-			// This may eventually trigger an add in the main content area instead.
-		this.el.addListener('click', function(evt) { evt.stopEvent(); });
+	this.dd = new Ext.dd.DragSource(this.el.id, {
+		ddGroup: 'feeditadvanced-toolbar',
+//		dropAllowed: 'feEditAdvanced-dropzone'
+	});
 
-		this.dd = new Ext.dd.DragSource(this.el.id, {
-			ddGroup: 'feeditadvanced-toolbar',
-//			dropAllowed: 'feEditAdvanced-dropzone'
+	this.dd.startDrag = function(x, y) {
+		var dragEl = Ext.get(this.getDragEl());
+		var el = Ext.get(this.getEl());
+
+		dragEl.applyStyles({'z-index':2000});
+		dragEl.update(el.dom.innerHTML);
+		dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
+
+			// Enable drop indicators when a drag is started.
+		FrontendEditing.editPanelsEnabled = false;
+		FrontendEditing.editPanels.each(function(panel) {
+			panel.addDropZone();
 		});
+	};
 
-		this.dd.startDrag = function(x, y) {
-			var dragEl = Ext.get(this.getDragEl());
-			var el = Ext.get(this.getEl());
+	// is called over and over again, until you leave or drop the 
+		// id is the ID of the drop zone
+/*	this.dd.onDragOver = function(evt, id) {
+		console.log('Toolbarwidget is currently over ' + id);
+	};*/
 
-			dragEl.applyStyles({'z-index':2000});
-//			dragEl.applyStyles({'opacity':'0.6','z-index':2000});
-			dragEl.update(el.dom.innerHTML);
-			dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
-
-				// Enable drop indicators when a drag is started.
-			FrontendEditing.editPanelsEnabled = false;
-			FrontendEditing.editPanels.each(function(panel) {
-				panel.addDropZone();
-			});
-		};
-
-		// is called over and over again, until you leave or drop the 
-			// id is the ID of the drop zone
-/*		this.dd.onDragOver = function(evt, id) {
-			console.log('Toolbarwidget is currently over ' + id);
-		};*/
-
-		this.dd.afterInvalidDrop = this.dd.afterDragDrop = function(evt, id) {
-				// Disable drop indicators when a drag is done
-			FrontendEditing.editPanelsEnabled = true;
-			FrontendEditing.editPanels.each(function(panel) {
-				panel.enableHoverMenu();
-				panel.removeDropZone();
-			});
-		};
-		Ext.dd.Registry.register(this.dd);
-	}
-});
-
-/*
- * Object for notification popups. Creating a new instances triggers the popup.
- */
-var FrontendEditNotification = Class.create({
-	el: false,
-
-	initialize: function(content) {
-		this.el = Ext.getBody().append({
-			'tag': 'div',
-			'style': 'display: none',
-			'html': content,
-			'cls': 'feEditAdvanced-notificationMsg'
+	this.dd.afterInvalidDrop = this.dd.afterDragDrop = function(evt, id) {
+			// Disable drop indicators when a drag is done
+		FrontendEditing.editPanelsEnabled = true;
+		FrontendEditing.editPanels.each(function(panel) {
+			panel.enableHoverMenu();
+			panel.removeDropZone();
 		});
-		this.show();
-	},
+	};
+	Ext.dd.Registry.register(this.dd);
+};
 
-	show: function() {
-		this.el.fadeIn({ duration: 0.75 });
-	},
-
-	hide: function() {
-		this.el.fadeOut({ duration: 0.35 });
-	}
-});
 
 	// Object for Javascript handling as part of an AJAX request.
-var AJAXJavascriptHandler = Class.create({
-	initialize: function() {
+TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
+	constructor: function() {
 		this.loadedElements = new Hash();
 		this.unloadedElements = new Array();
 
@@ -345,7 +312,7 @@ var AJAXJavascriptHandler = Class.create({
 });
 
 	// Object for an entire content element and its EditPanel.
-var EditPanel = Class.create({
+TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		// the DOM element (actually it's a Ext.get) of the wrapper Element of the content element
 	el: null,
 		// the DOM element of the editPanel or the hover menu of this content element
@@ -361,7 +328,7 @@ var EditPanel = Class.create({
 	hoverMenuEnabled: false,
 	alwaysVisible: false,
 
-	initialize: function(wrapperElement) {
+	constructor: function(wrapperElement) {
 		this.el = Ext.get(wrapperElement);
 		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv').first());
 		this.formEl = Ext.get(this.el.select('form').first());	// todo: we should use a class here
@@ -663,12 +630,12 @@ var EditPanel = Class.create({
 });
 
 
-TYPO3.FeEdit.DropZone = Class.create({
+TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 	// the ad-hoc created element
 	el: null,
 	dz: null,
 
-	initialize: function(editPanel) {
+	constructor: function(editPanel) {
 			//  Use an ID that relate the dropzone element back to the edit panel.
 			// Insert the drop zone after the edit panel.
 		var editPanelEl = editPanel.el;
@@ -792,7 +759,7 @@ TYPO3.FeEdit.DropZone = Class.create({
 /**
  * default action that every action inherits from
  */
-var EditPanelAction = Class.create({
+TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 	ajaxRequestUrl: 'index.php',
 		// there are "ajax" actions and "iframe" actions
 		// iframe actions only need the URL and don't trigger the AJAX call when triggering the action
@@ -801,7 +768,7 @@ var EditPanelAction = Class.create({
 
 	// init function, sets the "parent" which is the edit panel (I believe so at least)
 	// and the command from the subclass
-	initialize: function(parent) {
+	constructor: function(parent) {
 		this.parent = parent;
 		this.cmd = this._getCmd();
 	},
@@ -814,7 +781,7 @@ var EditPanelAction = Class.create({
 
 		// instantiate a edit window if this doesn't exist yet
 		if (!FrontendEditing.editWindow) {
-			FrontendEditing.editWindow = new EditWindow(this.parent);
+			FrontendEditing.editWindow = new TYPO3.FeEdit.EditWindow(this.parent);
 		}
 		
 		// if the "isModelAction" flag is set, then there is a notification message
@@ -962,6 +929,7 @@ var EditPanelAction = Class.create({
 
 		return inProgress;
 	},
+
 	showFailureMessage: function() {
 		alert('Network problems -- please try again shortly.');
 	}
@@ -970,11 +938,11 @@ var EditPanelAction = Class.create({
 
 
 
-var NewRecordAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	requestType: 'iframe',
 
-	trigger: function($super) {
-		$super();
+	trigger: function() {
+		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
 		var url = this.getRequestUrl();
 		FrontendEditing.editWindow.displayIframe('New Content Block', url);
 	},
@@ -990,11 +958,11 @@ var NewRecordAction = Class.create(EditPanelAction, {
 	}
 });
 
-var EditAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	requestType: 'iframe',
 
-	trigger: function($super) {
-		$super();
+	trigger: function() {
+		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
 		var url = this.getRequestUrl();
 		FrontendEditing.editWindow.displayIframe('Edit Content Block', url);
 	},
@@ -1010,7 +978,7 @@ var EditAction = Class.create(EditPanelAction, {
 	}
 });
 
-var DeleteAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		this.parent.removeContent();
@@ -1033,7 +1001,7 @@ var DeleteAction = Class.create(EditPanelAction, {
 	_isModalAction: false
 });
 
-var HideAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		this.parent.el.addClass('feEditAdvanced-hiddenElement');
@@ -1053,7 +1021,7 @@ var HideAction = Class.create(EditPanelAction, {
 	_isModalAction: false
 });
 
-var UnhideAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.UnhideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		this.parent.el.removeClass('feEditAdvanced-hiddenElement');
@@ -1072,15 +1040,15 @@ var UnhideAction = Class.create(EditPanelAction, {
 	_isModalAction: false
 });
 
-var UpAction = Class.create(EditPanelAction, {
-	trigger: function($super) {
+TYPO3.FeEdit.UpAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
+	trigger: function() {
 		previousEditPanel = this.parent.el.prev();
 		if (previousEditPanel) {
 			this.parent.el.insertBefore(previousEditPanel);
 			this.parent.updateUpDownButtons();
 			FrontendEditing.editPanels.get(previousEditPanel.id).updateUpDownButtons();
 			this.parent.hideMenu();
-			$super();
+			TYPO3.FeEdit.UpAction.superclass.trigger.apply(this, arguments);
 		}
 	},
 	
@@ -1099,15 +1067,15 @@ var UpAction = Class.create(EditPanelAction, {
 	_isModalAction: false
 });
 
-var DownAction = Class.create(EditPanelAction, {
-	trigger: function($super) {
+TYPO3.FeEdit.DownAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
+	trigger: function() {
 		nextEditPanel = this.parent.el.next();
 		if (nextEditPanel) {
 			this.parent.el.insertAfter(nextEditPanel);
 			this.parent.updateUpDownButtons();
 			FrontendEditing.editPanels.get(nextEditPanel.id).updateUpDownButtons();
 			this.parent.hideMenu();
-			$super();
+			TYPO3.FeEdit.DownAction.superclass.trigger.apply(this, arguments);
 		}
 	},
 	
@@ -1126,7 +1094,7 @@ var DownAction = Class.create(EditPanelAction, {
 	_isModalAction: false
 });
 
-var MoveAfterAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 			// allow to edit again
 		FrontendEditing.editPanelsEnabled = true;
@@ -1143,7 +1111,7 @@ var MoveAfterAction = Class.create(EditPanelAction, {
 	_isModalAction: false
 });
 
-var SaveAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.SaveAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	trigger: function($super) {
 			// Set the doSave element.
 		var content = $(this.parent.el.dom);
@@ -1159,8 +1127,7 @@ var SaveAction = Class.create(EditPanelAction, {
 
 	_process: function(json) {
 		// @todo	Alert if the save was not successful.
-
-		if(FrontendEditing.editWindow) {
+		if (FrontendEditing.editWindow) {
 			FrontendEditing.editWindow.displayEditingForm("Edit Content Block", json.content);
 		}
 	},
@@ -1174,8 +1141,10 @@ var SaveAction = Class.create(EditPanelAction, {
 		return 'edit';
 	}
 });
-var CloseAction = Class.create(EditPanelAction, {
-	trigger: function($super) {
+
+
+TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
+	trigger: function() {
 			// If this EditPanel is nested inside another, find the ID of the parent EditPanel
 		if (this.parent.el.up('.feEditAdvanced-allWrapper')) {
 			parentID = this.parent.el.up('.feEditAdvanced-allWrapper').id;
@@ -1183,8 +1152,7 @@ var CloseAction = Class.create(EditPanelAction, {
 		} else {
 			formParams = '';
 		}
-
-		$super(formParams);
+		TYPO3.FeEdit.CloseAction.superclass.trigger.apply(this, formParams);
 	},
 
 	_process: function(json) {
@@ -1205,7 +1173,7 @@ var CloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
 			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
-			FrontendEditing.editPanels.add(nextEditPanel.id, new EditPanel(nextEditPanel));
+			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
 	},
 
@@ -1217,8 +1185,9 @@ var CloseAction = Class.create(EditPanelAction, {
 		return 'close';
 	}
 });
-var SaveAndCloseAction = Class.create(EditPanelAction, {
-	trigger: function($super) {
+
+TYPO3.FeEdit.SaveAndCloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
+	trigger: function() {
 			// Set the doSave element.
 		var content = $(this.parent.el.dom);
 		content.select('input[name=TSFE_EDIT[doSave]]').each(function(el) {
@@ -1235,7 +1204,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 				formParams += '&TSFE_EDIT[parentEditPanel]=' + parentID;
 			}
 
-			$super(formParams);
+			TYPO3.FeEdit.SaveAndCloseAction.superclass.trigger.apply(this, formParams);
 		}
 	},
 
@@ -1257,7 +1226,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
 			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
-			FrontendEditing.editPanels.add(nextEditPanel.id, new EditPanel(nextEditPanel));
+			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
 	},
 
@@ -1269,13 +1238,14 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 		return 'saveAndClose';
 	}
 });
-var CopyAction = Class.create(EditPanelAction, {
+
+TYPO3.FeEdit.CopyAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 			// put "copy" selector around
 		this.parent.el.addClass('doCopy');
 
 			// create new "copy" object in menubar clipboard
-		clipboardObj = $('clipboardToolbar');
+		clipboardObj = Ext.fly('clipboardToolbar');
 		if (clipboardObj) {
 			FrontendEditing.clipboard.addToClipboard(this);
 		}
@@ -1290,13 +1260,13 @@ var CopyAction = Class.create(EditPanelAction, {
 	}
 });
 
-var CutAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.CutAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 			// put "cut" selector around
 		this.parent.el.addClass('doCut');
 
 			// create new "cut" object in menubar clipboard
-		clipboardObj = $('clipboardToolbar');
+		clipboardObj = Ext.fly('clipboardToolbar');
 		if (clipboardObj) {
 			FrontendEditing.clipboard.addToClipboard(this);
 		}
@@ -1311,12 +1281,13 @@ var CutAction = Class.create(EditPanelAction, {
 	}
 });
 
-var PasteAction = Class.create(EditPanelAction, {
-	trigger: function($super) {
-		formParams = this.parent.el.select('form')[1].serialize();
+TYPO3.FeEdit.PasteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
+	trigger: function() {
+
+		formParams = Ext.Ajax.serializeForm(this.parent.el.select('form').first());
 			// add setCopyMode
 			// add sourcePointer
-		$super(formParams);
+		TYPO3.FeEdit.PasteAction.superclass.trigger.apply(this, formParams);
 	},
 
 	_process: function(json) {
@@ -1332,80 +1303,80 @@ var PasteAction = Class.create(EditPanelAction, {
 });
 
 	// Add all the actions directly to the EditPanel objects.
-EditPanel.addMethods({
+Ext.override(TYPO3.FeEdit.EditPanel, {
 	create: function(additionalParams) {
-		action = new NewRecordAction(this);
+		action = new TYPO3.FeEdit.NewRecordAction(this);
 		action.trigger(additionalParams);
 	},
 
 	edit: function() {
-		action = new EditAction(this);
+		action = new TYPO3.FeEdit.EditAction(this);
 		action.trigger();
 	},
 
 	hide: function() {
-		action = new HideAction(this);
+		action = new TYPO3.FeEdit.HideAction(this);
 		action.trigger();
 	},
 	unhide: function() {
-		action = new UnhideAction(this);
+		action = new TYPO3.FeEdit.UnhideAction(this);
 		action.trigger();
 	},
 	remove: function() {
-		action = new DeleteAction(this);
+		action = new TYPO3.FeEdit.DeleteAction(this);
 		action.trigger();
 	},
 
 	moveAfter: function(afterUID) {
 		extraParam = 'TSFE_EDIT[moveAfter]='+afterUID;
-		action = new MoveAfterAction(this);
+		action = new TYPO3.FeEdit.MoveAfterAction(this);
 		action.trigger(extraParam);
 	},
 
 	save: function() {
-		action = new SaveAction(this);
+		action = new TYPO3.FeEdit.SaveAction(this);
 		action.trigger();
 	},
 
 	close: function() {
-		action = new CloseAction(this);
+		action = new TYPO3.FeEdit.CloseAction(this);
 		action.trigger();
 	},
 
 	saveAndClose: function() {
-		action = new SaveAndCloseAction(this);
+		action = new TYPO3.FeEdit.SaveAndCloseAction(this);
 		action.trigger();
 	},
 
 	cut: function() {
-		action = new CutAction(this);
+		action = new TYPO3.FeEdit.CutAction(this);
 		action.trigger();
 	},
 
 	copy: function() {
-		action = new CopyAction(this);
+		action = new TYPO3.FeEdit.CopyAction(this);
 		action.trigger();
 	},
 
 	paste: function(additionalParams) {
-		action = new PasteAction(this);
+		action = new TYPO3.FeEdit.PasteAction(this);
 		action.trigger();
 	},
 
 	up: function(additionalParams) {
 		// @todo Need possibly a MoveUpDownAction...
-		action = new UpAction(this);
+		action = new TYPO3.FeEdit.UpAction(this);
 		action.trigger();
 	},
 
 	down: function(additionalParams) {
-		action = new DownAction(this);
+		action = new TYPO3.FeEdit.DownAction(this);
 		action.trigger();
 	}	
 });
 
 
-var ClipboardObj = Class.create({
+TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 	showClipboard: function(onOff) {
 		if (onOff) {
 			Ext.get('clipboardToolbar').show();
@@ -1486,8 +1457,8 @@ var ClipboardObj = Class.create({
 });
 
 
-var EditWindow = Class.create({
-	initialize: function(editPanel) {
+TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
+	constructor: function(editPanel) {
 		this.editPanel = editPanel;
 
 		if ($('overlay')) {
@@ -1737,10 +1708,10 @@ var EditWindow = Class.create({
  * relevant for frontend editing
  */
 var FrontendEditing = {
-	clipboard: new ClipboardObj(),
+	clipboard: new TYPO3.FeEdit.ClipboardObj(),
 	editPanels: new Ext.util.MixedCollection(),
 	editPanelsEnabled: true,
-	JSHandler: new AJAXJavascriptHandler(),
+	JSHandler: new TYPO3.FeEdit.AJAXJavascriptHandler(),
 	toolbar: null,
 	actionRunning: false,
 	editWindow: null,
@@ -1756,12 +1727,12 @@ var FrontendEditing = {
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
 		Ext.DomQuery.select('div.feEditAdvanced-allWrapper').each(function (el) {
-			this.editPanels.add(el.id, new EditPanel(el));
+			this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
 		}, this);
 	},
 	
 	initializeMenuBar: function() {
-		this.toolbar = new Toolbar('feEditAdvanced-menuBar');
+		this.toolbar = new TYPO3.FeEdit.Toolbar('feEditAdvanced-menuBar');
 	}
 };
 

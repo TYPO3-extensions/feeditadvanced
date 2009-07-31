@@ -1,4 +1,4 @@
-TYPO3.FeEdit.DropZone.addMethods({
+Ext.override(TYPO3.FeEdit.DropZone, {
 	onDrop: function(dragSource, evt, data) {
 		var linkedDragEl = Ext.get(dragSource.getEl());
 		var dropZoneEl   = Ext.get(this.getEl());
@@ -58,7 +58,7 @@ TYPO3.FeEdit.DropZone.addMethods({
 	}
 });
 
-EditPanel.addMethods({
+Ext.override(TYPO3.FeEdit.EditPanel, {
 	getFlexformPointer: function() {
 		return this.el.select('form input.feEditAdvanced-tsfeedit-input-flexformPointer').first().getValue();
 	},
@@ -74,13 +74,13 @@ EditPanel.addMethods({
 	moveAfter: function(destinationPointerString) {
 		this.setDestinationPointer(destinationPointerString);
 		console.log('triggering move after action');
-		action = new MoveAfterAction(this);
+		action = new TYPO3.FeEdit.MoveAfterAction(this);
 		action.trigger();
 	}
 
 });
 
-var MoveAfterAction = Class.create(EditPanelAction, {
+TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 	_process: function(json) {
 		// for now, do nothing
