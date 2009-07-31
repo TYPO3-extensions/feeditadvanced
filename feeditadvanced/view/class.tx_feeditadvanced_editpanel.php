@@ -163,7 +163,7 @@ class tx_feeditadvanced_editpanel {
 		$markerArray['###FORM_URL###'] = $actionURL;
 		$markerArray['###FORM_ENCTYPE###'] = $GLOBALS['TYPO3_CONF_VARS']['SYS']['form_enctype'];
 		$markerArray['###FORM_ONSUBMIT###'] = 'return TBE_EDITOR.checkSubmit(1);';
-		$markerArray['###FORM_START###'] = '<form name="' . $markerArray['###FORM_NAME###'] . '" id="' . $markerArray['###FORM_NAME###'] . '" action="' . $markerArray['###FORM_URL###'] . '" method="post" enctype="' . $markerArray['###FORM_ENCTYPE###'] . '" onsubmit="' . $markerArray['###FORM_ONSUBMIT###'] . '">';
+		$markerArray['###FORM_START###'] = '<form name="' . $markerArray['###FORM_NAME###'] . '" id="' . $markerArray['###FORM_NAME###'] . '" action="' . $markerArray['###FORM_URL###'] . '" method="post" enctype="' . $markerArray['###FORM_ENCTYPE###'] . '" class="feEditAdvanced-editPanelForm"  onsubmit="' . $markerArray['###FORM_ONSUBMIT###'] . '">';
 		$markerArray['###FORM_END###'] = '</form>';
 		$markerArray['###FORM_CONTENT###'] = ' ';
 
@@ -240,9 +240,9 @@ class tx_feeditadvanced_editpanel {
 			}
 
 				// Add hidden fields with necessary data
-			$hiddenFieldString .= '<input type="hidden" name="TSFE_EDIT[cmd]" value="" />
-								<input type="hidden" name="TSFE_EDIT[record]" value="' . $currentRecord . '" />
-								<input type="hidden" name="TSFE_EDIT[pid]" value="' . $GLOBALS['TSFE']->id . '" />';
+			$hiddenFieldString .= '	<input type="hidden" name="TSFE_EDIT[cmd]" value="" />
+			<input type="hidden" name="TSFE_EDIT[record]" class="feEditAdvanced-tsfeedit-input-record" value="' . $currentRecord . '" />
+			<input type="hidden" name="TSFE_EDIT[pid]" value="' . $GLOBALS['TSFE']->id . '" />';
 			$markerArray['###FORM_HIDDENFIELDS###'] = $hiddenFieldString;
 		}
 

@@ -12,7 +12,7 @@
  */
 
 // TODO: make all classes created via Ext JS (not a Class.create)
-// TODO: make all classes namespaced
+// TODO: make all classes namespaced ("TYPO3.FeEdit")
 Ext.namespace('TYPO3.FeEdit');
 
 // TODO: go through every part (also CSS and PHP) and use this base class for every class and ID
@@ -89,8 +89,8 @@ var ToolbarWidget = Class.create({
 
 				// Enable drop indicators when a drag is started.
 			FrontendEditing.editPanelsEnabled = false;
-			FrontendEditing.editPanels.each(function(hashItem) {
-				(hashItem.value).addDropZone();
+			FrontendEditing.editPanels.each(function(panel) {
+				panel.addDropZone();
 			});
 		};
 
@@ -101,8 +101,7 @@ var ToolbarWidget = Class.create({
 		this.dd.afterDragDrop = function(evt, id) {
 				// Disable drop indicators when a drag is done
 			FrontendEditing.editPanelsEnabled = true;
-			FrontendEditing.editPanels.each(function(hashItem) {
-				panel = hashItem.value;
+			FrontendEditing.editPanels.each(function(panel) {
 				panel.enableHoverMenu();
 				panel.removeDropZone();
 			});
@@ -333,7 +332,7 @@ var AJAXJavascriptHandler = Class.create({
 					if (TBE_EDITOR.doSaveFieldName) {
 						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value = 1;
 					}
-					FrontendEditing.editPanels.get(Ext.get(TBE_EDITOR.formname).parent().parent().id).save();
+					FrontendEditing.editPanels[(Ext.get(TBE_EDITOR.formname).parent().parent().id)].save();
 				};
 				TBE_EDITOR.submitForm = ajaxSubmitForm;
 			}
@@ -351,6 +350,10 @@ var EditPanel = Class.create({
 		// the DOM element of the form object of the editPanel of this content element
 	formEl: null,
 	_extraElements: [],
+	params: null,
+
+	pid: null,
+	record: null,
 	
 	sortable: false,
 	hoverMenuEnabled: false,
@@ -358,13 +361,11 @@ var EditPanel = Class.create({
 
 	initialize: function(wrapperElement) {
 		this.el = Ext.get(wrapperElement);
-		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv:first').item(0));
-		this.formEl = Ext.get(this.el.select('form:first').item(0));	// todo: we should use a class here
-
+		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv').item(0));
+		this.formEl = Ext.get(this.el.select('form').item(0));	// todo: we should use a class here
 		this.hoverMenuEnabled = true;
 		this.getFormParameters();
 		this.setupEventListeners();
-		
 		if (this.el.hasClass('draggable')) {
 			this.sortable = true;
 			this._makeDraggable();
@@ -420,12 +421,7 @@ var EditPanel = Class.create({
 			}
 		}, this);
 			// make the additional formElement values as "&name=value"
-			// TODO: do we need a Ext.urlEncode here?
-		var extraParams = '';
-		Ext.each(this._extraElements, function(formElement) {
-			extraParams = '&' + formElement.getAttribute('name') + '=' + formElement.getValue();
-		});
-		this.params = extraParams;
+		this.params = Ext.Ajax.serializeForm(this.formEl);
 	},
 
 	_makeDraggable: function() {
@@ -446,8 +442,7 @@ var EditPanel = Class.create({
 			var el = Ext.get(this.getEl());
 
 			FrontendEditing.editPanelsEnabled = false;
-			FrontendEditing.editPanels.each(function(hashItem) {
-				panel = hashItem.value;
+			FrontendEditing.editPanels.each(function(panel) {
 				panel.hideMenu();
 				panel.disableHoverMenu();
 
@@ -475,8 +470,7 @@ var EditPanel = Class.create({
 		this.dd.afterDragDrop = function(evt, id) {
 				// Disable drop indicators when a drag is done
 			FrontendEditing.editPanelsEnabled = true;
-			FrontendEditing.editPanels.each(function(hashItem) {
-				panel = hashItem.value;
+			FrontendEditing.editPanels.each(function(panel) {
 				panel.enableHoverMenu();
 				panel.removeDropZone();
 			});
@@ -679,7 +673,7 @@ TYPO3.FeEdit.DropZone = Class.create({
 
 		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
 			// create a new record
-			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
+			ep = FrontendEditing.editPanels[(dropZoneEl.prev('.feEditAdvanced-allWrapper').id)];
 			ep.create(linkedDragEl.getAttribute('href'));
 
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
@@ -688,8 +682,8 @@ TYPO3.FeEdit.DropZone = Class.create({
 			dropZoneEl.insertBefore(linkedDragEl);
 			//TODO: Ext? linkedDragEl.highlight({ duration: 3 });
 
-			source = FrontendEditing.editPanels.get(linkedDragEl.id);
-			destination = FrontendEditing.editPanels.get(linkedDragEl.prev().id);
+			source = FrontendEditing.editPanels[(linkedDragEl.id)];
+			destination = FrontendEditing.editPanels[(linkedDragEl.prev().id)];
 
 			var recordFields = destination.record.split(':');
 			source.moveAfter(recordFields[1]);
@@ -704,8 +698,8 @@ TYPO3.FeEdit.DropZone = Class.create({
 				// if source is on this page, then move it
 			if (srcElement) {
 					// set source and destination
-				source = FrontendEditing.editPanels.get(srcElement.id);
-				destination = FrontendEditing.editPanels.get(dropZoneEl.prev().id);
+				source = FrontendEditing.editPanels[(srcElement.id)];
+				destination = FrontendEditing.editPanels[(dropZoneEl.prev().id)];
 
 				srcElement.setAttribute('style', '');
 					// do the actual cut/copy
@@ -723,7 +717,7 @@ TYPO3.FeEdit.DropZone = Class.create({
 
 					clonedElement = srcElement.cloneNode(true);
 					dropZoneEl.insertAfter(clonedElement);
-					newSource = FrontendEditing.editPanels.get(clonedElement.id);
+					newSource = FrontendEditing.editPanels[(clonedElement.id)];
 					newSource.paste(destination.getDestinationPointer());
 				}
 			}
@@ -788,14 +782,19 @@ var EditPanelAction = Class.create({
 			FrontendEditing.editWindow.displayLoadingMessage(this._getNotificationMessage());
 		}
 		
-		paramRequest = 'eID=feeditadvanced' + '&TSFE_EDIT[cmd]=' + this.cmd + '&TSFE_EDIT[record]=' + this.parent.record + '&pid=' + this.parent.pid;
-		if (this.parent.params != undefined && this.parent.params != 0) {
+		paramRequest = 'eID=feeditadvanced';
+		if (this.parent.params) {
 			paramRequest += '&' + this.parent.params;
 		}
 
 		if (additionalParams != undefined) {
 			paramRequest += '&' + additionalParams;
 		}
+		// remove the doubled TSFE_EDIT[cmd] (because it's empty) before we add the real cmd value
+		if (paramRequest.indexOf('TSFE_EDIT%5Bcmd%5D=') != -1) {
+			paramRequest = paramRequest.replace(/&TSFE_EDIT%5Bcmd%5D=&/, '&');
+		}
+		paramRequest += '&TSFE_EDIT[cmd]=' + this.cmd + '&pid=' + this.parent.pid;
 
 			// now do the AJAX request
 		new Ajax.Request(
@@ -1006,7 +1005,7 @@ var UnhideAction = Class.create(EditPanelAction, {
 
 var UpAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
-		previousEditPanel = this.parent.prev();
+		previousEditPanel = this.parent.el.prev();
 		if (previousEditPanel) {
 			previousEditPanel.insertBefore(this.parent.el);
 			$super();
@@ -1030,7 +1029,7 @@ var UpAction = Class.create(EditPanelAction, {
 
 var DownAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
-		nextEditPanel = this.parent.next();
+		nextEditPanel = this.parent.el.next();
 		if (nextEditPanel) {
 			nextEditPanel.insertAfter(this.parent.el);
 			$super();
@@ -1116,7 +1115,7 @@ var CloseAction = Class.create(EditPanelAction, {
 		FrontendEditing.editWindow.close();
 		
 		if (json.id) {
-			ep = FrontendEditing.editPanels.get(json.id);
+			ep = FrontendEditing.editPanels[(json.id)];
 			ep.replaceContent(json.content);
 			FrontendEditing.scanForEditPanels();
 		} else {
@@ -1128,7 +1127,7 @@ var CloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
 			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
-			FrontendEditing.editPanels.set(nextEditPanel.identify(), new EditPanel(nextEditPanel));
+			FrontendEditing.editPanels[(nextEditPanel.identify(), new EditPanel(nextEditPanel))];
 		}
 	},
 
@@ -1166,7 +1165,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 		FrontendEditing.editWindow.close();
 
 		if (json.id) {
-			ep = FrontendEditing.editPanels.get(json.id);
+			ep = FrontendEditing.editPanels[json.id];
 			ep.replaceContent(json.content);
 			FrontendEditing.scanForEditPanels();
 		} else {
@@ -1178,7 +1177,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
 			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
-			FrontendEditing.editPanels.set(nextEditPanel.id, new EditPanel(nextEditPanel));
+			FrontendEditing.editPanels[nextEditPanel.id] = new EditPanel(nextEditPanel);
 		}
 	},
 
@@ -1655,7 +1654,7 @@ var EditWindow = Class.create({
  */
 var FrontendEditing = {
 	clipboard: new ClipboardObj(),
-	editPanels: new Hash(),
+	editPanels: {},
 	editPanelsEnabled: true,
 	JSHandler: new AJAXJavascriptHandler(),
 	toolbar: null,
@@ -1674,8 +1673,8 @@ var FrontendEditing = {
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
 		Ext.DomQuery.select('div.feEditAdvanced-allWrapper').each(function (el) {
-			FrontendEditing.editPanels.set(el.id, new EditPanel(el));
-		});
+			this.editPanels[el.id] = new EditPanel(el);
+		}, this);
 	},
 
 	initializeMenuBar: function() {
@@ -1684,7 +1683,9 @@ var FrontendEditing = {
 };
 
 // Set the edit panels and menu bar on window load
-Ext.onReady(FrontendEditing.init, FrontendEditing);
+Ext.onReady(function() {
+	FrontendEditing.init();
+});
 
 
 /*

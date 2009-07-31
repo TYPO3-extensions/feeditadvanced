@@ -1,7 +1,7 @@
 TYPO3.FeEdit.DropZone.addMethods({
 	onDrop: function(dragSource, evt, data) {
 		var linkedDragEl = Ext.get(dragSource.getEl());
-		var dropZoneEl = Ext.get(this.getEl());
+		var dropZoneEl   = Ext.get(this.getEl());
 
 		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
 			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
@@ -99,46 +99,52 @@ var MoveAfterAction = Class.create(EditPanelAction, {
 
 FrontendEditing.addFlexformPointers = function() {
 	Ext.DomQuery.select('input.flexformPointers').each(function(pointerElement) {
-		var pointerElement = Ext.get(pointerElement);
+		pointerElement = Ext.get(pointerElement);
+
+		// will be something like pages:25:sDEF:lDEF:field_content:vDEF
 		var containerName = pointerElement.id;
+
+		// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
 		var pointerArray = pointerElement.getValue().split(',');
 
-		var pointerElementArray = pointerElement.parent().select('.feEditAdvanced-allWrapper');
-
-		if ((pointerArray.length > 0) && pointerElementArray.length > 0) {
-			var counter = 0;
-			pointerArray.each(function(pointerValue) {
-				counter++;
-				firstElement = pointerElementArray.first();
+		// all elements in that container
+		var pointerElementArray = Ext.get(pointerElement.parent()).select('.feEditAdvanced-allWrapper');
+		if (pointerArray.length > 0 && pointerElementArray.getCount() > 0) {
+			Ext.each(pointerArray, function(pointerValue, counter) {
+				firstElement = Ext.get(pointerElementArray.item(0));
 				if (firstElement) {
-					recordElement = firstElement.select('form input[name="TSFE_EDIT[record]"]').first();
+					recordElement = Ext.get(firstElement.select('form input.feEditAdvanced-tsfeedit-input-record').item(0));
 					if (recordElement.getValue() == 'tt_content:' + pointerValue) {
 							// flexformPointer element
-						recordElement.insertAfter({
-							'tag': 'input',
+						Ext.DomHelper.insertAfter(recordElement, {
+							'tag':  'input',
 							'type': 'hidden',
 							'name': 'TSFE_EDIT[flexformPointer]',
 							'value': containerName + ':' + counter + '/tt_content:' + pointerValue
 						});
 							// sourcePointer element
-						recordElement.insertAfter({
-							'tag': 'input',
+						Ext.DomHelper.insertAfter(recordElement, {
+							'tag':  'input',
 							'type': 'hidden',
 							'name': 'TSFE_EDIT[sourcePointer]',
 							'value': containerName + ':' + counter
 						});
 							// destinationPointer element
-						recordElement.insertAfter({
-							'tag': 'input',
+						Ext.DomHelper.insertAfter(recordElement, {
+							'tag':  'input',
 							'type': 'hidden',
 							'name': 'TSFE_EDIT[destinationPointer]',
 							'value': containerName + ':' + counter
 						});
-						pointerElementArray.shift();
+						
+							// and remove the element which is now not needed anymore
+						pointerElementArray.removeElement(firstElement);
 					}
 				}
 			});
 		}
 	});
 };
-Ext.onReady(FrontendEditing.addFlexformPointers, FrontendEditing);
+Ext.onReady(function() {
+	FrontendEditing.addFlexformPointers();
+});
