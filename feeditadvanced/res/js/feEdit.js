@@ -377,6 +377,7 @@ var EditPanel = Class.create({
 			this.alwaysVisible = true;
 		}
 
+		this.initUpDownButtons();
 		this.updateUpDownButtons();
 	},
 	
@@ -629,16 +630,34 @@ var EditPanel = Class.create({
 		Ext.get(this.el.query('input.upAction')).hide();
 	},
 
+	showUpButton: function() {
+		Ext.get(this.el.query('input.upAction')).show();
+	},
+
 	hideDownButton: function() {
 		Ext.get(this.el.query('input.downAction')).hide();
 	},
+
+	showDownButton: function() {
+		Ext.get(this.el.query('input.downAction')).show();
+	},
 	
+	// needs to be set, otherwise they are shown and hidden with "visibility: visible"
+	initUpDownButtons: function() {
+		Ext.get(this.el.query('input.upAction')).setVisibilityMode(Ext.Element.DISPLAY);
+		Ext.get(this.el.query('input.downAction')).setVisibilityMode(Ext.Element.DISPLAY);
+	},
+
 	updateUpDownButtons: function() {
 		if (!this.getPreviousContentElement()) {
 			this.hideUpButton();
+		} else {
+			this.showUpButton();
 		}
 		if (!this.getNextContentElement()) {
 			this.hideDownButton();
+		} else {
+			this.showDownButton();
 		}
 	}
 });
@@ -1056,12 +1075,12 @@ var UnhideAction = Class.create(EditPanelAction, {
 var UpAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 		previousEditPanel = this.parent.el.prev();
-		console.log(previousEditPanel);
 		if (previousEditPanel) {
 			this.parent.el.insertBefore(previousEditPanel);
-			$super();
 			this.parent.updateUpDownButtons();
-			previousEditPanel.updateUpDownButtons();
+			FrontendEditing.editPanels.get(previousEditPanel.id).updateUpDownButtons();
+			this.parent.hideMenu();
+			$super();
 		}
 	},
 	
@@ -1084,7 +1103,10 @@ var DownAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 		nextEditPanel = this.parent.el.next();
 		if (nextEditPanel) {
-			nextEditPanel.insertAfter(this.parent.el);
+			this.parent.el.insertAfter(nextEditPanel);
+			this.parent.updateUpDownButtons();
+			FrontendEditing.editPanels.get(nextEditPanel.id).updateUpDownButtons();
+			this.parent.hideMenu();
 			$super();
 		}
 	},
