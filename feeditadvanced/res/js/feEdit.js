@@ -376,14 +376,8 @@ var EditPanel = Class.create({
 		if (this.el.hasClass('alwaysVisible')) {
 			this.alwaysVisible = true;
 		}
-		
-		if (!this.getNextContentElement()) {
-			this.hideDownButton();
-		}
-		
-		if (!this.getPreviousContentElement()) {
-			this.hideUpButton();
-		}
+
+		this.updateUpDownButtons();
 	},
 	
 	addDropZone: function() {
@@ -637,8 +631,16 @@ var EditPanel = Class.create({
 
 	hideDownButton: function() {
 		Ext.get(this.el.query('input.downAction')).hide();
+	},
+	
+	updateUpDownButtons: function() {
+		if (!this.getPreviousContentElement()) {
+			this.hideUpButton();
+		}
+		if (!this.getNextContentElement()) {
+			this.hideDownButton();
+		}
 	}
-
 });
 
 
@@ -1054,9 +1056,12 @@ var UnhideAction = Class.create(EditPanelAction, {
 var UpAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 		previousEditPanel = this.parent.el.prev();
+		console.log(previousEditPanel);
 		if (previousEditPanel) {
-			previousEditPanel.insertBefore(this.parent.el);
+			this.parent.el.insertBefore(previousEditPanel);
 			$super();
+			this.parent.updateUpDownButtons();
+			previousEditPanel.updateUpDownButtons();
 		}
 	},
 	

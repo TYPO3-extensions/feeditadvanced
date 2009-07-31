@@ -123,7 +123,7 @@ class tx_feeditadvanced_ajax {
 
 			$this->ajaxObj->setContentFormat('jsonbody');
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
-			$this->ajaxObj->setContentFormat('plain');
+			//$this->ajaxObj->setContentFormat('plain');
 
 			// current workaround for the iframe variants who want valid XHTML :)
 			if ($cmd == 'edit') {
