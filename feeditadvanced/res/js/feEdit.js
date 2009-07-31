@@ -772,59 +772,83 @@ TYPO3.FeEdit.DropZone = Class.create({
  * default action that every action inherits from
  */
 var EditPanelAction = Class.create({
+	ajaxRequestUrl: 'index.php',
+		// there are "ajax" actions and "iframe" actions
+		// iframe actions only need the URL and don't trigger the AJAX call when triggering the action
+	requestType: 'ajax',
+	_isModalAction: true,
+
+	// init function, sets the "parent" which is the edit panel (I believe so at least)
+	// and the command from the subclass
 	initialize: function(parent) {
 		this.parent = parent;
 		this.cmd = this._getCmd();
 	},
 
+	// is called when an icon is pressed, something is dropped or edited
 	trigger: function(additionalParams) {
 			// handle timeouts
 		//this.setupTimer();
 		FrontendEditing.actionRunning = true;
 
-		this.parent.getFormParameters();
-		
+		// instantiate a edit window if this doesn't exist yet
 		if (!FrontendEditing.editWindow) {
 			FrontendEditing.editWindow = new EditWindow(this.parent);
 		}
-			
+		
+		// if the "isModelAction" flag is set, then there is a notification message
 		if (this._isModalAction) {
 			FrontendEditing.editWindow.displayLoadingMessage(this._getNotificationMessage());
 		}
-		
-		paramRequest = 'eID=feeditadvanced';
+
+		// make a request to the server
+		if (this.requestType == 'ajax') {
+				// now do the AJAX request
+			Ext.Ajax.request({
+				url:    this.ajaxRequestUrl,
+				params: this._getAjaxRequestParameters(additionalParams),
+				method: 'POST',
+				headers: { Accept: 'application/json' },
+				success: this._handleSuccessResponse,
+				failure: this._handleFailureResponse,
+				scope: this
+			});
+		}
+	},
+	
+	// function to return a full URL (good for the iframe variant)
+	getRequestUrl: function(additionalParams) {
+		return this.ajaxRequestUrl + (this.ajaxRequestUrl.indexOf('?') == -1 ? '?' : '&') + this._getAjaxRequestParameters(additionalParams);
+	},
+
+	// function to return additional parameters that will be sent to the server through the AJAX call or iframe GeT parameters
+	_getAjaxRequestParameters: function(additionalParams) {
+		var requestParams = 'eID=feeditadvanced';
+		this.parent.getFormParameters();
 		if (this.parent.params) {
-			paramRequest += '&' + this.parent.params;
+			requestParams += '&' + this.parent.params;
 		}
 
 		if (additionalParams != undefined) {
-			paramRequest += '&' + additionalParams;
+			requestParams += '&' + additionalParams;
 		}
 		// remove the doubled TSFE_EDIT[cmd] (because it's empty) before we add the real cmd value
-		paramRequest = paramRequest.replace(/&TSFE_EDIT%5Bcmd%5D=&/, '&');
-		paramRequest += '&TSFE_EDIT[cmd]=' + this.cmd + '&pid=' + this.parent.pid;
-
-			// now do the AJAX request
-		Ext.Ajax.request({
-			url: 'index.php',
-			params: paramRequest,
-			method: 'POST',
-			headers: { Accept: 'application/json' },
-			success: function(response, options) {
-				FrontendEditing.actionRunning = false;
-				this._handleResponse(response);
-			},
-			failure: function(response, options) {
-				FrontendEditing.actionRunning = false;
-				alert('AJAX error: ' + response.responseText);
-			},
-			scope: this
-		});
+		requestParams  = requestParams.replace(/&TSFE_EDIT%5Bcmd%5D=&/, '&');
+		requestParams += '&TSFE_EDIT[cmd]=' + this.cmd + '&pid=' + this.parent.pid;
+		return requestParams;
 	},
-	
-	_handleResponse: function(xhr) {
+
+	// callback function to handle if the AJAX response was faulty
+	_handleFailureResponse: function(response, options) {
+		FrontendEditing.actionRunning = false;
+		alert('AJAX error: ' + response.responseText);
+	},
+
+	// callback function to extract the JSON response from the server 
+	_handleSuccessResponse: function(response, options) {
+		FrontendEditing.actionRunning = false;
 		if (xhr.getResponseHeader('X-JSON')) {
-			var json = Ext.decode(xhr.responseText);
+			var json = Ext.decode(response.responseText);
 			if (json.error) {
 				FrontendEditing.editWindow.displayStaticMessage(json.error);
 			} else if (json.url) {
@@ -919,9 +943,8 @@ var EditPanelAction = Class.create({
 	},
 	showFailureMessage: function() {
 		alert('Network problems -- please try again shortly.');
-	},
+	}
 	
-	_isModalAction: true
 });
 
 
@@ -941,6 +964,15 @@ var NewRecordAction = Class.create(EditPanelAction, {
 });
 
 var EditAction = Class.create(EditPanelAction, {
+	requestType: 'iframe',
+
+	trigger: function($super) {
+		$super();
+		var url = this.getRequestUrl();
+		console.log(url);
+		FrontendEditing.editWindow.displayIframe('Edit Content Block', url);
+	},
+
 	_process: function(json) {
 		FrontendEditing.editWindow.displayEditingForm('Edit Content Block', json.content);
 	},
@@ -1343,9 +1375,9 @@ EditPanel.addMethods({
 var ClipboardObj = Class.create({
 	showClipboard: function(onOff) {
 		if (onOff) {
-			$('clipboardToolbar').show();
+			Ext.get('clipboardToolbar').show();
 		} else {
-			$('clibpoardToolbar').hide();
+			Ext.get('clibpoardToolbar').hide();
 		}
 	},
 
@@ -1442,7 +1474,6 @@ var EditWindow = Class.create({
 
 		this.windowElement.insert(new Element('div', {'id': 'feEditAdvanced-loading'}).hide());
 		$('feEditAdvanced-loading').insert(new Element('h3').update(message));
-		$('feEditAdvanced-loading').insert(new Element('div').insert(new Element('img', {'src': 'typo3/sysext/feeditadvanced/res/icons/spinner.gif'})));
 		this._sizeAndPosition('feEditAdvanced-loading');
 		$('feEditAdvanced-loading').appear();
 		
@@ -1504,6 +1535,11 @@ var EditWindow = Class.create({
 		if (!this.windowElement.visible()) {
 			this.show();
 		}
+	},
+
+	displayIframe: function(headerText, url) {
+		this._reset();
+		Ext.ux.Lightbox.openUrl({'href': url, 'title': headerText}, 600, 400)
 	},
 	
 	_reset: function() {
@@ -1673,7 +1709,6 @@ var FrontendEditing = {
 	editPanelsEnabled: true,
 	JSHandler: new AJAXJavascriptHandler(),
 	toolbar: null,
-	editWindow: null,
 	actionRunning: false,
 	editWindow: null,
 	
