@@ -1126,9 +1126,11 @@ var CloseAction = Class.create(EditPanelAction, {
 
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
+		// @todo	Get the table from the json response.
+		table = 'tt_content'; 
 		
-		if (json.id) {
-			ep = FrontendEditing.editPanels.get(json.id);
+		if (json.uid) {
+			ep = FrontendEditing.editPanels.get([table + ':' + json.uid]);
 			ep.replaceContent(json.content);
 			FrontendEditing.scanForEditPanels();
 		} else {
@@ -1176,9 +1178,11 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
+		// @todo	Get the table from the json response.
+		table = 'tt_content';
 
-		if (json.id) {
-			ep = FrontendEditing.editPanels.get(json.id);
+		if (json.uid) {
+			ep = FrontendEditing.editPanels.get(table + ':' + json.uid);
 			ep.replaceContent(json.content);
 			FrontendEditing.scanForEditPanels();
 		} else {
