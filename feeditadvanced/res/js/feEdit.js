@@ -1037,8 +1037,8 @@ var HideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		this.parent.el.addClass('feEditAdvanced-hiddenElement');
-		this.parent.el.select('input.hideAction').hide();
-		this.parent.el.select('input.unhideAction').show();
+		Ext.get(this.parent.el.select('input.unhideAction').first()).show();
+		Ext.get(this.parent.el.select('input.hideAction').first()).hide();
 	},
 
 	_getCmd: function() {
@@ -1768,34 +1768,4 @@ var FrontendEditing = {
 // Set the edit panels and menu bar on window load
 Ext.onReady(function() {
 	FrontendEditing.init();
-});
-
-
-/*
- * @todo	Temporary fix for Webkit problems with tt_content:uid style IDs in CSS3 selects.
- */
-Selector.addMethods({
-	findElements: function(root) {
-		root = root || document;
-		var e = this.expression, results;
-
-		switch (this.mode) {
-			case 'selectorsAPI':
-				// querySelectorAll queries document-wide, then filters to descendants
-				// of the context element. That's not what we want.
-				// Add an explicit context to the selector if necessary.
-				if (root !== document) {
-					var oldId = root.id, id = $(root).identify();
-					// Use id= syntax rather than #
-					e = '[id="' + id + '"] ' + e;
-				}
-				results = $A(root.querySelectorAll(e)).map(Element.extend);
-				root.id = oldId;
-				return results;
-			case 'xpath':
-				return document._getElementsByXPath(this.xpath, root);
-			default:
-				return this.matcher(root);
-		}
-	}
 });
