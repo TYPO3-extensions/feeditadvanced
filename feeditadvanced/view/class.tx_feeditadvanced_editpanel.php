@@ -203,8 +203,8 @@ class tx_feeditadvanced_editpanel {
 				// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case
 			$hideField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'];
 			if (isset($allow['hide']) && $hideField && $GLOBALS['BE_USER']->workspace === 0 && !$dataArr['_LOCALIZED_UID']) {
+				$this->panelItems['hide'] 	= $this->editIconLinkWrap('hide',   'hideIcon',   'hideTitle',    $dataArr[$hideField] ? 'style="display:none"' : '');
 				$this->panelItems['unhide'] = $this->editIconLinkWrap('unhide', 'unhideIcon', 'unhideTitle', !$dataArr[$hideField] ? 'style="display:none"' : '');
-				$this->panelItems['hide'] 	= $this->editIconLinkWrap('hide', 'hideIcon', 'hideTitle', $dataArr[$hideField] ? 'style="display:none"' : '');
 			}
 			if (isset($allow['new'])) {
 				if ($table=='pages') {
@@ -345,6 +345,14 @@ class tx_feeditadvanced_editpanel {
 					if (array_key_exists($key, $panelItems)) {
 						$editpanelItems .= $this->addAction($key);
 						unset($panelItems[$key]);
+						if ($key == 'hide') {
+							unset($panelItems['unhide']);
+						}
+						if ($key == 'move') {
+							unset($panelItems['up']);
+							unset($panelItems['down']);
+							unset($panelItems['drag']);
+						}
 					}
 				}
 			}
@@ -356,11 +364,11 @@ class tx_feeditadvanced_editpanel {
 		
 		
 		if ($recordData['hidden']) {
-			$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-hiddenElement';
+			$markerArray['###ALLWRAPPER_CLASS###'] .= ' feEditAdvanced-hiddenElement';
 		}
 		if (isset($this->panelItems['editClick']) && !empty($this->panelItems['editClick'])) {
 			if ($this->panelItems['editClick'] != 'return false;') {
-				$markerArray['###CWRAPPER_CLASS###'] = ' editableOnClick';
+				$markerArray['###CWRAPPER_CLASS###'] .= ' editableOnClick';
 				$markerArray['###CWRAPPER_EXTRA###'] .= $this->panelItems['editClick'];
 			}
 		}
@@ -388,10 +396,10 @@ class tx_feeditadvanced_editpanel {
 	protected function addAction($key) {
 		switch ($key) {
 			case 'hide':
-				$content .= $this->panelItems['hide'] . $this->panelItems['unhide'];
+				$content = $this->panelItems['hide'] . $this->panelItems['unhide'];
 				break;
 			case 'move':
-				$content .= $this->panelItems['up'] . $this->panelItems['down'] . $this->panelItems['drag'];
+				$content = $this->panelItems['up'] . $this->panelItems['down'] . $this->panelItems['drag'];
 				break;
 			case 'editClick':
 			case 'draggable':
@@ -557,7 +565,7 @@ class tx_feeditadvanced_editpanel {
 			}
 		}
 			// add hidden fields to form
-		$hiddenF .= '<input type="hidden" name="TSFE_EDIT[doSave]" value="0" />';
+		$hiddenF .= '<input type="hidden" name="TSFE_EDIT[doSave]" class="feEditAdvanced-tsfeedit-input-doSave" value="0" />';
 		$panel .= $tceforms->intoTemplate(array('ITEM' => $hiddenF));
 
 			// create panel
