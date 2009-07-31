@@ -272,6 +272,38 @@ Ext.ux.Lightbox = (function(){
 			});		
 		},
 		
+		openLoader: function(fWidth, fHeight) {
+			fWidth = fWidth || width;
+			fHeight = fHeight || height;
+			 
+			this.setViewSize();
+			els.overlay.fadeIn({
+				duration: this.overlayDuration,
+				endOpacity: this.overlayOpacity,
+				callback: function() {
+					
+
+					// calculate top and left offset for the lightbox
+					var pageScroll = Ext.fly(document).getScroll();
+
+					var lightboxTop = pageScroll.top + (Ext.lib.Dom.getViewportHeight() / 10);
+					var lightboxLeft = pageScroll.left;
+					els.lightbox.setStyle({
+						top: lightboxTop + 'px',
+						left: lightboxLeft + 'px'
+					}).show();
+					els.msg.setStyle({
+						width: fWidth + 'px',
+						height: fHeight + 'px'
+					})
+					this.setLoader(fWidth, fHeight);
+
+					this.fireEvent('open', '#Loader#');
+				},
+				scope: this
+			});		
+		},
+		
 		setViewSize: function(){
 			var viewSize = this.getViewSize();
 			els.overlay.setStyle({
@@ -300,13 +332,15 @@ Ext.ux.Lightbox = (function(){
 			els.navNext.hide();
 			els.dataContainer.setOpacity(0.0001);
 			els.imageNumber.hide();
-
+			
 			var preload = new Image();
 			preload.onload = (function(){
 				els.image.dom.src = images[activeImage][0];
 				this.resizeImage(preload.width, preload.height);
 			}).createDelegate(this);
 			preload.src = images[activeImage][0];
+			els.navClose.show();
+			
 		},
 
 		setMessage: function(mText, fWidth, fHeight){
@@ -328,6 +362,7 @@ Ext.ux.Lightbox = (function(){
 			
 			els.msg.update(mText);
 			els.msg.show();
+			els.navClose.show();
 			
 			var wCur = els.outerImageContainer.getWidth();
 			var hCur = els.outerImageContainer.getHeight();
@@ -371,6 +406,67 @@ Ext.ux.Lightbox = (function(){
 			els.loading.hide();
 		},
 
+		setLoader: function(fWidth, fHeight){
+			fWidth = fWidth || width;
+			fHeight = fHeight || height;
+			
+			this.disableKeyNav();
+			if (this.animate) {
+				els.loading.show();
+			}
+
+			els.image.hide();
+			els.shim.hide();
+			els.msg.hide();
+			els.hoverNav.hide();
+			els.navPrev.hide();
+			els.navNext.hide();
+			els.dataContainer.setOpacity(0.0001);
+			els.imageNumber.hide();
+			els.navClose.hide();
+			
+			var wCur = els.outerImageContainer.getWidth();
+			var hCur = els.outerImageContainer.getHeight();
+
+			var wNew = fWidth;
+			var hNew = fHeight;
+
+			var wDiff = wCur - wNew;
+			var hDiff = hCur - hNew;
+
+			var queueLength = 0;
+
+			if (hDiff != 0 || wDiff != 0) {
+				els.outerImageContainer.syncFx()
+					.shift({
+						height: hNew,
+						duration: this.resizeDuration
+					})
+					.shift({
+						width: wNew,
+						duration: this.resizeDuration
+					});
+				queueLength++;
+			}
+
+			var timeout = 0;
+			if ((hDiff == 0) && (wDiff == 0)) {
+				timeout = (Ext.isIE) ? 250 : 100;
+			}
+
+			(function(){
+				els.hoverNav.setWidth(els.imageContainer.getWidth() + 'px');
+
+				els.navPrev.setHeight(fHeight + 'px');
+				els.navNext.setHeight(fHeight + 'px');
+
+				els.outerDataContainer.setWidth(wNew + 'px');
+				els.dataContainer.setOpacity(100);
+
+			}).createDelegate(this).defer((this.resizeDuration*1000) + timeout);
+			
+		},
+
 		setUrl: function(index, fWidth, fHeight){
 			activeUrl = index;
 
@@ -390,6 +486,7 @@ Ext.ux.Lightbox = (function(){
 
 			els.shim.dom.src = urls[activeUrl][0];
 			els.shim.show();
+			els.navClose.show();
 			
 			var wCur = els.outerImageContainer.getWidth();
 			var hCur = els.outerImageContainer.getHeight();
