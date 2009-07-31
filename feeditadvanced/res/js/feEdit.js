@@ -332,7 +332,7 @@ var AJAXJavascriptHandler = Class.create({
 					if (TBE_EDITOR.doSaveFieldName) {
 						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value = 1;
 					}
-					FrontendEditing.editPanels[(Ext.get(TBE_EDITOR.formname).parent().parent().id)].save();
+					FrontendEditing.editPanels.get((Ext.get(TBE_EDITOR.formname).parent().parent().id)).save();
 				};
 				TBE_EDITOR.submitForm = ajaxSubmitForm;
 			}
@@ -673,7 +673,7 @@ TYPO3.FeEdit.DropZone = Class.create({
 
 		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
 			// create a new record
-			ep = FrontendEditing.editPanels[(dropZoneEl.prev('.feEditAdvanced-allWrapper').id)];
+			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
 			ep.create(linkedDragEl.getAttribute('href'));
 
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
@@ -682,8 +682,8 @@ TYPO3.FeEdit.DropZone = Class.create({
 			dropZoneEl.insertBefore(linkedDragEl);
 			//TODO: Ext? linkedDragEl.highlight({ duration: 3 });
 
-			source = FrontendEditing.editPanels[(linkedDragEl.id)];
-			destination = FrontendEditing.editPanels[(linkedDragEl.prev().id)];
+			source = FrontendEditing.editPanels.get(linkedDragEl.id);
+			destination = FrontendEditing.editPanels.get(linkedDragEl.prev().id);
 
 			var recordFields = destination.record.split(':');
 			source.moveAfter(recordFields[1]);
@@ -698,8 +698,8 @@ TYPO3.FeEdit.DropZone = Class.create({
 				// if source is on this page, then move it
 			if (srcElement) {
 					// set source and destination
-				source = FrontendEditing.editPanels[(srcElement.id)];
-				destination = FrontendEditing.editPanels[(dropZoneEl.prev().id)];
+				source = FrontendEditing.editPanels.get(srcElement.id);
+				destination = FrontendEditing.editPanels.get(dropZoneEl.prev().id);
 
 				srcElement.setAttribute('style', '');
 					// do the actual cut/copy
@@ -717,7 +717,7 @@ TYPO3.FeEdit.DropZone = Class.create({
 
 					clonedElement = srcElement.cloneNode(true);
 					dropZoneEl.insertAfter(clonedElement);
-					newSource = FrontendEditing.editPanels[(clonedElement.id)];
+					newSource = FrontendEditing.editPanels.get(clonedElement.id);
 					newSource.paste(destination.getDestinationPointer());
 				}
 			}
@@ -813,10 +813,8 @@ var EditPanelAction = Class.create({
 	},
 	
 	_handleResponse: function(xhr) {
-		var json = '';
 		if (xhr.getResponseHeader('X-JSON')) {
 			var json = Ext.decode(xhr.responseText);
-			console.log(json);
 			if (json.error) {
 				FrontendEditing.editWindow.displayStaticMessage(json.error);
 			} else if (json.url) {
@@ -866,6 +864,7 @@ var EditPanelAction = Class.create({
 		return 'Already processing an action, please wait.';
 	},
 
+	// TODO: do we need this? there is a timer in Ext.Ajax
 	setupTimer: function() {
 			// Register global responders that will occur on all AJAX requests
 		new Ajax.Responders.register({
@@ -1117,7 +1116,7 @@ var CloseAction = Class.create(EditPanelAction, {
 		FrontendEditing.editWindow.close();
 		
 		if (json.id) {
-			ep = FrontendEditing.editPanels[(json.id)];
+			ep = FrontendEditing.editPanels.get(json.id);
 			ep.replaceContent(json.content);
 			FrontendEditing.scanForEditPanels();
 		} else {
@@ -1129,7 +1128,7 @@ var CloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
 			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
-			FrontendEditing.editPanels[(nextEditPanel.identify(), new EditPanel(nextEditPanel))];
+			FrontendEditing.editPanels.add(nextEditPanel.id, new EditPanel(nextEditPanel));
 		}
 	},
 
@@ -1167,7 +1166,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 		FrontendEditing.editWindow.close();
 
 		if (json.id) {
-			ep = FrontendEditing.editPanels[json.id];
+			ep = FrontendEditing.editPanels.get(json.id);
 			ep.replaceContent(json.content);
 			FrontendEditing.scanForEditPanels();
 		} else {
@@ -1179,7 +1178,7 @@ var SaveAndCloseAction = Class.create(EditPanelAction, {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
 			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
-			FrontendEditing.editPanels[nextEditPanel.id] = new EditPanel(nextEditPanel);
+			FrontendEditing.editPanels.add(nextEditPanel.id, new EditPanel(nextEditPanel));
 		}
 	},
 
@@ -1656,7 +1655,7 @@ var EditWindow = Class.create({
  */
 var FrontendEditing = {
 	clipboard: new ClipboardObj(),
-	editPanels: {},
+	editPanels: new Ext.util.MixedCollection(),
 	editPanelsEnabled: true,
 	JSHandler: new AJAXJavascriptHandler(),
 	toolbar: null,
@@ -1675,10 +1674,10 @@ var FrontendEditing = {
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
 		Ext.DomQuery.select('div.feEditAdvanced-allWrapper').each(function (el) {
-			this.editPanels[el.id] = new EditPanel(el);
+			this.editPanels.add(el.id, new EditPanel(el));
 		}, this);
 	},
-
+	
 	initializeMenuBar: function() {
 		this.toolbar = new Toolbar('feEditAdvanced-menuBar');
 	}

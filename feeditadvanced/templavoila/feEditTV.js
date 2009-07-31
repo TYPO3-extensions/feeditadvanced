@@ -17,7 +17,7 @@ TYPO3.FeEdit.DropZone.addMethods({
 			source.moveAfter(destination.getDestinationPointer());
 		} else if (linkedDragEl.hasClass('clipObj')) {
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
-			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd"]').first().getValue();
+			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd').first().getValue();
 
 				// do a clear of element on clipboard
 			feClipboard.clearClipboard(linkedDragEl);
