@@ -419,12 +419,16 @@ var EditPanel = Class.create({
 					break;
 			}
 		}, this);
-		// TODO: find the corresponding Ext method here
-		this.params = Form.serializeElements(this._extraElements);
+			// make the additional formElement values as "&name=value"
+			// TODO: do we need a Ext.urlEncode here?
+		var extraParams = '';
+		Ext.each(this._extraElements, function(formElement) {
+			extraParams = '&' + formElement.getAttribute('name') + '=' + formElement.getValue();
+		});
+		this.params = extraParams;
 	},
 
 	_makeDraggable: function() {
-
 		this.dd = new Ext.dd.DragSource(this.el.parent(), {
 			// TODO: different group please
 			ddGroup: 'feeditadvanced-toolbar',
@@ -652,7 +656,7 @@ TYPO3.FeEdit.DropZone = Class.create({
 			//  Use an ID that relate the dropzone element back to the edit panel.
 			// Insert the drop zone after the edit panel.
 		var editPanelEl = editPanel.el;
-		this.el = Ext.DomHelper.append(editPanelEl.parent(), {
+		this.el = Ext.DomHelper.insertAfter(editPanelEl, {
 			'tag': 'div',
 			'id': 'feEditAdvanced-dropzone-' + editPanelEl.id,
 			'cls': 'feEditAdvanced-dropzone',
