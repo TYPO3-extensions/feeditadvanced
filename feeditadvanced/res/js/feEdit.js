@@ -560,7 +560,9 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 			// Set up event handlers for the hover menu buttons
 		editPanelToolbar.query('.feEditAdvanced-editButton').each(function(button) {
-			Ext.get(button).addListener('click', this._handleButtonClick, this);
+			button = Ext.get(button);
+			button.setVisibilityMode(Ext.Element.DISPLAY);
+			button.addListener('click', this._handleButtonClick, this);
 		}, this);
 
 			// Setup event handler for edit on click
@@ -611,8 +613,8 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	
 	// needs to be set, otherwise they are shown and hidden with "visibility: visible"
 	initUpDownButtons: function() {
-		Ext.get(this.el.query('input.upAction')).setVisibilityMode(Ext.Element.DISPLAY);
-		Ext.get(this.el.query('input.downAction')).setVisibilityMode(Ext.Element.DISPLAY);
+		//Ext.get(this.el.query('input.upAction')).setVisibilityMode(Ext.Element.DISPLAY);
+		//Ext.get(this.el.query('input.downAction')).setVisibilityMode(Ext.Element.DISPLAY);
 	},
 
 	updateUpDownButtons: function() {
@@ -1112,16 +1114,15 @@ TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 });
 
 TYPO3.FeEdit.SaveAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
-	trigger: function($super) {
+	trigger: function() {
 			// Set the doSave element.
-		var content = $(this.parent.el.dom);
-		content.select('input[name="TSFE_EDIT[doSave]"]').each(function(el) {
-			el.writeAttribute("value", 1);
+		this.parent.el.select('input.feEditAdvanced-tsfeedit-input-doSave').each(function(el) {
+			Ext.get(el).set({'value': 1});
 		});
 
 		if (TBE_EDITOR.checkSubmit(1)) {
-			formParams = $('feEditAdvanced-editWindow').select('form')[0].serialize();
-			$super(formParams);
+			formParams = Ext.Ajax.serializeForm(Ext.get('feEditAdvanced-editWindow').select('form').first());
+			TYPO3.FeEdit.SaveAction.superclass.trigger.apply(this, formParams);
 		}
 	},
 
@@ -1388,7 +1389,7 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 	addToClipboard: function(obj) {
 		this.showClipboard(true);
 			// create & cleanup "display" string
-		strVal = obj.parent.el.select('.feEditAdvanced-contentWrapper')[0].innerHTML;
+		strVal = obj.parent.el.select('.feEditAdvanced-contentWrapper').first().innerHTML;
 			 // strip tags
 		strVal = strVal.replace(/(<([^>]+)>)/ig,"");
 			 // trim spaces
@@ -1458,247 +1459,28 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 
 
 TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
-	constructor: function(editPanel) {
-		this.editPanel = editPanel;
-
-		if ($('overlay')) {
-			$('overlay').remove();
-		}
-
-			// Add the overlay before the editWindow for IE.
-		this.overlay = new Element('div', {'id': 'feEditAdvanced-overlay', 'style': 'display:none'});
-		$(document.body).insert({'bottom': this.overlay});
-
-		this.windowElement  = new Element('div', {'id': 'feEditAdvanced-editWindow', 'style': 'display: none'});
-		$(document.body).insert({'bottom': this.windowElement});
-	},
+	constructor: function() { },
 
 	displayLoadingMessage: function(message) {
-		this._reset();
-
-		this.windowElement.insert(new Element('div', {'id': 'feEditAdvanced-loading'}).hide());
-		$('feEditAdvanced-loading').insert(new Element('h3').update(message));
-		this._sizeAndPosition('feEditAdvanced-loading');
-		$('feEditAdvanced-loading').appear();
-		
-		if (!this.windowElement.visible()) {
-			this.show();
-		}
+		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100)
 	},
 	
 	displayStaticMessage: function(message) {
-		this._reset();
-
-		this.windowElement.insert(new Element('div', {'id': 'feEditAdvanced-loading'}).hide());
-		closeElement   = new Element('button', {'id': 'feEditAdvanced-closeButton', 'value':' ', 'type':'submit'}).addClassName('closeAction');
-		this.windowElement.insert({'top': closeElement});
-		
-		$('feEditAdvanced-loading').insert(new Element('h3').update(message));
-		this._sizeAndPosition('feEditAdvanced-loading');
-		$('feEditAdvanced-loading').appear();
-		
-		closeElement.observe('click', this.close.bindAsEventListener(this));
-		
-		if (!this.windowElement.visible()) {
-			this.show();
-		}
-	},
-	
-	displayEditingForm: function(headerText, content) {
-		this._reset();
-
-		headerElement  = new Element('div', {'id': 'feEditAdvanced-editWindowHeader'}).update(headerText).hide();
-		closeElement   = new Element('button', {'id': 'feEditAdvanced-closeButton', 'value':' ', 'type':'submit'}).addClassName('closeAction').hide();
-		contentElement = new Element('div', {'id': 'feEditAdvanced-editWindowContent'}).hide();
-		controlElement = new Element('div', {'id': 'feEditAdvanced-editWindowControls', 'style': 'width:100%; height:50px;'}).hide();
-
-		this.windowElement.insert({'top': closeElement});
-		this.windowElement.insert({'bottom': headerElement});
-		this.windowElement.insert({'bottom': contentElement});
-
-		$('feEditAdvanced-editWindowContent').update(content.stripScripts());
-
-		this.windowElement.insert({'bottom': $('feEditAdvanced-editControls').hide()});
-
-		this.setMaxContentSize();
-		this._sizeAndPosition('feEditAdvanced-editWindowContent');
-
-		new Effect.Parallel([
-			new Effect.Appear(headerElement, {sync: true}),
-			new Effect.Appear(closeElement, {sync: true}),
-			new Effect.Appear(contentElement, {sync: true}),
-			new Effect.Appear(controlElement, {sync: true}),
-			new Effect.Appear($('feEditAdvanced-editControls'), {sync: true})
-			], {
-				queue: 'end'
-			}
-		);
-
-		this.editPanel.createFormObservers();
-		
-		if (!this.windowElement.visible()) {
-			this.show();
-		}
+		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100)
 	},
 
 	displayIframe: function(headerText, url) {
-		this._reset();
 		Ext.ux.Lightbox.openUrl({'href': url, 'title': headerText}, 600, 400)
-	},
-	
-	_reset: function() {
-		if ($('feEditAdvanced-editWindowContent')) {
-			$('feEditAdvanced-editWindowContent').remove();
-		}
-
-		if ($('feEditAdvanced-editWindowHeader')) {
-			$('feEditAdvanced-editWindowHeader').remove();
-		}
-
-		if ($('feEditAdvanced-loading')) {
-			$('feEditAdvanced-loading').remove();
-		}
-
-		if ($('feEditAdvanced-editControls')) {
-			$('feEditAdvanced-editControls').remove();
-		}
-
-		if ($('feEditAdvanced-closeButton')) {
-			$('feEditAdvanced-closeButton').remove();
-		}
-	},
-	
-	_sizeAndPosition: function(newElement) {
-		if (this.windowElement.visible()) {
-			newElement = $(newElement);
-
-			oldWidth = this.windowElement.getWidth();
-			oldHeight = this.windowElement.getHeight();
-			oldLeft = this.windowElement.offsetLeft;
-
-				// @todo	Magic numbers for min width need to be removed.
-			if (newElement.identify() == 'feEditAdvanced-loading') {
-				newWidth = 220;
-			} else {
-				newWidth = 555;
-			}
-
-				// Morph from loading box dimensions to editing form dimentions, keeping center the same.
-			this.windowElement.morph({
-				minWidth: newWidth + 'px',
-				left: (oldLeft - ((newWidth - oldWidth) / 2)) + 'px'
-			});
-		} else {
-				// Position the editWindow in the middle of the page.
-			this.windowElement.setStyle({
-				'left': ((document.viewport.getWidth() - this.windowElement.getWidth()) / 2) + 'px'
-			});
-		}
-	},
-	
-	_getBorder: function() {
-		editWindowHeight = this.windowElement.getHeight();
-		editWindowWidth = this.windowElement.getWidth();
-
-		if ($('feEditAdvanced-editWindowContent')) {
-			contentHeight = $('feEditAdvanced-editWindowContent').getHeight();
-			contentWidth = $('feEditAdvanced-editWindowContent').getWidth();
-		} else {
-			contentHeight = $('feEditAdvanced-loading').getHeight();
-			contentWidth = $('feEditAdvanced-loading').getWidth();
-		}
-
-		return {height: editWindowHeight - contentHeight, width: editWindowWidth - contentWidth};
-	},
-
-	show: function() {
-		if (!this.windowElement.visible()) {
-			FrontendEditing.editPanelsEnabled = false;
-
-				// fade in overlay
-			this.overlay.appear({ duration: 0.25, from:0.0, to: 0.5});
-			this.windowElement.appear({ duration: 0.25, queue: 'end'});
-		}
-	},
-	
-	setMaxContentSize: function() {
-		topOffset = $('feEditAdvanced-menuBar').getHeight();
-		editWindowBorder = this._getBorder();
-
-		windowHeight = document.viewport.getHeight();
-		maxEditWindowHeight = windowHeight - topOffset;
-		maxContentHeight = maxEditWindowHeight - editWindowBorder.height;
-
-			// @todo	Max width is currently half the browser window.  Need to tweak this.
-		windowWidth = document.viewport.getWidth();
-		maxEditWindowWidth = windowWidth / 2;
-		maxContentWidth = maxEditWindowWidth - editWindowBorder.width;
-
-		$('feEditAdvanced-editWindowContent').setStyle({
-			maxHeight: maxContentHeight + 'px',
-			maxWidth: maxContentWidth + 'px'
-		});
-	},
-
-		// @todo	Not currently working (and not called anywhere) due to timing issues.
-	resize: function() {
-			// determine editWindow size and location
-		currentWindowHeight = document.viewport.getHeight();
-		currentWindowWidth  = document.viewport.getWidth();
-		currentEditWindowHeight = this.windowElement.getHeight();
-		currentEditWindowWidth  = this.windowElement.getWidth();
-		currentContentHeight = $('feEditAdvanced-editWindowContent').getHeight();
-		currentContentWidth  = $('feEditAdvanced-editWindowContent').getWidth();
-		maxEditWindowHeight = currentWindowHeight - 100;
-		maxEditWindowWidth = currentWindowWidth - 100;
-
-			// If the editWindow is too tall for the browser window, scale it down
-		if (currentEditWindowHeight > maxEditWindowHeight) {
-			newHeight = maxEditWindowHeight - (currentEditWindowHeight - currentContentHeight);
-				// If we're making the content area smaller, we need to account for scrollbars too.
-			newWidth = currentEditWindowWidth + 20;
-
-			$('feEditAdvanced-editWindowContent').setStyle({
-				height: newHeight + 'px',
-				width: newWidth + 'px'
-			});
-		}
-
-			// If the editWindow is too wide for the browser window, scale it down.
-		if (currentEditWindowWidth > maxEditWindowWidth) {
-			newWidth = maxEditWindowWidth - (currentEditWindowWidth - currentContentWidth);
-			newHeight = currentEditWindowHeight + 20;
-			$('feEditAdvanced-editWindowContent').setStyle({
-				width: newWidth + 'px'
-			});
-		}
-
-			// Center the editWindow on the page.
-		this.windowElement.setStyle({
-			position: 'fixed',
-			top: ((currentWindowHeight / 2) - (currentEditWindowHeight / 2)) + 'px',
-			left: ((currentWindowWidth / 2) - (currentEditWindowWidth / 2)) + 'px'
-		});
 	},
 
 	close: function() {
-		this.windowElement.shrink();
-		this.overlay.fade({duration: 0.75, from: 0.5, to: 0.0, afterFinish: function() {  FrontendEditing.editWindow = null; }});
-		this.windowElement.remove();
-
+		Ext.ux.Lightbox.close();
 		FrontendEditing.editPanelsEnabled = true;
 
 			// Reset elements to be validated by TBE_EDITOR.
 		if (typeof(TBE_EDITOR) != "undefined") {
 			TBE_EDITOR.elements = {};
 			TBE_EDITOR.nested = {'field':{}, 'level':{}};
-		}
-	},
-
-	hideAll: function() {
-		if (this.overlay) {
-			this.overlay.remove();
-			this.overlay = undefined;
 		}
 	}
 });
