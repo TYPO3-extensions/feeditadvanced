@@ -352,7 +352,6 @@ var EditPanel = Class.create({
 	menuEl: null,
 		// the DOM element of the form object of the editPanel of this content element
 	formEl: null,
-	_extraElements: [],
 	params: null,
 
 	pid: null,
@@ -418,9 +417,6 @@ var EditPanel = Class.create({
 				case 'TSFE_EDIT[pid]':
 					this.pid = formElement.getValue();
 					break;
-				default:
-					this._extraElements.push(formElement);
-					break;
 			}
 		}, this);
 			// make the additional formElement values as "&name=value"
@@ -428,7 +424,7 @@ var EditPanel = Class.create({
 	},
 
 	_makeDraggable: function() {
-		this.dd = new Ext.dd.DragSource(this.el.parent(), {
+		this.dd = new Ext.dd.DragSource(this.el, {
 			// TODO: different group please
 			ddGroup: 'feeditadvanced-toolbar',
 //			dropAllowed: 'feEditAdvanced-dropzone'
@@ -438,7 +434,8 @@ var EditPanel = Class.create({
 		var dragHandle = Ext.get(this.el.select('.feEditAdvanced-dragHandle').first());
 		var dragHandleId = Ext.id(dragHandle, 'feEditAdvanced-dragHandle-');
 		dragHandle.set({'id': dragHandleId});
-		this.dd.setHandleElId(dragHandleId);
+		this.dd.setOuterHandleElId(dragHandleId);
+		//this.dd.setDragElId(this.el.id);
 
 		this.dd.startDrag = function(x, y) {
 			var dragEl = Ext.get(this.getDragEl());
@@ -456,8 +453,8 @@ var EditPanel = Class.create({
 			});
 		};
 
-		this.dd.onDragOver = function(evt, id) {
 			// id is the ID of the drop zone
+		this.dd.onDragOver = function(evt, id) {
 			/*
 							Position.prepare();
 				var point = [Event.pointerX(event), Event.pointerY(event)];
@@ -470,7 +467,8 @@ var EditPanel = Class.create({
 			*/
 		};
 
-		this.dd.afterInvalidDrop = this.dd.afterDragDrop = function(evt, id) {
+			// id is the ID of the drop zone
+		this.dd.afterDragDrop = this.dd.afterInvalidDrop = function(evt, id) {
 				// Disable drop indicators when a drag is done
 			FrontendEditing.editPanelsEnabled = true;
 			FrontendEditing.editPanels.each(function(panel) {
@@ -484,11 +482,11 @@ var EditPanel = Class.create({
 	_handleButtonClick: function(evt) {
 		var targetEl = evt.getTarget();
 		targetEl = Ext.get(targetEl);
-		if (!targetEl.hasClass('feEditAdvanced-editButton') &&
+		if (targetEl && 
+		    !targetEl.hasClass('feEditAdvanced-editButton') &&
 		    !targetEl.hasClass('feEditAdvanced-actionButton') &&
-			targetEl.id != 'feEditAdvanced-closeButton') {
-			targetEl = Ext.get(targetEl).up('.feEditAdvanced-actionButton, .feEditAdvanced-editButton');
-			targetEl = Ext.get(targetEl);
+		    targetEl.id != 'feEditAdvanced-closeButton') {
+			targetEl = Ext.get(targetEl.up('.feEditAdvanced-actionButton, .feEditAdvanced-editButton'));
 		}
 
 		if (targetEl) {
@@ -615,9 +613,9 @@ var EditPanel = Class.create({
 	},
 
 	replaceContent: function(newContent) {
-		var elId = this.el.id;
-		this.el = this.el.replaceWith(newContent);
-		this.el.id = elId;
+		var newEl = Ext.DomHelper.insertAfter(this.el, newContent, true);
+		this.el.remove();
+		this.el = Ext.get(newEl);
 	},
 	
 	removeContent: function() {
@@ -737,7 +735,7 @@ TYPO3.FeEdit.DropZone = Class.create({
 		console.log('hovering over a dropzone');
 		var dragEl = Ext.get(dragSource.getDragEl());
 		this.el.addClass('feEditAdvanced-dropzoneActive');
-		console.debug(dragEl);
+
 			// used for moving editpanels around
 			// If we're hovering over a dropzone,
 			// make the dropzone large enough to accomodate the element
