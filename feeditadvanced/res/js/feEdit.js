@@ -361,8 +361,8 @@ var EditPanel = Class.create({
 
 	initialize: function(wrapperElement) {
 		this.el = Ext.get(wrapperElement);
-		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv').item(0));
-		this.formEl = Ext.get(this.el.select('form').item(0));	// todo: we should use a class here
+		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv').first());
+		this.formEl = Ext.get(this.el.select('form').first());	// todo: we should use a class here
 		this.hoverMenuEnabled = true;
 		this.getFormParameters();
 		this.setupEventListeners();
@@ -375,11 +375,11 @@ var EditPanel = Class.create({
 			this.alwaysVisible = true;
 		}
 		
-		if (!this.next()) {
+		if (!this.getNextContentElement()) {
 			this.hideDownButton();
 		}
 		
-		if (!this.previous()) {
+		if (!this.getPreviousContentElement()) {
 			this.hideUpButton();
 		}
 	},
@@ -432,7 +432,7 @@ var EditPanel = Class.create({
 		});
 		
 		// find the handle and give the handle an ID
-		var dragHandle = Ext.get(this.el.select('.feEditAdvanced-dragHandle').item(0));
+		var dragHandle = Ext.get(this.el.select('.feEditAdvanced-dragHandle').first());
 		var dragHandleId = Ext.id(dragHandle, 'feEditAdvanced-dragHandle-');
 		dragHandle.set({'id': dragHandleId});
 		this.dd.setHandleElId(dragHandleId);
@@ -622,12 +622,12 @@ var EditPanel = Class.create({
 		this.el = null;
 	},
 	
-	previous: function() {
-		return this.el.prev();
+	getPreviousContentElement: function() {
+		return this.el.prev('.feEditAdvanced-allWrapper');
 	},
 	
-	next: function() {
-		return this.el.next();
+	getNextContentElement: function() {
+		return this.el.next('.feEditAdvanced-allWrapper');
 	},
 	
 	hideUpButton: function() {
@@ -689,8 +689,8 @@ TYPO3.FeEdit.DropZone = Class.create({
 			source.moveAfter(recordFields[1]);
 
 		} else if (linkedDragEl.hasClass('clipObj')) {
-			srcElement = linkedDragEl.select('form input[name="TSFE_EDIT[record]"]')[0].getValue();
-			cmd = linkedDragEl.select('form input[name="TSFE_EDIT[cmd]"]')[0].getValue();
+			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
+			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd"]').first().getValue();
 
 				// do a clear of element on clipboard
 			FrontendEditing.clipboard.clearClipboard(linkedDragEl);
@@ -791,31 +791,32 @@ var EditPanelAction = Class.create({
 			paramRequest += '&' + additionalParams;
 		}
 		// remove the doubled TSFE_EDIT[cmd] (because it's empty) before we add the real cmd value
-		if (paramRequest.indexOf('TSFE_EDIT%5Bcmd%5D=') != -1) {
-			paramRequest = paramRequest.replace(/&TSFE_EDIT%5Bcmd%5D=&/, '&');
-		}
+		paramRequest = paramRequest.replace(/&TSFE_EDIT%5Bcmd%5D=&/, '&');
 		paramRequest += '&TSFE_EDIT[cmd]=' + this.cmd + '&pid=' + this.parent.pid;
 
 			// now do the AJAX request
-		new Ajax.Request(
-			'index.php', {
-				method: 'post',
-				parameters: paramRequest,
-				requestHeaders: { Accept: 'application/json' },
-				onComplete: function(xhr) {
-					FrontendEditing.actionRunning = false;
-					this._handleResponse(xhr);
-				}.bind(this),
-				onError: function(xhr) {
-					FrontendEditing.actionRunning = false;
-					alert('AJAX error: ' + xhr.responseText);
-				}.bind(this)
+		Ext.Ajax.request({
+			url: 'index.php',
+			params: paramRequest,
+			method: 'POST',
+			headers: { Accept: 'application/json' },
+			success: function(response, options) {
+				FrontendEditing.actionRunning = false;
+				this._handleResponse(response);
+			},
+			failure: function(response, options) {
+				FrontendEditing.actionRunning = false;
+				alert('AJAX error: ' + response.responseText);
+			},
+			scope: this
 		});
 	},
 	
 	_handleResponse: function(xhr) {
-		if (xhr.responseText.isJSON()) {
-			var json = xhr.responseText.evalJSON(true);
+		var json = '';
+		if (xhr.getResponseHeader('X-JSON')) {
+			var json = Ext.decode(xhr.responseText);
+			console.log(json);
 			if (json.error) {
 				FrontendEditing.editWindow.displayStaticMessage(json.error);
 			} else if (json.url) {
@@ -988,8 +989,8 @@ var UnhideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		this.parent.el.removeClass('feEditAdvanced-hiddenElement');
-		Ext.get(this.parent.el.select('input.unhideAction:first').item(0)).hide();
-		Ext.get(this.parent.el.select('input.hideAction:first').item(0)).show();
+		Ext.get(this.parent.el.select('input.unhideAction').first()).hide();
+		Ext.get(this.parent.el.select('input.hideAction').first()).show();
 	},
 
 	_getCmd: function() {
@@ -1067,6 +1068,7 @@ var MoveAfterAction = Class.create(EditPanelAction, {
 
 	_isModalAction: false
 });
+
 var SaveAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 			// Set the doSave element.

@@ -16,8 +16,8 @@ TYPO3.FeEdit.DropZone.addMethods({
 			destination = FrontendEditing.editPanels.get(linkedDragEl.prev().id);
 			source.moveAfter(destination.getDestinationPointer());
 		} else if (linkedDragEl.hasClass('clipObj')) {
-			srcElement = linkedDragEl.select('form input[name="TSFE_EDIT[record]"]')[0].getValue();
-			cmd = linkedDragEl.select('form input[name="TSFE_EDIT[cmd]"]')[0].getValue();
+			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
+			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd"]').first().getValue();
 
 				// do a clear of element on clipboard
 			feClipboard.clearClipboard(linkedDragEl);
@@ -111,9 +111,10 @@ FrontendEditing.addFlexformPointers = function() {
 		var pointerElementArray = Ext.get(pointerElement.parent()).select('.feEditAdvanced-allWrapper');
 		if (pointerArray.length > 0 && pointerElementArray.getCount() > 0) {
 			Ext.each(pointerArray, function(pointerValue, counter) {
-				firstElement = Ext.get(pointerElementArray.item(0));
+				counter++;
+				firstElement = Ext.get(pointerElementArray.first());
 				if (firstElement) {
-					recordElement = Ext.get(firstElement.select('form input.feEditAdvanced-tsfeedit-input-record').item(0));
+					recordElement = Ext.get(firstElement.select('form input.feEditAdvanced-tsfeedit-input-record').first());
 					if (recordElement.getValue() == 'tt_content:' + pointerValue) {
 							// flexformPointer element
 						Ext.DomHelper.insertAfter(recordElement, {

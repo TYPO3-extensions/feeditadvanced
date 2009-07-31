@@ -240,9 +240,9 @@ class tx_feeditadvanced_editpanel {
 			}
 
 				// Add hidden fields with necessary data
-			$hiddenFieldString .= '	<input type="hidden" name="TSFE_EDIT[cmd]" value="" />
+			$hiddenFieldString .= '	<input type="hidden" name="TSFE_EDIT[cmd]" class="feEditAdvanced-tsfeedit-input-cmd" value="" />
 			<input type="hidden" name="TSFE_EDIT[record]" class="feEditAdvanced-tsfeedit-input-record" value="' . $currentRecord . '" />
-			<input type="hidden" name="TSFE_EDIT[pid]" value="' . $GLOBALS['TSFE']->id . '" />';
+			<input type="hidden" name="TSFE_EDIT[pid]" class="feEditAdvanced-tsfeedit-input-pid" value="' . $GLOBALS['TSFE']->id . '" />';
 			$markerArray['###FORM_HIDDENFIELDS###'] = $hiddenFieldString;
 		}
 
