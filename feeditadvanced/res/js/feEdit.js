@@ -83,7 +83,8 @@ var ToolbarWidget = Class.create({
 			var dragEl = Ext.get(this.getDragEl());
 			var el = Ext.get(this.getEl());
 
-			dragEl.applyStyles({'opacity':'0.6','z-index':2000});
+			dragEl.applyStyles({'z-index':2000});
+//			dragEl.applyStyles({'opacity':'0.6','z-index':2000});
 			dragEl.update(el.dom.innerHTML);
 			dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
 
@@ -94,11 +95,13 @@ var ToolbarWidget = Class.create({
 			});
 		};
 
-		this.dd.onDragOver = function(evt, id) {
+		// is called over and over again, until you leave or drop the 
 			// id is the ID of the drop zone
-		};
+/*		this.dd.onDragOver = function(evt, id) {
+			console.log('Toolbarwidget is currently over ' + id);
+		};*/
 
-		this.dd.afterDragDrop = function(evt, id) {
+		this.dd.afterInvalidDrop = this.dd.afterDragDrop = function(evt, id) {
 				// Disable drop indicators when a drag is done
 			FrontendEditing.editPanelsEnabled = true;
 			FrontendEditing.editPanels.each(function(panel) {
@@ -467,7 +470,7 @@ var EditPanel = Class.create({
 			*/
 		};
 
-		this.dd.afterDragDrop = function(evt, id) {
+		this.dd.afterInvalidDrop = this.dd.afterDragDrop = function(evt, id) {
 				// Disable drop indicators when a drag is done
 			FrontendEditing.editPanelsEnabled = true;
 			FrontendEditing.editPanels.each(function(panel) {
@@ -663,7 +666,8 @@ TYPO3.FeEdit.DropZone = Class.create({
 			overClass: 'feEditAdvanced-dropzoneActive',
 		});
 		this.dz.notifyEnter = this.onHover;
-		this.dz.notifyDrop = this.onDrop;
+		this.dz.notifyOut   = this.onHoverOut;
+		this.dz.notifyDrop  = this.onDrop;
 		Ext.dd.Registry.register(this.dz);
 	},
 
@@ -730,13 +734,21 @@ TYPO3.FeEdit.DropZone = Class.create({
 	},
 	
 	onHover: function(dragSource, evt, data) {
+		console.log('hovering over a dropzone');
 		var dragEl = Ext.get(dragSource.getDragEl());
+		this.el.addClass('feEditAdvanced-dropzoneActive');
+		console.debug(dragEl);
 			// used for moving editpanels around
 			// If we're hovering over a dropzone,
 			// make the dropzone large enough to accomodate the element
 		if (dragEl.hasClass('feEditAdvanced-allWrapper')) {
 			this.el.setStyle('height', dragEl.getHeight() + 'px');
 		}
+	},
+	
+	onHoverOut: function(source, evt, data) {
+		console.log('leaving a dropzone');
+		this.el.removeClass('feEditAdvanced-dropzoneActive');
 	},
 	
 	remove: function() {
