@@ -7,7 +7,9 @@ Ext.ux.Lightbox = (function(){
 		activeImage,
 		activeUrl,
 		initialized = false,
-		selectors = [];
+		selectors = [],
+		width = 400,
+		height = 300;
 
 	return {
 		overlayOpacity: 0.85,
@@ -43,6 +45,11 @@ Ext.ux.Lightbox = (function(){
 			els.shim = Ext.DomHelper.append(Ext.fly('ux-lightbox-imageContainer'), {
 				tag: 'iframe',
 				id: 'ux-lightbox-shim'
+			}, true);
+			
+			els.msg = Ext.DomHelper.append(Ext.fly('ux-lightbox-imageContainer'), {
+				tag: 'div',
+				id: 'ux-lightbox-msg'
 			}, true);
 
 			var ids =
@@ -231,7 +238,40 @@ Ext.ux.Lightbox = (function(){
 				scope: this
 			});
 		},
+		
+		openMessage: function(mText, fWidth, fHeight) {
+			fWidth = fWidth || width;
+			fHeight = fHeight || height;
+			 
+			els.shim.dom.src = '';
+			this.setViewSize();
+			els.overlay.fadeIn({
+				duration: this.overlayDuration,
+				endOpacity: this.overlayOpacity,
+				callback: function() {
+					
 
+					// calculate top and left offset for the lightbox
+					var pageScroll = Ext.fly(document).getScroll();
+
+					var lightboxTop = pageScroll.top + (Ext.lib.Dom.getViewportHeight() / 10);
+					var lightboxLeft = pageScroll.left;
+					els.lightbox.setStyle({
+						top: lightboxTop + 'px',
+						left: lightboxLeft + 'px'
+					}).show();
+					els.msg.setStyle({
+						width: fWidth + 'px',
+						height: fHeight + 'px'
+					})
+					this.setMessage(mText, fWidth, fHeight);
+
+					this.fireEvent('open', mText);
+				},
+				scope: this
+			});		
+		},
+		
 		setViewSize: function(){
 			var viewSize = this.getViewSize();
 			els.overlay.setStyle({
@@ -253,6 +293,8 @@ Ext.ux.Lightbox = (function(){
 			}
 
 			els.image.hide();
+			els.shim.hide();
+			els.msg.hdie();
 			els.hoverNav.hide();
 			els.navPrev.hide();
 			els.navNext.hide();
@@ -267,23 +309,26 @@ Ext.ux.Lightbox = (function(){
 			preload.src = images[activeImage][0];
 		},
 
-		setUrl: function(index, fWidth, fHeight){
-			activeUrl = index;
-
+		setMessage: function(mText, fWidth, fHeight){
+			
+			els.msg.update('');
 			this.disableKeyNav();
 			if (this.animate) {
 				els.loading.show();
 			}
 
 			els.image.hide();
+			els.shim.hide();
+			els.msg.hide();
 			els.hoverNav.hide();
 			els.navPrev.hide();
 			els.navNext.hide();
 			els.dataContainer.setOpacity(0.0001);
 			els.imageNumber.hide();
-
-			els.shim.dom.src = urls[activeUrl][0];
-
+			
+			els.msg.update(mText);
+			els.msg.show();
+			
 			var wCur = els.outerImageContainer.getWidth();
 			var hCur = els.outerImageContainer.getHeight();
 
@@ -323,7 +368,69 @@ Ext.ux.Lightbox = (function(){
 				els.dataContainer.setOpacity(100);
 
 			}).createDelegate(this).defer((this.resizeDuration*1000) + timeout);
+			els.loading.hide();
+		},
 
+		setUrl: function(index, fWidth, fHeight){
+			activeUrl = index;
+
+			this.disableKeyNav();
+			if (this.animate) {
+				els.loading.show();
+			}
+
+			els.shim.hide();
+			els.msg.hide();
+			els.image.hide();
+			els.hoverNav.hide();
+			els.navPrev.hide();
+			els.navNext.hide();
+			els.dataContainer.setOpacity(0.0001);
+			els.imageNumber.hide();
+
+			els.shim.dom.src = urls[activeUrl][0];
+			els.shim.show();
+			
+			var wCur = els.outerImageContainer.getWidth();
+			var hCur = els.outerImageContainer.getHeight();
+
+			var wNew = fWidth;
+			var hNew = fHeight;
+
+			var wDiff = wCur - wNew;
+			var hDiff = hCur - hNew;
+
+			var queueLength = 0;
+
+			if (hDiff != 0 || wDiff != 0) {
+				els.outerImageContainer.syncFx()
+					.shift({
+						height: hNew,
+						duration: this.resizeDuration
+					})
+					.shift({
+						width: wNew,
+						duration: this.resizeDuration
+					});
+				queueLength++;
+			}
+
+			var timeout = 0;
+			if ((hDiff == 0) && (wDiff == 0)) {
+				timeout = (Ext.isIE) ? 250 : 100;
+			}
+
+			(function(){
+				els.hoverNav.setWidth(els.imageContainer.getWidth() + 'px');
+
+				els.navPrev.setHeight(fHeight + 'px');
+				els.navNext.setHeight(fHeight + 'px');
+
+				els.outerDataContainer.setWidth(wNew + 'px');
+				els.dataContainer.setOpacity(100);
+
+			}).createDelegate(this).defer((this.resizeDuration*1000) + timeout);
+			els.loading.hide();
 		},
 
 		resizeImage: function(w, h, urlmode){
