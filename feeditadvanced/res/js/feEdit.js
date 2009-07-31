@@ -847,7 +847,7 @@ var EditPanelAction = Class.create({
 	// callback function to extract the JSON response from the server 
 	_handleSuccessResponse: function(response, options) {
 		FrontendEditing.actionRunning = false;
-		if (xhr.getResponseHeader('X-JSON')) {
+		if (response.getResponseHeader('X-JSON')) {
 			var json = Ext.decode(response.responseText);
 			if (json.error) {
 				FrontendEditing.editWindow.displayStaticMessage(json.error);
@@ -952,9 +952,13 @@ var EditPanelAction = Class.create({
 var NewRecordAction = Class.create(EditPanelAction, {
 	requestType: 'iframe',
 
-	_process: function (json) {
-		FrontendEditing.editWindow.displayEditingForm('New Content Block', json.content);
+	trigger: function($super) {
+		$super();
+		var url = this.getRequestUrl();
+		FrontendEditing.editWindow.displayIframe('New Content Block', url);
 	},
+
+	_process: function () {},
 
 	_getCmd: function() {
 		return 'new';
@@ -974,7 +978,7 @@ var EditAction = Class.create(EditPanelAction, {
 		FrontendEditing.editWindow.displayIframe('Edit Content Block', url);
 	},
 
-	_process: function() { },
+	_process: function() {},
 
 	_getCmd: function() {
 		return 'edit';
@@ -984,6 +988,7 @@ var EditAction = Class.create(EditPanelAction, {
 		return 'Loading editing form.';
 	}
 });
+
 var DeleteAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
@@ -1006,6 +1011,7 @@ var DeleteAction = Class.create(EditPanelAction, {
 	
 	_isModalAction: false
 });
+
 var HideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
@@ -1025,6 +1031,7 @@ var HideAction = Class.create(EditPanelAction, {
 	
 	_isModalAction: false
 });
+
 var UnhideAction = Class.create(EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
