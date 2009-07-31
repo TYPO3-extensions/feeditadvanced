@@ -116,25 +116,34 @@ class tx_feeditadvanced_ajax {
 			require_once(PATH_typo3.'classes/class.typo3ajax.php');
 			$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
 			$this->ajaxObj = new $ajaxClass('feeditadvanced');
-			$this->ajaxObj->setContentFormat('jsonbody');
-				// @todo	Remove this line eventually.  Plain can be useful for testing though.
-			//$this->ajaxObj->setContentFormat('plain');
 
 			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
 			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
 
+
+			$this->ajaxObj->setContentFormat('jsonbody');
+				// @todo	Remove this line eventually.  Plain can be useful for testing though.
+			$this->ajaxObj->setContentFormat('plain');
+
+			// current workaround for the iframe variants who want valid XHTML :)
+			if ($cmd == 'edit') {
+				$this->ajaxObj->setContentFormat('plain');
+			}
+
+
+
 				// Call post processing function, if applicable.
 			$cmdFunction = $cmd . 'Item';
-			if (method_exists($this, $cmdFunction)) {
+			if ($cmd && method_exists($this, $cmdFunction)) {
 				$this->$cmdFunction($table, $uid);
 			}
-		}
-		
-		$this->ajaxObj->addContent('cmd', $cmd);
-		$this->ajaxObj->addContent('uid', $uid);
 
-			// Return output
-		$this->ajaxObj->render();
+			$this->ajaxObj->addContent('cmd', $cmd);
+			$this->ajaxObj->addContent('uid', $uid);
+
+				// Return output
+			$this->ajaxObj->render();
+		}
 	}
 	
 	/**

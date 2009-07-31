@@ -950,6 +950,8 @@ var EditPanelAction = Class.create({
 
 
 var NewRecordAction = Class.create(EditPanelAction, {
+	requestType: 'iframe',
+
 	_process: function (json) {
 		FrontendEditing.editWindow.displayEditingForm('New Content Block', json.content);
 	},
@@ -969,13 +971,10 @@ var EditAction = Class.create(EditPanelAction, {
 	trigger: function($super) {
 		$super();
 		var url = this.getRequestUrl();
-		console.log(url);
 		FrontendEditing.editWindow.displayIframe('Edit Content Block', url);
 	},
 
-	_process: function(json) {
-		FrontendEditing.editWindow.displayEditingForm('Edit Content Block', json.content);
-	},
+	_process: function() { },
 
 	_getCmd: function() {
 		return 'edit';

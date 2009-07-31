@@ -8,8 +8,8 @@ TYPO3.FeEdit.DropZone.addMethods({
 			ep.create(linkedDragEl.getAttribute('href'));
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 				// Move the dropped element outside the drop zone before it gets hidden.
-			linkedDragEl.setAttribute('style', '');
-			dropZoneEl.insertBefore(linkedDragEl);
+			//linkedDragEl.setAttribute('style', '');
+			linkedDragEl.insertBefore(dropZoneEl);
 			// TODO: linkedDragEl.highlight({duration: 5});
 
 			source = FrontendEditing.editPanels.get(linkedDragEl.id);
@@ -53,26 +53,27 @@ TYPO3.FeEdit.DropZone.addMethods({
 			// 		do everything except use "blank" source
 			//
 		} else {
-			alert("hmm, doesn't look like we can handle this drag.");
+			alert("hmm, doesn't look like we can handle this drag. - TV");
 		}
 	}
 });
 
 EditPanel.addMethods({
 	getFlexformPointer: function() {
-		return this.el.select('form input[name="TSFE_EDIT[flexformPointer]"]').first().getValue();
+		return this.el.select('form input.feEditAdvanced-tsfeedit-input-flexformPointer').first().getValue();
 	},
 
 	getDestinationPointer: function() {
-		return this.el.select('form input[name="TSFE_EDIT[destinationPointer]"]').first().getValue();
+		return this.el.select('form input.feEditAdvanced-tsfeedit-input-destinationPointer').first().getValue();
 	},
 
 	setDestinationPointer: function(destinationPointer) {
-		this.el.select('form input[name="TSFE_EDIT[destinationPointer]"]').first().setAttribute('value', destinationPointer);
+		this.el.select('form input.feEditAdvanced-tsfeedit-input-destinationPointer').first().set({'value': destinationPointer});
 	},
 
 	moveAfter: function(destinationPointerString) {
 		this.setDestinationPointer(destinationPointerString);
+		console.log('triggering move after action');
 		action = new MoveAfterAction(this);
 		action.trigger();
 	}
@@ -121,6 +122,7 @@ FrontendEditing.addFlexformPointers = function() {
 							'tag':  'input',
 							'type': 'hidden',
 							'name': 'TSFE_EDIT[flexformPointer]',
+							'cls':  'feEditAdvanced-tsfeedit-input-flexformPointer',
 							'value': containerName + ':' + counter + '/tt_content:' + pointerValue
 						});
 							// sourcePointer element
@@ -128,6 +130,7 @@ FrontendEditing.addFlexformPointers = function() {
 							'tag':  'input',
 							'type': 'hidden',
 							'name': 'TSFE_EDIT[sourcePointer]',
+							'cls':  'feEditAdvanced-tsfeedit-input-sourcePointer',
 							'value': containerName + ':' + counter
 						});
 							// destinationPointer element
@@ -135,6 +138,7 @@ FrontendEditing.addFlexformPointers = function() {
 							'tag':  'input',
 							'type': 'hidden',
 							'name': 'TSFE_EDIT[destinationPointer]',
+							'cls':  'feEditAdvanced-tsfeedit-input-destinationPointer',
 							'value': containerName + ':' + counter
 						});
 						
