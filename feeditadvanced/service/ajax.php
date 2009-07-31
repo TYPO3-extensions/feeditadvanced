@@ -126,7 +126,7 @@ class tx_feeditadvanced_ajax {
 			//$this->ajaxObj->setContentFormat('plain');
 
 			// current workaround for the iframe variants who want valid XHTML :)
-			if ($cmd == 'edit') {
+			if ($cmd == 'edit' || $cmd == 'new') {
 				$this->ajaxObj->setContentFormat('plain');
 			}
 
