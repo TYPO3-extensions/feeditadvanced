@@ -621,7 +621,7 @@ class tx_feeditadvanced_editpanel {
 
 			// loading ext JS, rudimentary for now (should be skinnable etc and only include the JS that is needed)
 		$GLOBALS['TSFE']->additionalHeaderData['ext-base.js'] = '<script type="text/javascript" src="typo3/contrib/extjs/adapter/ext/ext-base.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['ext-all.js'] = '<script type="text/javascript" src="typo3/contrib/extjs/ext-all.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['ext-dd.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js"></script>';
 
 			// load AJAX handling functions
 		$GLOBALS['TSFE']->additionalHeaderData['feEdit.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js"></script>';

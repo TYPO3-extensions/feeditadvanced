@@ -1,0 +1,18 @@
+For FEEdit Advanced, the following parts from Ext JS is needed:
+
+ * Ext Core
+ * Ext.util.MixedCollection (included in the ext-foundation.js)
+ * Ext.DD
+ * Ext.DD depends on ext-foundation.js, Ext.Layer (which in turn depends on Ext.Shadow)
+
+The Ext Core can be found in typo3/contrib/, the custom ext-dd.js file includes the following files from the Ext JS 3.0 release:
+
+ * pkgs/ext-foundation.js
+ * src/widgets/Shadow.js
+ * src/widgets/Layer.js
+ * pkgs/ext-dd.js
+
+The files are concatenated in that order (manually for now) and then minified (through http://refresh-sf.com/yui/).
+
+Aug 1st, 2009
+Benjamin Mack for TYPO3 4.3
