@@ -32,7 +32,7 @@ TYPO3.FeEdit.Toolbar = function(toolbarElementId) {
 		// Problem: selecting items with multiple classes while having a different root node
 		// than the original document results in nothing
 		// var allWidgets = Ext.DomQuery.select('.draggable', this.el);
-		var allWidgets = Ext.DomQuery.select('#' + this.el.id + ' .draggable');
+		var allWidgets = Ext.select('#' + this.el.id + ' .draggable');
 		// Create all the draggable buttons in the toolbar
 		allWidgets.each(function(draggableElement) {
 			this.widgets.push(new TYPO3.FeEdit.ToolbarWidget(draggableElement));
@@ -45,7 +45,7 @@ TYPO3.FeEdit.Toolbar = function(toolbarElementId) {
 	this.addDraggable = function(toolbarElement) {
 		// get draggable item
 		// var draggableElements = Ext.DomQuery.select('.draggable', toolbarElement);
-		var draggableElements = Ext.DomQuery.select('#' + toolbarElement.id + ' .draggable');
+		var draggableElements = Ext.select('#' + toolbarElement.id + ' .draggable');
 		draggableElements.each(function(draggableElement) {
 			this.widgets.push(new TYPO3.FeEdit.ToolbarWidget(draggableElement));
 		}, this);
@@ -63,13 +63,13 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 
 		// Override clicks on any elements that are also draggable. 
 		// This may eventually trigger an add in the main content area instead.
-	this.el.addListener('click', function(evt) {
+	this.el.on('click', function(evt) {
 		evt.stopEvent();
 	});
 
-	this.dd = new Ext.dd.DragSource(this.el.id, {
-		ddGroup: 'feeditadvanced-toolbar',
-//		dropAllowed: 'feEditAdvanced-dropzone'
+	this.dd = new Ext.dd.DragSource(Ext.id(this.el), {
+//		dropAllowed: 'feEditAdvanced-dropzone',
+		ddGroup: 'feeditadvanced-toolbar'
 	});
 
 	this.dd.startDrag = function(x, y) {
@@ -107,29 +107,33 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 
 	// Object for Javascript handling as part of an AJAX request.
 TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
+	regexpScriptTags: '<script[^>]*>([\\S\\s]*?)<\/script>',
+	
 	constructor: function() {
-		this.loadedElements = new Hash();
-		this.unloadedElements = new Array();
+		this.loadedElements = new Ext.util.MixedCollection();
+		this.unloadedElements = [];
 
 		this.registerLoadedElements();
 	},
 
 	registerLoadedElements: function() {
-		$$('head script[type="text/javascript"]').each(function(script) {
-			if (src = script.readAttribute('src')) {
-				this.loadedElements.set(src, 1);
+		Ext.select('head script[type="text/javascript"]').each(function(script) {
+			script = Ext.get(script);
+			if (src = script.getAttribute('src')) {
+				this.loadedElements.add(src, 1);
 			}
-		}.bind(this));
+		}, this);
 		
-		$$('head link[type="text/css"]').each(function(css) {
-			if (src = css.readAttribute('href')) {
-				this.loadedElements.set(src, 1);
+		Ext.select('head link[type="text/css"]').each(function(css) {
+			css = Ext.get(css);
+			if (src = css.getAttribute('href')) {
+				this.loadedElements.add(src, 1);
 			}
-		}.bind(this));
+		}, this);
 	},
 
 	evaluate: function(textContent) {
-		var matchScript = new RegExp(Prototype.ScriptFragment, 'img');
+		var matchScript = new RegExp(this.regexpScriptTags, 'img');
 		(textContent.match(matchScript) || []).map(function(scriptTag) {
 			this.addJavascript(scriptTag);
 		}.bind(this));
@@ -164,18 +168,18 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 	addExternalJavascript: function(src) {
 		if (!this.loadedElements.get(src)) {
 			var scriptElement = this.createScriptElement();
-			scriptElement.writeAttribute('src', src);
+			scriptElement.set({'src': src});
 
 				// Add the element to the queue for processing later on
 			this.addElementToQueue(scriptElement);
-			this.loadedElements.set(src, 1);
+			this.loadedElements.add(src, 1);
 		}
 	},
 	
 	addInlineCSS: function(cssContent) {
 		var styleElement = this.createStyleElement();
-		styleElement.writeAttribute("type", "text/css");
-		
+		styleElement.set({'type': 'text/css'});
+
 		if (styleElement.styleSheet) {   // IE
 			styleElement.styleSheet.cssText = cssContent;
 		} else {                // the world
@@ -188,12 +192,12 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 	
 	addExternalCSS: function(src) {
 		var linkElement = this.createLinkElement();
-		linkElement.writeAttribute('href', src);
+		linkElement.set({'href': src});
 		this.addElementToQueue(linkElement);
 	},
 
 	addJavascript: function(scriptTag) {
-		var matchOne = new RegExp(Prototype.ScriptFragment, 'im');
+		var matchOne = new RegExp(this.regexpScriptTags, 'im');
 		var srcFragment = 'src=(?:\"|\')([\\S\\s]*?)(?:\"|\')(?:\\S\\s)*?\>';
 		var srcRegExp = new RegExp(srcFragment , 'im');
 		if (result = srcRegExp.exec(scriptTag)) {
@@ -207,7 +211,6 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 	
 	addCSS: function(linkTag) {
 		var hrefFragment = 'href=(?:\"|\')([\\S\\s]*?)(?:\"|\')(?:\\S\\s)*?\>';
-
 		var hrefFragment = 'href=(?:\"|\')([\\S\\s]*?)(?:\"|\')';
 		var hrefRegExp = new RegExp(hrefFragment , 'im');
 		if (result = hrefRegExp.exec(linkTag)) {
@@ -218,57 +221,56 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 
 	createScriptElement: function() {
 		var scriptID = new Date().getTime() + "_onDemandLoadedScript";
-		var scriptElement = new Element('script', {'id': scriptID, 'type': 'text/javascript'});
+		var scriptElement = Ext.DomHelper.createDom({
+			'tag': 'script',
+			'id': styleId,
+			'type': 'text/javascript'
+		});
 
-		scriptElement.onreadystatechange = function() {
-			if ((scriptElement.readyState == 'complete') || (scriptElement.readyState == 'loaded')) {
-				this.processQueue();
-			}
-		}.bind(this);
-
-		scriptElement.onload = function() {
-			this.processQueue();
-		}.bind(this);
-
+		this.addCallBacksToElementWhenLoaded(scriptElement);
 		return scriptElement;
 	},
 	
 	createStyleElement: function() {
-		var styleID = new Date().getTime() + "_onDemandLoadedStyle";
-		var styleElement = new Element('style', {'id': styleID, 'type': 'text/css'});
-		
-		styleElement.onreadystatechange = function() {
-			if ((styleElement.readyState == 'complete') || (styleElement.readyState == 'loaded')) {
-				this.processQueue();
-			}
-		}.bind(this);
-
-		styleElement.onload = function() {
-			this.processQueue();
-		}.bind(this);
-
+		var styleID = new Date().getTime() + '_onDemandLoadedStyle';
+		var styleElement = Ext.DomHelper.createDom({
+			'tag': 'style',
+			'id': styleId,
+			'type': 'text/css'
+		});
+		this.addCallBacksToElementWhenLoaded(styleElement);
 		return styleElement;
 	},
 	
 	createLinkElement: function() {
-		var styleID = new Date().getTime() + "_onDemandLoadedStyle";
-		var linkElement = new Element('link', {'id': styleID, 'rel': 'stylesheet', 'type': 'text/css'});
-		
-		linkElement.onreadystatechange = function() {
-			if ((linkElement.readyState == 'complete') || (linkElement.readyState == 'loaded')) {
-				this.processQueue();
-			}
-		}.bind(this);
-
-		linkElement.onload = function() {
-			this.processQueue();
-		}.bind(this);
-		
+		var styleID = new Date().getTime() + '_onDemandLoadedStyle';
+		var linkElement = Ext.DomHelper.createDom({
+			'tag': 'link',
+			'id': styleId,
+			'rel': 'stylesheet',
+			'type': 'text/css'
+		});
+		this.addCallBacksToElementWhenLoaded(linkElement);
 		return linkElement;
 	},
 	
+	// class that is used internally to apply certain "onstatechange" and "onload" events when the element is loaded
+	// so that the process queue is run
+	addCallBacksToElementWhenLoaded: function(element) {
+		element.on('readystatechange', function() {
+			if ((element.readyState == 'complete') || (element.readyState == 'loaded')) {
+				this.processQueue();
+			}
+		}, this);
+
+		element.on('load', function() {
+			this.processQueue();
+		}, this);
+		return element;
+	},
+	
 	addElementToHead: function(element) {
-		$(document.getElementsByTagName("head")[0]).appendChild(element);
+		Ext.DomQuery.select('head').first().appendChild(element);
 	},
 
 	addElementToQueue: function(element) {
@@ -276,13 +278,15 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 
 	processQueue: function() {
-		if(this.unloadedElements.length) {
+		if (this.unloadedElements.length) {
 				// Grab the first element in the queue and add it to the DOM.
 			firstElement = this.unloadedElements.shift();
 			if (typeof firstElement == 'object') {
 				this.addElementToHead(firstElement);
 
 					// @todo	In Webkit, first element is null sometimes.  Not sure why but it throws an error here.
+					// @todo: check if this still exists
+				console.log(firstElement)
 				try {
 					src = firstElement.readAttribute('src');
 				} catch (e) {}
@@ -292,7 +296,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 				if (!src) {
 					this.processQueue();
 				} else {
-					this.loadedElements.set(src, 1);
+					this.loadedElements.add(src, 1);
 				}
 			}
 		} else {
@@ -302,7 +306,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 					if (TBE_EDITOR.doSaveFieldName) {
 						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value = 1;
 					}
-					FrontendEditing.editPanels.get((Ext.get(TBE_EDITOR.formname).parent().parent().id)).save();
+					FrontendEditing.editPanels.get(Ext.get(TBE_EDITOR.formname).parent().parent().id).save();
 				};
 				TBE_EDITOR.submitForm = ajaxSubmitForm;
 			}
@@ -344,7 +348,6 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			this.alwaysVisible = true;
 		}
 
-		this.initUpDownButtons();
 		this.updateUpDownButtons();
 	},
 	
@@ -509,8 +512,8 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			return;
 		}
 			// make sure on valid element
-		var targetEl = evt.getTarget();
-		if (targetEl.hasClassName('editableOnClick') || targetEl.up('div.editableOnClick')) {
+		var targetEl = evt.getTarget('', '', true);
+		if (targetEl.hasClass('editableOnClick') || targetEl.up('div.editableOnClick')) {
 			this.edit();
 		}
 
@@ -539,36 +542,36 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			formEl = Ext.get(formEl);
 			// @todo Find a better way to remove the attribute completely.
 			formEl.set({'onsubmit':''});
-			formEl.addListener('submit', function(evt) { evt.stopEvent(); });
+			formEl.on('submit', function(evt) { evt.stopEvent(); });
 		}, this);
 
 			// Buttons at the bottom of the edit window
 		Ext.DomQuery.select('#feEditAdvanced-editControls button').each(function(button) {
-			Ext.get(button).addListener('click', this._handleButtonClick, this);
+			Ext.get(button).on('click', this._handleButtonClick, this);
 		}, this);
 
 			// Close button in the top right corner of the edit window
-		Ext.get('feEditAdvanced-closeButton').addListener('click', this._handleButtonClick, this);
+		Ext.get('feEditAdvanced-closeButton').on('click', this._handleButtonClick, this);
 	},
 
 	setupEventListeners: function() {
 			// Show and hide the menu based on mouseovers
-		this.el.addListener('mouseover', this.showMenu, this);
-		this.el.addListener('mouseout',  this.hideMenu, this);
+		this.el.on('mouseover', this.showMenu, this);
+		this.el.on('mouseout',  this.hideMenu, this);
 		
 		var editPanelToolbar = this.el.first();
 
 			// Set up event handlers for the hover menu buttons
-		editPanelToolbar.query('.feEditAdvanced-editButton').each(function(button) {
+		editPanelToolbar.select('.feEditAdvanced-editButton').each(function(button) {
 			button = Ext.get(button);
 			button.setVisibilityMode(Ext.Element.DISPLAY);
-			button.addListener('click', this._handleButtonClick, this);
+			button.on('click', this._handleButtonClick, this);
 		}, this);
 
 			// Setup event handler for edit on click
 		if (editPanelToolbar.next('.editableOnClick')) {
 			var editableOnClick = editPanelToolbar.next('.editableOnClick');
-			Ext.get(editableOnClick).addListener('click', this.editClick, this);
+			Ext.get(editableOnClick).on('click', this.editClick, this);
 		} else {
 				// Not editable on click means there's no visible content
 				// and so the hover menu should always be visible.
@@ -596,27 +599,21 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 	
 	hideUpButton: function() {
-		Ext.get(this.el.query('input.upAction')).hide();
+		Ext.get(this.el.select('input.upAction')).hide();
 	},
 
 	showUpButton: function() {
-		Ext.get(this.el.query('input.upAction')).show();
+		Ext.get(this.el.select('input.upAction')).show();
 	},
 
 	hideDownButton: function() {
-		Ext.get(this.el.query('input.downAction')).hide();
+		Ext.get(this.el.select('input.downAction')).hide();
 	},
 
 	showDownButton: function() {
-		Ext.get(this.el.query('input.downAction')).show();
+		Ext.get(this.el.select('input.downAction')).show();
 	},
 	
-	// needs to be set, otherwise they are shown and hidden with "visibility: visible"
-	initUpDownButtons: function() {
-		//Ext.get(this.el.query('input.upAction')).setVisibilityMode(Ext.Element.DISPLAY);
-		//Ext.get(this.el.query('input.downAction')).setVisibilityMode(Ext.Element.DISPLAY);
-	},
-
 	updateUpDownButtons: function() {
 		if (!this.getPreviousContentElement()) {
 			this.hideUpButton();
@@ -1173,7 +1170,7 @@ TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		if (json.newUID) {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
-			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
+			nextEditPanel = this.parent.getNextContentElement();
 			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
 	},
@@ -1386,10 +1383,10 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 		}
 	},
 
-	addToClipboard: function(obj) {
+	addToClipboard: function(editPanelAction) {
 		this.showClipboard(true);
 			// create & cleanup "display" string
-		strVal = obj.parent.el.select('.feEditAdvanced-contentWrapper').first().innerHTML;
+		strVal = editPanelAction.parent.el.select('.feEditAdvanced-contentWrapper').first().innerHTML;
 			 // strip tags
 		strVal = strVal.replace(/(<([^>]+)>)/ig,"");
 			 // trim spaces
@@ -1398,56 +1395,55 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 		strVal = strVal.substr(0,12);
 
 			// determine which clip object to add to
-		if (!clipboardObj.select('#clip1')[0]) {
+		if (!clipboardObj.select('#clip1').first()) {
 			clipID = 'clip1';
-		} else if (!clipboardObj.select('#clip2')[0]) {
+		} else if (!clipboardObj.select('#clip2').first()) {
 			clipID = 'clip2';
-		} else if (!clipboardObj.select('#clip3')[0]) {
+		} else if (!clipboardObj.select('#clip3').first()) {
 			clipID = 'clip3';
 		} else {
 				 // if all are used, overwrite first one
 			clipID = 'clip1';
 		}
 			// grab the UID (so can easily search based on this)
-		if (rec = obj.parent.record) {
+		if (rec = editPanelAction.parent.record) {
 			splt = rec.indexOf(':');
 			thisUID = rec.substr(splt+1);
 		}
 			// build a clipboard object that has values from content element
-		pasteValues = '<input type="hidden" name="TSFE_EDIT[cmd]" value="' + obj._getCmd() + '"><input type="hidden" name="TSFE_EDIT[record]" value="' + rec + '"><input type="hidden" name="TSFE_EDIT[pid]" value="' + obj.parent.pid + '"><input type="hidden" name="TSFE_EDIT[flexformPtr]" value="' + obj.parent.flexformPtr + '"><input type="hidden" name="TSFE_EDIT[uid]" value="' + thisUID + '">';
+		pasteValues = '<input type="hidden" name="TSFE_EDIT[cmd]" value="' + editPanelAction._getCmd() + '"><input type="hidden" name="TSFE_EDIT[record]" value="' + rec + '"><input type="hidden" name="TSFE_EDIT[pid]" value="' + editPanelAction.parent.pid + '"><input type="hidden" name="TSFE_EDIT[flexformPtr]" value="' + editPanelAction.parent.flexformPtr + '"><input type="hidden" name="TSFE_EDIT[uid]" value="' + thisUID + '">';
 		clearBtn = '<div class="clearBtn" id="clearBtn' + thisUID + '"> </div>';
 		pasteEl = '<div class="clipContainer" id="' + clipID + '"><div class="draggable clipObj"><form name="TSFE_EDIT_FORM_' + thisUID + '">' +
 					strVal + pasteValues +
 					'</form></div>' + clearBtn + '</div>';
-		newEl = clipboardObj.insert({'bottom': pasteEl});
+		newEl = clipboardObj.append(pasteEl);
 
 			// allow to click on clear button
-		thisBtn = $('clearBtn' + thisUID);
-		thisBtn.observe('click', this.clickClearClipboard.bindAsEventListener(this));
+		thisBtn = Ext.get('clearBtn' + thisUID);
+		thisBtn.on('click', this.clickClearClipboard, this);
 
 			// make the element draggable
-		clipObj = $(clipID);
-		toolbar.addDraggable(clipObj);
+		toolbar.addDraggable(Ext.get(clipObj));
 
 	},
 
-	clickClearClipboard: function(event) {
-			// find the element that clicked on
-		element = Event.findElement(event, 'div');
+		// find the element that clicked on
+	clickClearClipboard: function(evt) {
+		var element = evt.getTarget('div');
 		this.clearClipboard(element);
 	},
 
 	clearClipboard: function(element) {
-
 			// hide (or delete) the clipboard object
 		clipObj = element.up();
+		clipObj = Ext.get(clipObj);
 		clipObj.hide();
 
 			// clear out the marked content element
-		editPanelID = $(clipObj.select('form input[name="TSFE_EDIT[record]"]')[0].getValue());
-		if (editPanelID) {
-			editPanelID.removeClassName('doCopy');
-			editPanelID.removeClassName('doCut');
+		var editPanelId = clipObj.select('form input[name="TSFE_EDIT[record]"]').first().getValue();
+		if (editPanelId) {
+			Ext.get(editPanelId).removeClass('doCopy');
+			Ext.get(editPanelId).removeClass('doCut');
 		}
 
 		//@TODO check to see if anything on clipboard...if empty, then hide
@@ -1459,8 +1455,6 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 
 
 TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
-	constructor: function() { },
-
 	displayLoadingMessage: function(message) {
 		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100)
 	},
@@ -1478,7 +1472,7 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 		FrontendEditing.editPanelsEnabled = true;
 
 			// Reset elements to be validated by TBE_EDITOR.
-		if (typeof(TBE_EDITOR) != "undefined") {
+		if (typeof(TBE_EDITOR) != 'undefined') {
 			TBE_EDITOR.elements = {};
 			TBE_EDITOR.nested = {'field':{}, 'level':{}};
 		}
@@ -1497,7 +1491,7 @@ var FrontendEditing = {
 	toolbar: null,
 	actionRunning: false,
 	editWindow: null,
-	
+
 	init: function() {
 		Ext.getBody().addClass('feEditAdvanced');
 		this.scanForEditPanels();
@@ -1508,7 +1502,7 @@ var FrontendEditing = {
 		//		gives us a quick way to re-register all EditPanels when new content is added.
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
-		Ext.DomQuery.select('div.feEditAdvanced-allWrapper').each(function (el) {
+		Ext.each(Ext.query('div.feEditAdvanced-allWrapper'), function (el) {
 			this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
 		}, this);
 	},

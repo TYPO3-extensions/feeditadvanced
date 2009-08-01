@@ -99,7 +99,7 @@ TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 });
 
 FrontendEditing.addFlexformPointers = function() {
-	Ext.DomQuery.select('input.flexformPointers').each(function(pointerElement) {
+	Ext.select('input.flexformPointers').each(function(pointerElement) {
 		pointerElement = Ext.get(pointerElement);
 
 		// will be something like pages:25:sDEF:lDEF:field_content:vDEF

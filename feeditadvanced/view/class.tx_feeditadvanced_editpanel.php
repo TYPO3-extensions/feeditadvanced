@@ -619,11 +619,6 @@ class tx_feeditadvanced_editpanel {
 			return;
 		}
 
-			// load prototype/scriptaculous for FE editing and AJAX
-		$GLOBALS['TSFE']->additionalHeaderData['prototype.js'] = '<script type="text/javascript" src="typo3/contrib/prototype/prototype.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['scriptaculous.js'] = '<script type="text/javascript" src="typo3/contrib/scriptaculous/scriptaculous.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['common.js'] = '<script type="text/javascript" src="typo3/js/common.js"></script>';
-
 			// loading ext JS, rudimentary for now (should be skinnable etc and only include the JS that is needed)
 		$GLOBALS['TSFE']->additionalHeaderData['ext-base.js'] = '<script type="text/javascript" src="typo3/contrib/extjs/adapter/ext/ext-base.js"></script>';
 		$GLOBALS['TSFE']->additionalHeaderData['ext-all.js'] = '<script type="text/javascript" src="typo3/contrib/extjs/ext-all.js"></script>';
@@ -633,17 +628,6 @@ class tx_feeditadvanced_editpanel {
 		$GLOBALS['TSFE']->additionalHeaderData['lightbox.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/lightbox.js"></script>';
 		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_advanced.css'] = '<link href="' .  t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/lightbox.css" rel="stylesheet" type="text/css" />';
 
-
-			// @todo	Hack to make sure RTE styles are loaded properly in Safari.
-		/*
-		$GLOBALS['TSFE']->additionalHeaderData['htmlarea-edited-content.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/t3skin/rtehtmlarea/htmlarea-edited-content.css" />';
-		$GLOBALS['TSFE']->additionalHeaderData['htmlarea.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/t3skin/rtehtmlarea/htmlarea.css" />';
-		$GLOBALS['TSFE']->additionalHeaderData['inline-htmlarea.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/rtehtmlarea/extensions/DefaultInline/skin/htmlarea.css" />';
-		$GLOBALS['TSFE']->additionalHeaderData['fe_formsOnPage.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/feeditadvanced/res/css/fe_formsOnPage.css" />';
-		$GLOBALS['TSFE']->additionalHeaderData['theme.css'] = '<link type="text/css" rel="stylesheet" href="typo3conf/ext/date2cal/js/jscalendar/skins/t3skin/theme.css" />';
-		$GLOBALS['TSFE']->additionalHeaderData['hash'] = '<link type="text/css" rel="stylesheet" href="typo3temp/rtehtmlarea/defaultPageStyle_99aa95ce2a2efbfbaa69.css" />';
-		$GLOBALS['TSFE']->additionalHeaderData['default.css'] = '<link type="text/css" rel="stylesheet" href="typo3/sysext/rtehtmlarea/res/contentcss/default.css" />';
-		*/
 		
 			// @todo Do we need to load these now?
 		if (t3lib_extMgm::isLoaded('tinyrte')) {
@@ -675,6 +659,7 @@ class tx_feeditadvanced_editpanel {
 	* @return	void
 	*/
 	protected function addFormIncludes($tceforms=0) {
+		
 			// code for dynamic tabs
 		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/getDynTabMenuJScode.js"></script>';
 
