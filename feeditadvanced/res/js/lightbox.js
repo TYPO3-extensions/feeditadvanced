@@ -229,7 +229,8 @@ Ext.ux.Lightbox = (function(){
 					}).show();
 					els.shim.setStyle({
 						width: fWidth + 'px',
-						height: fHeight + 'px'
+						height: fHeight + 'px',
+						alpha:	'(opacity=100)'
 					})
 					this.setUrl(index, fWidth, fHeight);
 
@@ -243,7 +244,6 @@ Ext.ux.Lightbox = (function(){
 			fWidth = fWidth || width;
 			fHeight = fHeight || height;
 			 
-			els.shim.dom.src = '';
 			this.setViewSize();
 			els.overlay.fadeIn({
 				duration: this.overlayDuration,
@@ -261,8 +261,8 @@ Ext.ux.Lightbox = (function(){
 						left: lightboxLeft + 'px'
 					}).show();
 					els.msg.setStyle({
-						width: fWidth + 'px',
-						height: fHeight + 'px'
+						width: fWidth-30 + 'px',
+						height: fHeight-30 + 'px'
 					})
 					this.setMessage(mText, fWidth, fHeight);
 
@@ -364,45 +364,7 @@ Ext.ux.Lightbox = (function(){
 			els.msg.show();
 			els.navClose.show();
 			
-			var wCur = els.outerImageContainer.getWidth();
-			var hCur = els.outerImageContainer.getHeight();
-
-			var wNew = fWidth;
-			var hNew = fHeight;
-
-			var wDiff = wCur - wNew;
-			var hDiff = hCur - hNew;
-
-			var queueLength = 0;
-
-			if (hDiff != 0 || wDiff != 0) {
-				els.outerImageContainer.syncFx()
-					.shift({
-						height: hNew,
-						duration: this.resizeDuration
-					})
-					.shift({
-						width: wNew,
-						duration: this.resizeDuration
-					});
-				queueLength++;
-			}
-
-			var timeout = 0;
-			if ((hDiff == 0) && (wDiff == 0)) {
-				timeout = (Ext.isIE) ? 250 : 100;
-			}
-
-			(function(){
-				els.hoverNav.setWidth(els.imageContainer.getWidth() + 'px');
-
-				els.navPrev.setHeight(fHeight + 'px');
-				els.navNext.setHeight(fHeight + 'px');
-
-				els.outerDataContainer.setWidth(wNew + 'px');
-				els.dataContainer.setOpacity(100);
-
-			}).createDelegate(this).defer((this.resizeDuration*1000) + timeout);
+			this.resizeBox(fWidth, fHeight);
 			els.loading.hide();
 		},
 
@@ -425,45 +387,7 @@ Ext.ux.Lightbox = (function(){
 			els.imageNumber.hide();
 			els.navClose.hide();
 			
-			var wCur = els.outerImageContainer.getWidth();
-			var hCur = els.outerImageContainer.getHeight();
-
-			var wNew = fWidth;
-			var hNew = fHeight;
-
-			var wDiff = wCur - wNew;
-			var hDiff = hCur - hNew;
-
-			var queueLength = 0;
-
-			if (hDiff != 0 || wDiff != 0) {
-				els.outerImageContainer.syncFx()
-					.shift({
-						height: hNew,
-						duration: this.resizeDuration
-					})
-					.shift({
-						width: wNew,
-						duration: this.resizeDuration
-					});
-				queueLength++;
-			}
-
-			var timeout = 0;
-			if ((hDiff == 0) && (wDiff == 0)) {
-				timeout = (Ext.isIE) ? 250 : 100;
-			}
-
-			(function(){
-				els.hoverNav.setWidth(els.imageContainer.getWidth() + 'px');
-
-				els.navPrev.setHeight(fHeight + 'px');
-				els.navNext.setHeight(fHeight + 'px');
-
-				els.outerDataContainer.setWidth(wNew + 'px');
-				els.dataContainer.setOpacity(100);
-
-			}).createDelegate(this).defer((this.resizeDuration*1000) + timeout);
+			this.resizeBox(fWidth, fHeight);
 			
 		},
 
@@ -488,11 +412,19 @@ Ext.ux.Lightbox = (function(){
 			els.shim.show();
 			els.navClose.show();
 			
+			this.resizeBox(fWidth, fHeight);
+			els.shim.setStyle({
+				alpha:	'(opacity=100)'
+			});
+			els.loading.hide();
+		},
+		
+		resizeBox: function(w,h) {
 			var wCur = els.outerImageContainer.getWidth();
 			var hCur = els.outerImageContainer.getHeight();
 
-			var wNew = fWidth;
-			var hNew = fHeight;
+			var wNew = w;
+			var hNew = h;
 
 			var wDiff = wCur - wNew;
 			var hDiff = hCur - hNew;
@@ -520,16 +452,15 @@ Ext.ux.Lightbox = (function(){
 			(function(){
 				els.hoverNav.setWidth(els.imageContainer.getWidth() + 'px');
 
-				els.navPrev.setHeight(fHeight + 'px');
-				els.navNext.setHeight(fHeight + 'px');
+				els.navPrev.setHeight(w + 'px');
+				els.navNext.setHeight(h + 'px');
 
 				els.outerDataContainer.setWidth(wNew + 'px');
 				els.dataContainer.setOpacity(100);
 
 			}).createDelegate(this).defer((this.resizeDuration*1000) + timeout);
-			els.loading.hide();
 		},
-
+		
 		resizeImage: function(w, h, urlmode){
 			var wCur = els.outerImageContainer.getWidth();
 			var hCur = els.outerImageContainer.getHeight();
