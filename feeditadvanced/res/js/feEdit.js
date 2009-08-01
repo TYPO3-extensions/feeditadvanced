@@ -360,6 +360,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	removeDropZone: function() {
 		if (this.sortable && this.dropZone) {
 			this.dropZone.remove();
+			this.dropZone = null;
 		}
 	},
 
@@ -512,8 +513,8 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			return;
 		}
 			// make sure on valid element
-		var targetEl = evt.getTarget('', '', true);
-		if (targetEl.hasClass('editableOnClick') || targetEl.up('div.editableOnClick')) {
+		var targetEl = evt.getTarget('.editableOnClick', 20);
+		if (targetEl) {
 			this.edit();
 		}
 
@@ -646,9 +647,9 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 		}, true);
 
 		// create the drop zone
-		this.dz = new Ext.dd.DropZone('feEditAdvanced-dropzone-' + editPanelEl.id, {
+		this.dz = new Ext.dd.DropZone(this.el, {
 			ddGroup: 'feeditadvanced-toolbar',
-			overClass: 'feEditAdvanced-dropzoneActive',
+			overClass: 'feEditAdvanced-dropzoneActive'
 		});
 		this.dz.notifyEnter = this.onHover;
 		this.dz.notifyOut   = this.onHoverOut;
@@ -667,7 +668,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 				// Move the dropped element outside the drop zone before it gets hidden.
-			linkedDragEl.setAttribute('style', '');
+			//linkedDragEl.setAttribute('style', '');
 			dropZoneEl.insertBefore(linkedDragEl);
 			//TODO: Ext? linkedDragEl.highlight({ duration: 3 });
 
@@ -679,7 +680,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 
 		} else if (linkedDragEl.hasClass('clipObj')) {
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
-			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd"]').first().getValue();
+			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd').first().getValue();
 
 				// do a clear of element on clipboard
 			FrontendEditing.clipboard.clearClipboard(linkedDragEl);
@@ -738,17 +739,10 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 	
 	remove: function() {
 		Ext.dd.Registry.unregister(this.dz);
-		if (this.el && this.el.parent()) {
+		if (this.el) {
 			this.el.remove();
 		}
-	},
-
-	show: function() {
-		this.el.fadeIn();
-	},
-
-	hide: function() {
-		this.el.fadeOut();
+		this.el = null;
 	}
 });
 
