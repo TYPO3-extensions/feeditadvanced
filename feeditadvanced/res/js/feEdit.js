@@ -738,7 +738,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 	
 	remove: function() {
-		Ext.dd.Registry.unregister(this.dz);
+		this.dz.unreg();
 		if (this.el) {
 			this.el.remove();
 		}
