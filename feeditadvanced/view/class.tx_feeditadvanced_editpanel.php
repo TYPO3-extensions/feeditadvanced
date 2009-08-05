@@ -163,8 +163,8 @@ class tx_feeditadvanced_editpanel {
 		$markerArray['###FORM_URL###'] = $actionURL;
 		$markerArray['###FORM_ENCTYPE###'] = $GLOBALS['TYPO3_CONF_VARS']['SYS']['form_enctype'];
 		$markerArray['###FORM_ONSUBMIT###'] = 'return TBE_EDITOR.checkSubmit(1);';
-		$markerArray['###FORM_START###'] = '<form name="' . $markerArray['###FORM_NAME###'] . '" id="' . $markerArray['###FORM_NAME###'] . '" action="' . $markerArray['###FORM_URL###'] . '" method="post" enctype="' . $markerArray['###FORM_ENCTYPE###'] . '" class="feEditAdvanced-editPanelForm"  onsubmit="' . $markerArray['###FORM_ONSUBMIT###'] . '">';
-		$markerArray['###FORM_END###'] = '</form>';
+		//$markerArray['###FORM_START###'] = '<form name="' . $markerArray['###FORM_NAME###'] . '" id="' . $markerArray['###FORM_NAME###'] . '" action="' . $markerArray['###FORM_URL###'] . '" method="post" enctype="' . $markerArray['###FORM_ENCTYPE###'] . '" class="feEditAdvanced-editPanelForm"  onsubmit="' . $markerArray['###FORM_ONSUBMIT###'] . '">';
+		//$markerArray['###FORM_END###'] = '</form>';
 		$markerArray['###FORM_CONTENT###'] = ' ';
 
 			// put this in var for easy access
@@ -569,7 +569,7 @@ class tx_feeditadvanced_editpanel {
 		$panel .= $tceforms->intoTemplate(array('ITEM' => $hiddenF));
 
 			// create panel
-		$panel = $markerArray['###FORM_START###'] . '<div style="position:relative;">' . $tceforms->wrapTotal($panel, $dataArr, $table) . '</div>' . $markerArray['###FORM_END###'];
+		$panel = '<div style="position:relative;">' . $tceforms->wrapTotal($panel, $dataArr, $table) . '</div>';
 
 			// for editor code reset
 		$JSTop .= $tceforms->printNeededJSFunctions_top() . ($conf['edit.']['displayRecord'] ? $content : '');
