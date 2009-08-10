@@ -326,6 +326,50 @@ table.typo3-dyntabmenu .disabled {
 	border: none;
 }
 
+button.feEditAdvanced-actionButton,
+button#feEditAdvanced-closeButton {
+	border: 0;
+	cursor: pointer;
+	font-weight: bold;
+	padding: 0 20px 0 0;
+	margin: 8px 8px 6px 0;
+	text-align: center;
+	float: left;
+	width: auto;
+	overflow: visible;
+}
+button.feEditAdvanced-actionButton span,
+button#feEditAdvanced-closeButton span {
+	position: relative;
+	display: block;
+	white-space: nowrap;
+	padding: 0 0 0 20px;
+}
+
+*+html button span {
+	margin-top: 2px;
+}
+button.feEditAdvanced-actionButton {
+	background: url(../icons/forms/action_btn_right.png) right no-repeat;
+	font-size: 12px;
+	font-weight: bold;
+}
+button.feEditAdvanced-actionButton span {
+	height: 25px;
+	line-height: 25px;
+	background: url(../icons/forms/action_btn_left.png) left no-repeat;
+	color: #fff;
+}
+button#feEditAdvanced-closeButton {
+	height: 13px !important;
+	width: 14px !important;
+	background: url(../icons/forms/close_win.png) no-repeat;
+	position: absolute;
+	top: 5px;
+	right: 0;
+	border: 0;
+}
+
 .tabTable {
 	margin: 0 !important;
 	padding: 0 !important;
