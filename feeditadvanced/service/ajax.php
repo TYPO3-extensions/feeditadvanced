@@ -138,8 +138,11 @@ class tx_feeditadvanced_ajax {
 				$this->$cmdFunction($table, $uid);
 			}
 
-			$this->ajaxObj->addContent('cmd', $cmd);
-			$this->ajaxObj->addContent('uid', $uid);
+			// current workaround for the iframe variants who want valid XHTML :)
+			if ($cmd != 'edit' && $cmd !='new') {
+				$this->ajaxObj->addContent('cmd', $cmd);
+				$this->ajaxObj->addContent('uid', $uid);
+			}
 
 				// Return output
 			$this->ajaxObj->render();
