@@ -12,7 +12,7 @@ Ext.ux.Lightbox = (function(){
 		height = 300;
 
 	return {
-		overlayOpacity: 0.85,
+		overlayOpacity: 0.5,
 		animate: true,
 		resizeSpeed: 8,
 		borderSize: 10,
