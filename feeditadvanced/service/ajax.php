@@ -118,8 +118,12 @@ class tx_feeditadvanced_ajax {
 			$this->ajaxObj = new $ajaxClass('feeditadvanced');
 
 			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
-			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
-
+			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']) {
+				list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
+			} else {
+				list($table) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data']);
+				list($uid) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]);
+			}
 
 			$this->ajaxObj->setContentFormat('jsonbody');
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
