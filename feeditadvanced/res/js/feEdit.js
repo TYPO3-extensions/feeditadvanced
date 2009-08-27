@@ -299,20 +299,8 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 					this.loadedElements.add(src, 1);
 				}
 			}
-		} else {
-				// If we're done loading JS, add some custom TBE_EDITOR code.
-			if (typeof(TBE_EDITOR) != "undefined") {
-				var ajaxSubmitForm = function() {
-					if (TBE_EDITOR.doSaveFieldName) {
-						document[TBE_EDITOR.formname][TBE_EDITOR.doSaveFieldName].value = 1;
-					}
-					FrontendEditing.editPanels.get(Ext.get(TBE_EDITOR.formname).parent().parent().id).save();
-				};
-				TBE_EDITOR.submitForm = ajaxSubmitForm;
-			}
 		}
 	}
-
 });
 
 	// Object for an entire content element and its EditPanel.
