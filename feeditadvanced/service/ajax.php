@@ -116,21 +116,33 @@ class tx_feeditadvanced_ajax {
 			require_once(PATH_typo3.'classes/class.typo3ajax.php');
 			$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
 			$this->ajaxObj = new $ajaxClass('feeditadvanced');
-
 			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
-			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']) {
-				list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
-			} else {
+
+				// Map values from TCEForms submission to editing actions.
+			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['update']) {
+				$cmd = 'edit';
+			}
+			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['update_close']) {
+				$cmd = 'saveAndClose';
+			}
+			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['close']) {
+				$cmd = 'close';
+			}
+
+			if (!$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']) {
 				list($table) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data']);
 				list($uid) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]);
+				$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record'] = $table . ':' . $uid;
 			}
+			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
+			
 
 			$this->ajaxObj->setContentFormat('jsonbody');
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
 			//$this->ajaxObj->setContentFormat('plain');
 
 			// current workaround for the iframe variants who want valid XHTML :)
-			if ($cmd == 'edit' || $cmd == 'new') {
+			if ($cmd == 'edit' || $cmd == 'new' || $cmd == 'save') {
 				$this->ajaxObj->setContentFormat('plain');
 			}
 
@@ -143,7 +155,7 @@ class tx_feeditadvanced_ajax {
 			}
 
 			// current workaround for the iframe variants who want valid XHTML :)
-			if ($cmd != 'edit' && $cmd !='new') {
+			if ($cmd != 'edit' && $cmd !='new' && $cmd !='save') {
 				$this->ajaxObj->addContent('cmd', $cmd);
 				$this->ajaxObj->addContent('uid', $uid);
 			}
@@ -220,12 +232,6 @@ class tx_feeditadvanced_ajax {
 		
 		$editText = $this->renderContentElement($table, $uid);
 		$this->ajaxObj->addContent('content', $editText);
-
-		if ($newUID) {
-			$newText = $this->renderContentElement($table, $newUID);
-			$this->ajaxObj->addContent('newContent', $newText);
-			$this->ajaxObj->addContent('newUID', $newUID);
-		}
 	}
 
 	/**
