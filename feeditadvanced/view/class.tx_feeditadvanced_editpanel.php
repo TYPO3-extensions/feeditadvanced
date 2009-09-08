@@ -158,7 +158,7 @@ class tx_feeditadvanced_editpanel {
 		$subpartMarker = array();
 
 		$formName = 'TSFE_EDIT_FORM_' . substr($GLOBALS['TSFE']->uniqueHash(), 0, 4);
-		$actionURL = (t3lib_div::_GP('eID') == 'feeditadvanced') ? '/' : htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI'));
+		$actionURL = htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI'));
 		$markerArray['###FORM_NAME###'] = $formName;
 		$markerArray['###FORM_URL###'] = $actionURL;
 		$markerArray['###FORM_ENCTYPE###'] = $GLOBALS['TYPO3_CONF_VARS']['SYS']['form_enctype'];
