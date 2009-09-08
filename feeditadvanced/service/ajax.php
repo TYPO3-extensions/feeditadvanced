@@ -116,17 +116,21 @@ class tx_feeditadvanced_ajax {
 			require_once(PATH_typo3.'classes/class.typo3ajax.php');
 			$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
 			$this->ajaxObj = new $ajaxClass('feeditadvanced');
-			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
 
+			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
 				// Map values from TCEForms submission to editing actions.
-			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['update']) {
-				$cmd = 'edit';
-			}
-			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['update_close']) {
-				$cmd = 'saveAndClose';
-			}
-			if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['close']) {
-				$cmd = 'close';
+			if (!$cmd) {
+				if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['update']) {
+					$cmd = 'edit';
+				} elseif ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['update_close']) {
+					$cmd = 'saveAndClose';
+				} elseif ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['close']) {
+					$cmd = 'close';
+				} elseif (is_array($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'])) {
+						// If there's a data array and no action, assume that we're already showing an editing form and want to show it again.
+					$cmd = 'edit';
+				}
+				$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] = $cmd;
 			}
 
 			if (!$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']) {
@@ -136,7 +140,6 @@ class tx_feeditadvanced_ajax {
 			}
 			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
 			
-
 			$this->ajaxObj->setContentFormat('jsonbody');
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
 			//$this->ajaxObj->setContentFormat('plain');
