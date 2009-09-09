@@ -45,7 +45,7 @@ t3lib_extMgm::addUserTSConfig('
 	admPanel {
 			display_preview = 0
 			override.preview = 0
-			override.edit.displayIcons = 0
+			override.edit.displayIcons = 1
 			override.preview.showHiddenRecords = 1
 			override.preview.showHiddenPages = 1
 	}

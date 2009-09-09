@@ -90,6 +90,7 @@ class tx_feeditadvanced_editpanel {
 		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'FeEdit');
 		if ($this->modTSconfig['properties']['disable']) {
 			$this->disabled = true;
+			$GLOBALS['TSFE']->displayEditIcons = false;
 			return;
 		}
 			// set defaults for showIcons otherwise is set by $conf['allow']
