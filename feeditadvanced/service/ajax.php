@@ -144,20 +144,12 @@ class tx_feeditadvanced_ajax {
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
 			//$this->ajaxObj->setContentFormat('plain');
 
-			// current workaround for the iframe variants who want valid XHTML :)
-			if ($cmd == 'edit' || $cmd == 'new' || $cmd == 'save') {
-				$this->ajaxObj->setContentFormat('plain');
-			}
-
-
-
 				// Call post processing function, if applicable.
 			$cmdFunction = $cmd . 'Item';
 			if ($cmd && method_exists($this, $cmdFunction)) {
 				$this->$cmdFunction($table, $uid);
 			}
 
-			// current workaround for the iframe variants who want valid XHTML :)
 			if ($cmd != 'edit' && $cmd !='new' && $cmd !='save') {
 				$this->ajaxObj->addContent('cmd', $cmd);
 				$this->ajaxObj->addContent('uid', $uid);
@@ -181,6 +173,7 @@ class tx_feeditadvanced_ajax {
 			// @todo	Dave, do we still need this?  Doesn't seem like it to me.
 		//$editText = str_replace("\\t","",$editText);
 		$this->ajaxObj->addContent('content', $editText);
+		$this->ajaxObj->setContentFormat('plain');
 	}
 
 	/**
@@ -196,6 +189,7 @@ class tx_feeditadvanced_ajax {
 			// @todo	Do we need the JSON content for new_uid?
 		//$this->ajaxObj->addContent('new_uid',$newUID);	
 		$this->ajaxObj->addContent('content',$editText);
+		$this->ajaxObj->setContentFormat('plain');
 	}
 	
 	/**
@@ -206,6 +200,7 @@ class tx_feeditadvanced_ajax {
 	 * @return	void
 	 */
 	protected function saveAndCloseItem($table, $uid) {
+		
 		$this->saveItem($table, $uid);
 		
 		if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['parentEditPanel']) {
@@ -219,6 +214,8 @@ class tx_feeditadvanced_ajax {
 			$editText = $this->renderContentElement($table, $uid);
 			$this->ajaxObj->addContent('content', $editText);
 		}
+			//@todo	Requires feature #11819
+		$this->ajaxObj->setContentFormat('javascript');
 	}
 
 	/**
@@ -235,6 +232,7 @@ class tx_feeditadvanced_ajax {
 		
 		$editText = $this->renderContentElement($table, $uid);
 		$this->ajaxObj->addContent('content', $editText);
+		$this->ajaxObj->setContentFormat('plain');
 	}
 
 	/**
@@ -256,6 +254,8 @@ class tx_feeditadvanced_ajax {
 			$editText = $this->renderContentElement($table, $uid);
 			$this->ajaxObj->addContent('content', $editText);
 		}
+			//@todo	Requires feature #11819
+		$this->ajaxObj->setContentFormat('javascript');
 	}
 	
 	/**
