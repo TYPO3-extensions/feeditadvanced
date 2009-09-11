@@ -504,7 +504,7 @@ class tx_feeditadvanced_editpanel {
 		$buttons = '<div class="feEditAdvanced-editControls" id="feEditAdvanced-editControls">';
 		$buttons .= '<button type="submit" name="TSFE_EDIT[update]" value="1" class="feEditAdvanced-actionButton saveAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveButton').'</span></button>';
 		$buttons .= '<button type="submit" name="TSFE_EDIT[update_close]" value="1" class="feEditAdvanced-actionButton saveCloseAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveCloseDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveCloseButton').'</span></button>';
-		$buttons .= '<button type="submit" name="TSFE_EDIT[cancel]" value="1" class="feEditAdvanced-actionButton closeAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.closeDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('closeButton').'</span></button>';
+		$buttons .= '<button type="submit" name="TSFE_EDIT[close]" value="1" class="feEditAdvanced-actionButton closeAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.closeDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('closeButton').'</span></button>';
 		$buttons .= '</div>';
 
 			// Buttons top
