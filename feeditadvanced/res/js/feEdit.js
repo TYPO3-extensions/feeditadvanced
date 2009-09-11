@@ -569,9 +569,10 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 
 	replaceContent: function(newContent) {
-		var newEl = Ext.DomHelper.insertAfter(this.el, newContent, true);
+		elId = this.el.id;
+		Ext.DomHelper.insertAfter(this.el, newContent, true);
 		this.el.remove();
-		this.el = Ext.get(newEl);
+		this.el = Ext.get(elId);
 	},
 	
 	removeContent: function() {
