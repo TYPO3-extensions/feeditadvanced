@@ -111,15 +111,8 @@ Ext.ux.Lightbox = (function(){
 				this.close();
 			};
 
-			els.overlay.on('click', close, this);
 			els.loadingLink.on('click', close, this);
 			els.navClose.on('click', close, this);
-
-			els.lightbox.on('click', function(ev) {
-				if(ev.getTarget().id == 'ux-lightbox') {
-					this.close();
-				}
-			}, this);
 
 			els.navPrev.on('click', function(ev) {
 				ev.preventDefault();
