@@ -424,9 +424,9 @@ Ext.ux.Lightbox = (function(){
 					alpha:	'(opacity=100)'
 				});
 				
-				if (window.frames[0].response) {
+				if (window.frames['ux-lightbox-shim'].response) {
 					this.close();
-					json = window.frames[0].response;
+					json = window.frames['ux-lightbox-shim'].response;
 					ep = FrontendEditing.editPanels.get('tt_content:' + json.uid);
 					ep.replaceContent(json.content);
 					ep.setupEventListeners();
