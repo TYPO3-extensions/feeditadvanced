@@ -44,7 +44,8 @@ Ext.ux.Lightbox = (function(){
 
 			els.shim = Ext.DomHelper.append(Ext.fly('ux-lightbox-imageContainer'), {
 				tag: 'iframe',
-				id: 'ux-lightbox-shim'
+				id: 'ux-lightbox-shim',
+				name: 'ux-lightbox-shim'
 			}, true);
 			
 			els.msg = Ext.DomHelper.append(Ext.fly('ux-lightbox-imageContainer'), {
@@ -411,6 +412,27 @@ Ext.ux.Lightbox = (function(){
 			els.shim.dom.src = urls[activeUrl][0];
 			els.shim.show();
 			els.navClose.show();
+			
+			// @todo Temporary solution to pull AJAX response out of iframe.
+			els.shim.on('load', function(evt, el) {
+				els.msg.hide();
+				els.shim.show();
+				els.navClose.show();
+				
+				this.resizeBox(fWidth, fHeight);
+				els.shim.setStyle({
+					alpha:	'(opacity=100)'
+				});
+				
+				if (window.frames[0].response) {
+					this.close();
+					json = window.frames[0].response;
+					ep = FrontendEditing.editPanels.get('tt_content:' + json.uid);
+					ep.replaceContent(json.content);
+					ep.setupEventListeners();
+				}
+				
+			}, this);
 			
 			this.resizeBox(fWidth, fHeight);
 			els.shim.setStyle({
