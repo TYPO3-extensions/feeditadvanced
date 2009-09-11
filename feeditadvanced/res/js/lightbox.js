@@ -422,7 +422,7 @@ Ext.ux.Lightbox = (function(){
 					json = window.frames['ux-lightbox-shim'].response;
 					ep = FrontendEditing.editPanels.get('tt_content:' + json.uid);
 					ep.replaceContent(json.content);
-					ep.setupEventListeners();
+					FrontendEditing.scanForEditPanels();
 				}
 				
 			}, this);
