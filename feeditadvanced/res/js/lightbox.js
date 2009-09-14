@@ -337,7 +337,7 @@ Ext.ux.Lightbox = (function(){
 				duration: this.overlayDuration
 			});
 			els.shim.hide();
-			this.fireEvent('close', activeImage);
+			this.fireEvent('close', this);
 		},
 
 		getViewSize: function() {
