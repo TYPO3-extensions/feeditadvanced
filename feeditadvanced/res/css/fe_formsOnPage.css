@@ -1,5 +1,14 @@
+body {
+	margin: 0;
+	background-color: black;
+}
+.formsOnPageWrapper {
+	height: 330px;
+	overflow: auto;
+	background-color: white;
+}
+
 table.formsOnPage {
-	/* clear: both; */
 	width: 100%;
 }
 
