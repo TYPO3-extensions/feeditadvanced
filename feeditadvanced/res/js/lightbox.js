@@ -24,7 +24,6 @@ Ext.ux.Lightbox = (function(){
 				Ext.util.Observable.constructor.call(this);
 				this.addEvents('open', 'close');
 				this.initMarkup();
-				this.initEvents();
 				initialized = true;
 			}
 		},
@@ -38,18 +37,23 @@ Ext.ux.Lightbox = (function(){
 			var lightboxTpl = new Ext.Template(this.getTemplate());
 			els.lightbox = lightboxTpl.append(document.body, {}, true);
 
-			els.shim = Ext.DomHelper.append(Ext.fly('ux-lightbox-imageContainer'), {
+			els.shim = Ext.DomHelper.append(Ext.fly('ux-lightbox-content'), {
 				tag: 'iframe',
 				id: 'ux-lightbox-shim',
 				name: 'ux-lightbox-shim'
 			}, true);
 			
-			els.msg = Ext.DomHelper.append(Ext.fly('ux-lightbox-imageContainer'), {
+			els.loading = Ext.DomHelper.append(Ext.fly('ux-lightbox-content'), {
+				tag: 'div',
+				id: 'ux-lightbox-loading',
+			}, true);
+			
+			els.msg = Ext.DomHelper.append(Ext.fly('ux-lightbox-content'), {
 				tag: 'div',
 				id: 'ux-lightbox-msg'
 			}, true);
 
-			var ids = ['outerImageContainer', 'imageContainer', 'loading', 'loadingLink'];
+			var ids = ['wrapper', 'content', 'loading'];
 
 			Ext.each(ids, function(id){
 				els[id] = Ext.get('ux-lightbox-' + id);
@@ -61,7 +65,7 @@ Ext.ux.Lightbox = (function(){
 			});
 
 			var size = (this.animate ? 250 : 1) + 'px';
-			els.outerImageContainer.setStyle({
+			els.wrapper.setStyle({
 				width: size,
 				height: size
 			});
@@ -70,25 +74,12 @@ Ext.ux.Lightbox = (function(){
 		getTemplate : function() {
 			return [
 				'<div id="ux-lightbox">',
-					'<div id="ux-lightbox-outerImageContainer">',
-						'<div id="ux-lightbox-imageContainer">',
-							'<img id="ux-lightbox-image">',
-							'<div id="ux-lightbox-loading">',
-								'<a id="ux-lightbox-loadingLink"></a>',
-							'</div>',
+					'<div id="ux-lightbox-wrapper">',
+						'<div id="ux-lightbox-content">',
 						'</div>',
 					'</div>',
 				'</div>'
 			];
-		},
-
-		initEvents: function() {
-			var close = function(ev) {
-				ev.preventDefault();
-				this.close();
-			};
-
-			els.loadingLink.on('click', close, this);
 		},
 
 		register: function(sel, group) {
@@ -144,8 +135,8 @@ Ext.ux.Lightbox = (function(){
 						left: lightboxLeft + 'px'
 					}).show();
 					els.shim.setStyle({
-						width: fWidth + 'px',
-						height: fHeight + 'px',
+						width: (fWidth - 20) + 'px',
+						height: (fHeight - 20) + 'px',
 						alpha:	'(opacity=100)'
 					});
 					this.setUrl(index, fWidth, fHeight);
@@ -156,7 +147,7 @@ Ext.ux.Lightbox = (function(){
 			});
 		},
 		
-		openMessage: function(mText, fWidth, fHeight) {
+		openMessage: function(mText, fWidth, fHeight, showLoadingIndicator) {
 			fWidth = fWidth || width;
 			fHeight = fHeight || height;
 			 
@@ -176,50 +167,14 @@ Ext.ux.Lightbox = (function(){
 						top: lightboxTop + 'px',
 						left: lightboxLeft + 'px'
 					}).show();
-					els.msg.setStyle({
-						width: fWidth-30 + 'px',
-						height: fHeight-30 + 'px'
-					});
-					this.setMessage(mText, fWidth, fHeight);
+					this.setMessage(mText, fWidth, fHeight, showLoadingIndicator);
 
 					this.fireEvent('open', mText);
 				},
 				scope: this
 			});		
 		},
-		
-		openLoader: function(fWidth, fHeight) {
-			fWidth = fWidth || width;
-			fHeight = fHeight || height;
-			 
-			this.setViewSize();
-			els.overlay.fadeIn({
-				duration: this.overlayDuration,
-				endOpacity: this.overlayOpacity,
-				callback: function() {
-					
 
-					// calculate top and left offset for the lightbox
-					var pageScroll = Ext.fly(document).getScroll();
-
-					var lightboxTop = pageScroll.top + (Ext.lib.Dom.getViewportHeight() / 10);
-					var lightboxLeft = pageScroll.left;
-					els.lightbox.setStyle({
-						top: lightboxTop + 'px',
-						left: lightboxLeft + 'px'
-					}).show();
-					els.msg.setStyle({
-						width: fWidth + 'px',
-						height: fHeight + 'px'
-					});
-					this.setLoader(fWidth, fHeight);
-
-					this.fireEvent('open', '#Loader#');
-				},
-				scope: this
-			});		
-		},
-		
 		setViewSize: function(){
 			var viewSize = this.getViewSize();
 			els.overlay.setStyle({
@@ -232,10 +187,10 @@ Ext.ux.Lightbox = (function(){
 			}).show();
 		},
 
-		setMessage: function(mText, fWidth, fHeight){
+		setMessage: function(mText, fWidth, fHeight, showLoadingIndicator){
 			
 			els.msg.update('');
-			if (this.animate) {
+			if (showLoadingIndicator) {
 				els.loading.show();
 			}
 
@@ -246,43 +201,18 @@ Ext.ux.Lightbox = (function(){
 			els.msg.show();
 
 			this.resizeBox(fWidth, fHeight);
-			els.loading.hide();
-		},
-
-		setLoader: function(fWidth, fHeight){
-			fWidth = fWidth || width;
-			fHeight = fHeight || height;
-			
-			if (this.animate) {
-				els.loading.show();
-			}
-
-			els.shim.hide();
-			els.msg.hide();
-
-			this.resizeBox(fWidth, fHeight);
-			
 		},
 
 		setUrl: function(index, fWidth, fHeight){
 			activeUrl = index;
-
-			if (this.animate) {
-				els.loading.show();
-			}
-
-			els.shim.hide();
-			els.msg.hide();
-
 			els.shim.dom.src = urls[activeUrl][0];
-			els.shim.show();
-			
-			// @todo Temporary solution to pull AJAX response out of iframe.
+
 			els.shim.on('load', function(evt, el) {
 				els.msg.hide();
-				els.shim.show();
-				
+				els.loading.hide();
 				this.resizeBox(fWidth, fHeight);
+				els.shim.fadeIn();
+				
 				els.shim.setStyle({
 					alpha:	'(opacity=100)'
 				});
@@ -291,18 +221,20 @@ Ext.ux.Lightbox = (function(){
 				if (window.frames['ux-lightbox-shim'].response) {
 					this.close();
 				}
+				
+				// @todo Do something here to hide the lightbox when we're in between page loads
+				forms = Ext.get(window.frames['ux-lightbox-shim'].document.forms);
+				if (forms) {
+					forms.on('submit', function(evt, el) {
+						//alert('submitted form.  we should hide now');
+					});
+				}
 			}, this);
-
-			this.resizeBox(fWidth, fHeight);
-			els.shim.setStyle({
-				alpha:	'(opacity=100)'
-			});
-			els.loading.hide();
 		},
 		
 		resizeBox: function(w,h) {
-			var wCur = els.outerImageContainer.getWidth();
-			var hCur = els.outerImageContainer.getHeight();
+			var wCur = els.wrapper.getWidth();
+			var hCur = els.wrapper.getHeight();
 
 			var wNew = w;
 			var hNew = h;
@@ -313,7 +245,7 @@ Ext.ux.Lightbox = (function(){
 			var queueLength = 0;
 
 			if (hDiff != 0 || wDiff != 0) {
-				els.outerImageContainer.syncFx()
+				els.wrapper.syncFx()
 					.shift({
 						height: hNew,
 						duration: this.resizeDuration
