@@ -567,6 +567,53 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			this.hoverMenuAlwaysVisible = true;
 		}
 	},
+	
+	// @todo Is this beter suited as an action?
+	pushContentUpdate: function(json) {
+		if (json.content) {
+			content = json.content;
+			json.newContent = Ext.util.Format.stripScripts(content);
+		}
+
+		if (json.newContent) {
+			newContent = json.newContent;
+			json.newContent = Ext.util.Format.stripScripts(newContent);
+		}
+		id = this.el.id;
+
+		// @todo	This is where we'd normally call this._process for an action.
+		
+		// @todo	Get the table from the json response.
+		table = 'tt_content';
+
+		if (json.uid) {
+			this.replaceContent(json.content);
+			FrontendEditing.scanForEditPanels();
+		} else {
+			this.replaceContent(json.content);
+			this.setupEventListeners();
+		}
+
+		if (json.newUID) {
+			// Insert the HTML and register the new edit panel.
+			this.el.insertAfter(json.newContent);
+			nextEditPanel = this.el.next('div.feEditAdvanced-allWrapper');
+			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
+		}
+
+		this.el = Ext.get(id);
+
+		/**
+		 * Renable when JSHandler is ported to ExtJS
+		if (json.content) {
+			FrontendEditing.JSHandler.evaluate(content);
+		}
+
+		if (json.newContent) {
+			FrontendEditing.JSHandler.evaluate(newContent);
+		}
+		*/
+	},
 
 	replaceContent: function(newContent) {
 		elId = this.el.id;
@@ -1438,12 +1485,19 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 
 
 TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
+	editPanel: null,
+	
+	constructor: function(editPanel) {
+		this.editPanel = editPanel;
+		Ext.ux.Lightbox.addListener('close', this.close, this);
+	},
+	
 	displayLoadingMessage: function(message) {
-		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100)
+		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100, true)
 	},
 	
 	displayStaticMessage: function(message) {
-		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100)
+		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100, false)
 	},
 
 	displayIframe: function(headerText, url) {
@@ -1451,7 +1505,18 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 
 	close: function() {
-		Ext.ux.Lightbox.close();
+		name = 'ux-lightbox-shim';
+		if (window.frames[name].response) {
+			json = window.frames[name].response;
+
+			if (json.error) {
+				this.displayStaticMessage(json.error);
+			} else if (json.url) {
+				window.location = json.url;
+			} else {
+				this.editPanel.pushContentUpdate(json);
+			}
+		}
 		FrontendEditing.editPanelsEnabled = true;
 
 			// Reset elements to be validated by TBE_EDITOR.
