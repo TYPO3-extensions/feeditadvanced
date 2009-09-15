@@ -570,7 +570,7 @@ class tx_feeditadvanced_editpanel {
 		$panel .= $tceforms->intoTemplate(array('ITEM' => $hiddenF));
 
 			// create panel
-		$panel = '<div style="position:relative;">' . $tceforms->wrapTotal($panel, $dataArr, $table) . '</div>';
+		$panel = '<div class="formsOnPageWrapper">' . $tceforms->wrapTotal($panel, $dataArr, $table) . '</div>';
 
 			// for editor code reset
 		$JSTop .= $tceforms->printNeededJSFunctions_top() . ($conf['edit.']['displayRecord'] ? $content : '');
