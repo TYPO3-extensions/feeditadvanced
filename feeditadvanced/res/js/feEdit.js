@@ -572,7 +572,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	pushContentUpdate: function(json) {
 		if (json.content) {
 			content = json.content;
-			json.newContent = Ext.util.Format.stripScripts(content);
+			json.content = Ext.util.Format.stripScripts(content);
 		}
 
 		if (json.newContent) {
