@@ -440,7 +440,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		    !targetEl.hasClass('feEditAdvanced-editButton') &&
 		    !targetEl.hasClass('feEditAdvanced-actionButton') &&
 		    targetEl.id != 'feEditAdvanced-closeButton') {
-			targetEl = Ext.get(targetEl.up('.feEditAdvanced-actionButton, .feEditAdvanced-editButton'));
+			targetEl = Ext.get(targetEl.up('.feEditAdvanced-actionButton | .feEditAdvanced-editButton'));
 		}
 
 		if (targetEl) {
