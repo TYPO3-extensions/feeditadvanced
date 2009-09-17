@@ -573,11 +573,6 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			content = json.content;
 			json.content = Ext.util.Format.stripScripts(content);
 		}
-
-		if (json.newContent) {
-			newContent = json.newContent;
-			json.newContent = Ext.util.Format.stripScripts(newContent);
-		}
 		id = this.el.id;
 
 		// @todo	This is where we'd normally call this._process for an action.
@@ -585,31 +580,21 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		// @todo	Get the table from the json response.
 		table = 'tt_content';
 
-		if (json.uid) {
+		if ((table + ':' + json.uid) == id) {
 			this.replaceContent(json.content);
-			FrontendEditing.scanForEditPanels();
-		} else {
-			this.replaceContent(json.content);
+			this.el = Ext.get(id);
 			this.setupEventListeners();
-		}
-
-		if (json.newUID) {
-			// Insert the HTML and register the new edit panel.
-			this.el.insertAfter(json.newContent);
+		} else {
+			// Insert the HTML and register the new edit panel
+			Ext.DomHelper.insertAfter(this.el, json.content, true);
 			nextEditPanel = this.el.next('div.feEditAdvanced-allWrapper');
 			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
 
-		this.el = Ext.get(id);
-
 		/**
-		 * Renable when JSHandler is ported to ExtJS
+		 * Reenable when JSHandler is ported to ExtJS
 		if (json.content) {
 			FrontendEditing.JSHandler.evaluate(content);
-		}
-
-		if (json.newContent) {
-			FrontendEditing.JSHandler.evaluate(newContent);
 		}
 		*/
 	},
@@ -1488,7 +1473,9 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 	
 	constructor: function(editPanel) {
 		this.editPanel = editPanel;
-		Ext.ux.Lightbox.addListener('close', this.close, this);
+		if (!Ext.ux.Lightbox.hasListener('close')) {
+			Ext.ux.Lightbox.addListener('close', this.close, this);
+		}
 	},
 	
 	displayLoadingMessage: function(message) {

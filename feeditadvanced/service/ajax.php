@@ -133,14 +133,22 @@ class tx_feeditadvanced_ajax {
 				$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] = $cmd;
 			}
 
-			if (!$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']) {
+			if (is_array($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'])) {
 				list($table) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data']);
 				list($uid) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]);
+				
+				if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID']) {
+					$uid = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID'];
+				}
+					// If we're dealing with a new record, get the UID of the previous sibling.
+				if ($uid == 'NEW') {
+					$uid = abs($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]['NEW']['pid']);
+				}
 				$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record'] = $table . ':' . $uid;
 			}
 			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
-			
 			$this->ajaxObj->setContentFormat('jsonbody');
+
 				// @todo	Remove this line eventually.  Plain can be useful for testing though.
 			//$this->ajaxObj->setContentFormat('plain');
 
@@ -186,8 +194,6 @@ class tx_feeditadvanced_ajax {
 	protected function newItem($table, $uid) {
 		$editText = $this->renderContentElement($table, $uid);
 		
-			// @todo	Do we need the JSON content for new_uid?
-		//$this->ajaxObj->addContent('new_uid',$newUID);	
 		$this->ajaxObj->addContent('content',$editText);
 		$this->ajaxObj->setContentFormat('plain');
 	}
@@ -200,7 +206,6 @@ class tx_feeditadvanced_ajax {
 	 * @return	void
 	 */
 	protected function saveAndCloseItem($table, $uid) {
-		
 		$this->saveItem($table, $uid);
 		
 		if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['parentEditPanel']) {
@@ -214,7 +219,7 @@ class tx_feeditadvanced_ajax {
 			$editText = $this->renderContentElement($table, $uid);
 			$this->ajaxObj->addContent('content', $editText);
 		}
-			//@todo	Requires feature #11819
+
 		$this->ajaxObj->setContentFormat('javascript');
 	}
 
@@ -227,10 +232,8 @@ class tx_feeditadvanced_ajax {
 	 * @todo	Dave: allow more than tt_content to be saved here
 	 */
 	protected function saveItem($table, $uid) {
-		$isNew = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['new_uid'];
-		$newUID = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID'];
-		
 		$editText = $this->renderContentElement($table, $uid);
+
 		$this->ajaxObj->addContent('content', $editText);
 		$this->ajaxObj->setContentFormat('plain');
 	}
@@ -254,7 +257,7 @@ class tx_feeditadvanced_ajax {
 			$editText = $this->renderContentElement($table, $uid);
 			$this->ajaxObj->addContent('content', $editText);
 		}
-			//@todo	Requires feature #11819
+
 		$this->ajaxObj->setContentFormat('javascript');
 	}
 	
