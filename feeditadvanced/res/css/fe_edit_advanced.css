@@ -4,7 +4,6 @@
 
 body {
 	margin-top: 68px;
-	background-position: 0 68px; /* background-position-y doesn't work in FF3 */
 }
 
 #bodyattach {
@@ -14,6 +13,10 @@ body {
 img {
 	border: 0;
 	border-style: none;
+}
+
+#typo3-previewInfo {
+	margin-top: 97px !important;
 }
 
 /* ---------------------- MENUBAR ---------------------------- */
@@ -52,6 +55,7 @@ img {
 }
 #feEditAdvanced-menuBar .feEditAdvanced-firstRow,
 #feEditAdvanced-menuBar .feEditAdvanced-secondRow {
+	overflow: hidden;
 	height: 34px;
 	width: 100%;
 }
@@ -110,6 +114,7 @@ img {
 	color: #ddd;
 	cursor: move;
 	padding: 0 10px;
+	height: 34px;
 	border-right: 1px dotted #afafaf;
 }
 
@@ -234,12 +239,12 @@ img {
 /* ---------------------- DROP ZONE for Draggable ---------------------------- */
 .feEditAdvanced-dropzone {
 	width: 100%;
-	min-height: 20px;
+	min-height: 10px;
 	margin-bottom: 10px;
-	border: 1px solid red;
+	border: 1px solid #C0C0C0;
 }
 .feEditAdvanced-dropzoneActive {
-	background: yellow;
+	background: #FFFF30 !important;
 }
 
 .feEditAdvanced-dropzoneLeft,
