@@ -286,7 +286,6 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 
 					// @todo	In Webkit, first element is null sometimes.  Not sure why but it throws an error here.
 					// @todo: check if this still exists
-				console.log(firstElement)
 				try {
 					src = firstElement.readAttribute('src');
 				} catch (e) {}
@@ -1013,9 +1012,9 @@ TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		this.parent.removeContent();
 	},
 
-	trigger: function($super) {
+	trigger: function() {
 		if (confirm("Are you sure you want to delete this content?")) {
-			$super();
+			TYPO3.FeEdit.DeleteAction.superclass.trigger.apply(this);
 		}
 	},
 
@@ -1034,8 +1033,8 @@ TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		this.parent.el.addClass('feEditAdvanced-hiddenElement');
-		Ext.get(this.parent.el.select('input.unhideAction').first()).show();
-		Ext.get(this.parent.el.select('input.hideAction').first()).hide();
+		Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('block');
+		Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('none');
 	},
 
 	_getCmd: function() {
@@ -1054,8 +1053,8 @@ TYPO3.FeEdit.UnhideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		this.parent.el.removeClass('feEditAdvanced-hiddenElement');
-		Ext.get(this.parent.el.select('input.unhideAction').first()).hide();
-		Ext.get(this.parent.el.select('input.hideAction').first()).show();
+		Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('none');
+		Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('block');
 	},
 
 	_getCmd: function() {
