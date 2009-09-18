@@ -55,6 +55,7 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 		} else {
 			alert("hmm, doesn't look like we can handle this drag. - TV");
 		}
+		FrontendEditing.deactivateDropZones();
 	}
 });
 
@@ -73,7 +74,6 @@ Ext.override(TYPO3.FeEdit.EditPanel, {
 
 	moveAfter: function(destinationPointerString) {
 		this.setDestinationPointer(destinationPointerString);
-		console.log('triggering move after action');
 		action = new TYPO3.FeEdit.MoveAfterAction(this);
 		action.trigger();
 	}

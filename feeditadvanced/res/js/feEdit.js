@@ -76,15 +76,11 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 		var dragEl = Ext.get(this.getDragEl());
 		var el = Ext.get(this.getEl());
 
-		dragEl.applyStyles({'z-index':2000});
+		dragEl.applyStyles({'z-index': 2000});
 		dragEl.update(el.dom.innerHTML);
 		dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
 
-			// Enable drop indicators when a drag is started.
-		FrontendEditing.editPanelsEnabled = false;
-		FrontendEditing.editPanels.each(function(panel) {
-			panel.addDropZone();
-		});
+		FrontendEditing.activateDropZones();
 	};
 
 	// is called over and over again, until you leave or drop the 
@@ -93,13 +89,12 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 		console.log('Toolbarwidget is currently over ' + id);
 	};*/
 
-	this.dd.afterInvalidDrop = this.dd.afterDragDrop = function(evt, id) {
-			// Disable drop indicators when a drag is done
-		FrontendEditing.editPanelsEnabled = true;
-		FrontendEditing.editPanels.each(function(panel) {
-			panel.enableHoverMenu();
-			panel.removeDropZone();
-		});
+	this.dd.afterInvalidDrop = function(evt, id) {
+		FrontendEditing.deactivateDropZones();
+	};
+	
+	this.dd.afterDragDrop = function(target, evt, id) {
+		//FrontendEditing.deactivateDropZones();
 	};
 	Ext.dd.Registry.register(this.dd);
 };
@@ -321,6 +316,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 	constructor: function(wrapperElement) {
 		this.el = Ext.get(wrapperElement);
+		this.el.setVisibilityMode(Ext.Element.DISPLAY);
 		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv').first());
 		this.formEl = Ext.get(this.el.select('form').first());	// todo: we should use a class here
 		this.hoverMenuEnabled = true;
@@ -394,14 +390,11 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			var dragEl = Ext.get(this.getDragEl());
 			var el = Ext.get(this.getEl());
 
-			FrontendEditing.editPanelsEnabled = false;
+			FrontendEditing.activateDropZones();
 			FrontendEditing.editPanels.each(function(panel) {
-				panel.hideMenu();
-				panel.disableHoverMenu();
-
 					// Don't add a drop zone under the element being dragged.
-				if (el.id != panel.el.id) {
-					panel.addDropZone();
+				if (el.id == panel.el.id) {
+					panel.removeDropZone();
 				}
 			});
 		};
@@ -421,14 +414,12 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		};
 
 			// id is the ID of the drop zone
-		this.dd.afterDragDrop = this.dd.afterInvalidDrop = function(evt, id) {
-				// Disable drop indicators when a drag is done
-			FrontendEditing.editPanelsEnabled = true;
-			FrontendEditing.editPanels.each(function(panel) {
-				panel.enableHoverMenu();
-				panel.removeDropZone();
-			});
+		this.dd.afterInvalidDrop = function(evt, id) {
+			FrontendEditing.deactivateDropZones();
 		};
+		this.dd.afterDragDrop = function(target, evt, id) {
+			//FrontendEditing.deactivateDropZones();
+		}
 		Ext.dd.Registry.register(this.dd);
 	},
 
@@ -590,7 +581,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		} else {
 			// Insert the HTML and register the new edit panel
 			Ext.DomHelper.insertAfter(this.el, json.content, true);
-			nextEditPanel = this.el.next('div.feEditAdvanced-allWrapper');
+			nextEditPanel = this.el.getNextContentElement();
 			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
 
@@ -740,10 +731,10 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 		} else {
 			alert("hmm, doesn't look like we can handle this drag.");
 		}
+		FrontendEditing.deactivateDropZones();
 	},
 	
 	onHover: function(dragSource, evt, data) {
-		console.log('hovering over a dropzone');
 		var dragEl = Ext.get(dragSource.getDragEl());
 		this.el.addClass('feEditAdvanced-dropzoneActive');
 
@@ -756,7 +747,6 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 	
 	onHoverOut: function(source, evt, data) {
-		console.log('leaving a dropzone');
 		this.el.removeClass('feEditAdvanced-dropzoneActive');
 	},
 	
@@ -765,7 +755,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 		if (this.el) {
 			this.el.remove();
 		}
-		this.el = null;
+		this.dz = this.el = null;
 	}
 });
 
@@ -1240,7 +1230,7 @@ TYPO3.FeEdit.SaveAndCloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		if (json.newUID) {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
-			nextEditPanel = this.parent.el.next('div.feEditAdvanced-allWrapper');
+			nextEditPanel = this.parent.getNextContentElement();
 			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
 	},
@@ -1540,12 +1530,31 @@ var FrontendEditing = {
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
 		Ext.each(Ext.query('div.feEditAdvanced-allWrapper'), function (el) {
-			this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
+			if (el.id && !this.editPanels.get(el.id)) {	
+				this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
+			}
 		}, this);
 	},
 	
 	initializeMenuBar: function() {
 		this.toolbar = new TYPO3.FeEdit.Toolbar('feEditAdvanced-menuBar');
+	},
+	
+		// Enable drop indicators when a drag is started.
+	activateDropZones: function() {
+		FrontendEditing.editPanelsEnabled = false;
+		FrontendEditing.editPanels.each(function(panel) {
+			panel.addDropZone();
+		});
+	},
+	
+		// Disable drop indicators when a drag is done
+	deactivateDropZones: function() {
+		FrontendEditing.editPanelsEnabled = true;
+		FrontendEditing.editPanels.each(function(panel) {
+			panel.enableHoverMenu();
+			panel.removeDropZone();
+		});
 	}
 };
 
