@@ -581,7 +581,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		} else {
 			// Insert the HTML and register the new edit panel
 			Ext.DomHelper.insertAfter(this.el, json.content, true);
-			nextEditPanel = this.el.getNextContentElement();
+			nextEditPanel = this.getNextContentElement();
 			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
 
@@ -659,6 +659,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			'cls': 'feEditAdvanced-dropzone',
 			'html': '<span class="feEditAdvanced-dropzoneLeft"></span><span class="feEditAdvanced-dropzoneCenter"> </span><span class="feEditAdvanced-dropzoneRight"></span>'
 		}, true);
+		this.el.setVisibilityMode(Ext.Element.DISPLAY);
 
 		// create the drop zone
 		this.dz = new Ext.dd.DropZone(this.el, {
