@@ -145,14 +145,18 @@ class tx_feeditadvanced_newcontentelements {
 	 */
 	function getWizardItems()	{
 		$identifier = md5($this->id . $this->sys_language);
-		
+
 		// look up in cache
-		$array = $GLOBALS['typo3CacheManager']->getCache('cache_hash')->get($identifier);
-		if ($array === false) {
+		$data = t3lib_BEfunc::getHash($identifier);
+
+		if (!$data) {
 			$array = $this->wizardArray();
 				// store content in cache
-			$GLOBALS['typo3CacheManager']->getCache('cache_hash')->set($identifier, $array, array('ident_feeditNewCE'), 0);
+			t3lib_BEfunc::storeHash($identifier, serialize($array), 'feeditNewCE');
+		} else {
+			$array = unserialize($data);
 		}
+
 		return $array;
 	}
 
