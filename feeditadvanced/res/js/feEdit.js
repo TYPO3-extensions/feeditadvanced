@@ -761,8 +761,6 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 
 	// is called when an icon is pressed, something is dropped or edited
 	trigger: function(additionalParams) {
-			// handle timeouts
-		//this.setupTimer();
 		FrontendEditing.actionRunning = true;
 
 		// instantiate a edit window if this doesn't exist yet
@@ -870,56 +868,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 
 	_getAlreadyProcessingMsg: function() {
 		return 'Already processing an action, please wait.';
-	},
-
-	// TODO: do we need this? there is a timer in Ext.Ajax
-	setupTimer: function() {
-			// Register global responders that will occur on all AJAX requests
-		new Ajax.Responders.register({
-			onCreate: function(request) {
-			request['timeoutId'] = window.setTimeout(
-				function() {
-						// If we have hit the timeout and the AJAX request is active, abort it and let the user know
-					if (this.callInProgress(request.transport)) 	{
-						request.transport.abort();
-						this.showFailureMessage();
-							// Run the onFailure method if we set one up when creating the AJAX object
-						if (request.options['onFailure']) {
-							request.options['onFailure'](request.transport, request.json);
-						}
-					}
-				},
-				5000 // Five seconds
-			);
-			},
-			onComplete: function(request) {
-					// Clear the timeout, the request completed ok
-				window.clearTimeout(request['timeoutId']);
-			}
-		});
-	},
-	callInProgress: function(xmlhttp) {
-		var inProgress;
-
-		switch (xmlhttp.readyState) {
-			case 1:
-			case 2:
-			case 3:
-				inProgress = true;
-				break;
-			// Case 4 and 0
-			default:
-				inProgress = false;
-				break;
-		}
-
-		return inProgress;
-	},
-
-	showFailureMessage: function() {
-		alert('Network problems -- please try again shortly.');
 	}
-	
 });
 
 
