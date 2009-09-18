@@ -24,12 +24,13 @@ Ext.ux.Lightbox = (function(){
 				Ext.util.Observable.constructor.call(this);
 				this.addEvents('open', 'close');
 				this.initMarkup();
+				
+				els.shim.on('load', this.shimLoaded, this);
 				initialized = true;
 			}
 		},
 
 		initMarkup: function() {
-
 			els.overlay = Ext.DomHelper.append(document.body, {
 				id: 'ux-lightbox-overlay'
 			}, true);
@@ -45,7 +46,7 @@ Ext.ux.Lightbox = (function(){
 			
 			els.loading = Ext.DomHelper.append(Ext.fly('ux-lightbox-content'), {
 				tag: 'div',
-				id: 'ux-lightbox-loading',
+				id: 'ux-lightbox-loading'
 			}, true);
 			
 			els.msg = Ext.DomHelper.append(Ext.fly('ux-lightbox-content'), {
@@ -203,33 +204,35 @@ Ext.ux.Lightbox = (function(){
 			this.resizeBox(fWidth, fHeight);
 		},
 
-		setUrl: function(index, fWidth, fHeight){
+		setUrl: function(index, fWidth, fHeight) {
 			activeUrl = index;
 			els.shim.dom.src = urls[activeUrl][0];
-
-			els.shim.on('load', function(evt, el) {
-				els.msg.hide();
-				els.loading.hide();
-				this.resizeBox(fWidth, fHeight);
-				els.shim.fadeIn();
+			this.shimWidth = fWidth;
+			this.shimHeight = fHeight;
+		},
+		
+		shimLoaded : function() {
+			els.msg.hide();
+			els.loading.hide();
+			this.resizeBox(this.shimWidth, this.shimHeight);
+			els.shim.fadeIn();
 				
-				els.shim.setStyle({
-					alpha:	'(opacity=100)'
+			els.shim.setStyle({
+				alpha:	'(opacity=100)'
+			});
+				
+			// @todo What's the best way to trigger the lightbox close?
+			if (window.frames['ux-lightbox-shim'].response) {
+				this.close();
+			}
+				
+			// @todo Do something here to hide the lightbox when we're in between page loads
+			forms = Ext.get(window.frames['ux-lightbox-shim'].document.forms);
+			if (forms) {
+				forms.on('submit', function(evt, el) {
+					//alert('submitted form.  we should hide now');
 				});
-				
-				// @todo What's the best way to trigger the lightbox close?
-				if (window.frames['ux-lightbox-shim'].response) {
-					this.close();
-				}
-				
-				// @todo Do something here to hide the lightbox when we're in between page loads
-				forms = Ext.get(window.frames['ux-lightbox-shim'].document.forms);
-				if (forms) {
-					forms.on('submit', function(evt, el) {
-						//alert('submitted form.  we should hide now');
-					});
-				}
-			}, this);
+			}
 		},
 		
 		resizeBox: function(w,h) {
