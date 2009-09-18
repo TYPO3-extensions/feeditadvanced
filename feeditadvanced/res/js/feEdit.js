@@ -391,26 +391,6 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			var el = Ext.get(this.getEl());
 
 			FrontendEditing.activateDropZones();
-			FrontendEditing.editPanels.each(function(panel) {
-					// Don't add a drop zone under the element being dragged.
-				if (el.id == panel.el.id) {
-					panel.removeDropZone();
-				}
-			});
-		};
-
-			// id is the ID of the drop zone
-		this.dd.onDragOver = function(evt, id) {
-			/*
-							Position.prepare();
-				var point = [Event.pointerX(event), Event.pointerY(event)];
-			
-				Droppables.drops.each( function(drop) {
-					if(!Droppables.isAffected(point, draggableElement, drop)) {
-						drop.element.setStyle({height: 'auto'});
-					}
-				});
-			*/
 		};
 
 			// id is the ID of the drop zone
@@ -418,7 +398,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			FrontendEditing.deactivateDropZones();
 		};
 		this.dd.afterDragDrop = function(target, evt, id) {
-			//FrontendEditing.deactivateDropZones();
+			FrontendEditing.deactivateDropZones();
 		}
 		Ext.dd.Registry.register(this.dd);
 	},
@@ -682,13 +662,12 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			ep.create(linkedDragEl.getAttribute('href'));
 
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
-				// Move the dropped element outside the drop zone before it gets hidden.
-			//linkedDragEl.setAttribute('style', '');
+			// Move a record
 			dropZoneEl.insertBefore(linkedDragEl);
-			//TODO: Ext? linkedDragEl.highlight({ duration: 3 });
+			linkedDragEl.highlight({ duration: 1 });
 
 			source = FrontendEditing.editPanels.get(linkedDragEl.id);
-			destination = FrontendEditing.editPanels.get(linkedDragEl.prev().id);
+			destination = FrontendEditing.editPanels.get(linkedDragEl.prev('.feEditAdvanced-allWrapper').id);
 
 			var recordFields = destination.record.split(':');
 			source.moveAfter(recordFields[1]);

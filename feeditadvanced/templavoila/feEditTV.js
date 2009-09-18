@@ -4,17 +4,19 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 		var dropZoneEl   = Ext.get(this.getEl());
 
 		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
+			// create a new record
 			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
 			ep.create(linkedDragEl.getAttribute('href'));
+
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
-				// Move the dropped element outside the drop zone before it gets hidden.
-			//linkedDragEl.setAttribute('style', '');
+			// Move a record
 			linkedDragEl.insertBefore(dropZoneEl);
-			// TODO: linkedDragEl.highlight({duration: 5});
+			linkedDragEl.highlight({duration: 1});
 
 			source = FrontendEditing.editPanels.get(linkedDragEl.id);
-			destination = FrontendEditing.editPanels.get(linkedDragEl.prev().id);
+			destination = FrontendEditing.editPanels.get(linkedDragEl.prev('.feEditAdvanced-allWrapper').id);
 			source.moveAfter(destination.getDestinationPointer());
+
 		} else if (linkedDragEl.hasClass('clipObj')) {
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
 			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd').first().getValue();
