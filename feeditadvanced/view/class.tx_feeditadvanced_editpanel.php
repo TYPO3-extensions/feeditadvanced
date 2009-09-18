@@ -119,7 +119,10 @@ class tx_feeditadvanced_editpanel {
 			// otherwise do not see hidden records
 		$GLOBALS['TSFE']->showHiddenRecords = true;
 
-		$this->addIncludes();
+			// edit operates in an iframe and does need the standard Javascript libraries.
+		if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] != 'edit') {
+			$this->addIncludes();
+		}
 	}
 
 	/**
