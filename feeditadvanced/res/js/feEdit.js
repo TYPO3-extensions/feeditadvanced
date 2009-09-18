@@ -582,7 +582,10 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 		if ((table + ':' + json.uid) == id) {
 			this.replaceContent(json.content);
+			// @todo Pull this re-registration into a standalone method.
 			this.el = Ext.get(id);
+			this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv').first());
+			this.formEl = Ext.get(this.el.select('form').first());	// todo: we should use a class here
 			this.setupEventListeners();
 		} else {
 			// Insert the HTML and register the new edit panel
