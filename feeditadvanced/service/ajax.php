@@ -673,8 +673,9 @@ class tx_feeditadvanced_ajax {
 		} else {
 			$cObjOutput = $cObj->editPanel('', array('allow' => 'edit, new, hide'), $table . ':' . $uid, $this->contentElementRow);
 		}
-		$content = $this->renderHeaderData() . $cObjOutput;
-		
+
+		$content = $this->renderHeaderData() . $cObjOutput . $this->renderFooterData();
+
 		if ($GLOBALS['TSFE']->isINTincScript()) {
 			$GLOBALS['TSFE']->content = $content;
 			$GLOBALS['TSFE']->INTincScript();
@@ -683,15 +684,31 @@ class tx_feeditadvanced_ajax {
 		
 		return $content;
 	}
-	
+
+	/**
+	 * Renders header data from TSFE->additionalHeaderData and t3lib_pageRenderer.
+	 *
+	 * @return	string
+	 */
 	protected function renderHeaderData() {
-		foreach($GLOBALS['TSFE']->additionalHeaderData as $headerData) {
-			$headerDataString .= chr(10) . $headerData;
+		$headerDataString = $GLOBALS['TSFE']->getPageRenderer()->render(t3lib_pageRenderer::PART_HEADER);
+		
+		foreach ($GLOBALS['TSFE']->additionalHeaderData as $headerData) {
+			$headerDataString .= $headerData;
 		}
 
 		return $headerDataString;
 	}
-	
+
+	/**
+	 * Renders footer data from t3lib_pageRenderer
+	 *
+	 * @return	string
+	 */
+	protected function renderFooterData() {
+		return $GLOBALS['TSFE']->getPageRenderer()->render(t3lib_pageRenderer::PART_FOOTER);
+	}
+
 	/**
 	 * Gets the absolute URL for the specified page ID.
 	 *
