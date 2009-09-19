@@ -876,9 +876,9 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	requestType: 'iframe',
 
-	trigger: function() {
+	trigger: function(additionalParams) {
 		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
-		var url = this.getRequestUrl();
+		var url = this.getRequestUrl(additionalParams);
 		FrontendEditing.editWindow.displayIframe('New Content Block', url);
 	},
 
