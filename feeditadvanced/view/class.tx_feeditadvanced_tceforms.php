@@ -1266,39 +1266,6 @@ $toggle = 0;
 		}
 		return $content;
 	}
-
-	/**
-	 * Includes a javascript library that exists in the core /typo3/ directory. The
-	 * backpath is automatically applied.
-	 * This method adds the library to $GLOBALS['TSFE']->additionalHeaderData[$lib].
-	 *
-	 * @param	string		$lib: Library name. Call it with the full path like "contrib/prototype/prototype.js" to load it
-	 * @return	void
-	 *
-	 * @note	Unchanged.
-	 */
-	public function loadJavascriptLib($lib) {
-		if (!isset($GLOBALS['TSFE']->additionalHeaderData[$lib])) {
-			$GLOBALS['TSFE']->additionalHeaderData[$lib] = '<script type="text/javascript" src="' . $this->backPath . $lib . '"></script>';
-		}
-	}
-
-	/**
-	 * Insert additional style sheet link
-	 *
-	 * @param	string		$key: some key identifying the style sheet
-	 * @param	string		$href: uri to the style sheet file
-	 * @param	string		$title: value for the title attribute of the link element
-	 * @return	string		$relation: value for the rel attribute of the link element
-	 * @return	void
-	 *
-	 * @note	Unchanged.
-	 */
-	public function addStyleSheet($key, $href, $title='', $relation='stylesheet') {
-		if (!isset($GLOBALS['TSFE']->additionalHeaderData[$key])) {
-			$GLOBALS['TSFE']->additionalHeaderData[$key] = '<link rel="' . $relation . '" type="text/css" href="' . $href . '"' . ($title ? (' title="' . $title . '"') : '') . ' />';
-		}
-	 }
 }
 
 ?>
