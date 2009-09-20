@@ -618,41 +618,46 @@ class tx_feeditadvanced_editpanel {
 	 * @return		void
 	 */
 	protected function addIncludes() {
+		static $includesAdded = FALSE;
+		
 			// if already included, then return
-		if (strpos($GLOBALS['TSFE']->additionalHeaderData['fe_edit_inc'], 'feEdit.js')) {
+		if ($includesAdded) {
 			return;
 		}
-
+		/** @var $pageRenderer t3lib_PageRenderer */
+		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
+		// 
 			// loading ext JS, rudimentary for now (should be skinnable etc and only include the JS that is needed)
-		$GLOBALS['TSFE']->additionalHeaderData['ext-base.js'] = '<script type="text/javascript" src="typo3/contrib/extjs/adapter/ext/ext-base.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['ext-dd.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js"></script>';
+		$pageRenderer->loadExtJS();
+		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js');
 
 			// load AJAX handling functions
-		$GLOBALS['TSFE']->additionalHeaderData['feEdit.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['lightbox.js'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/lightbox.js"></script>';
-		$GLOBALS['TSFE']->additionalHeaderData['fe_edit_advanced.css'] = '<link href="' .  t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/lightbox.css" rel="stylesheet" type="text/css" />';
+		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js');
+		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/lightbox.js');
+		$pageRenderer->addCssFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/lightbox.css');
 
 		
 			// @todo Do we need to load these now?
 		if (t3lib_extMgm::isLoaded('tinyrte')) {
-			$GLOBALS['TSFE']->additionalHeaderData['tinyrte'] = '<script language="javascript" src="typo3conf/ext/tinyrte/tiny_mce/tiny_mce.js"></script>';
+			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('tinyrte') . 'tiny_mce/tiny_mce.js');
 		} else if (t3lib_extMgm::isLoaded('tinymce_rte')) {
-			$GLOBALS['TSFE']->additionalHeaderData['tinymce_rte'] = '<script language="javascript" src="typo3conf/ext/tinymce_rte/res/tiny_mce/tiny_mce.js"></script>';
+			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('tinymce_rte') . 'res/tiny_mce/tiny_mce.js');
 		}
 
 			// include anything from controller
 		$controllerIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
 		if ($controllerIncludes) {
-			$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-controllerIncludes'] = $controllerIncludes;
+			$pageRenderer->addHeaderData($controllerIncludes);
 		}
 			// hook to load in any extra / additional JS includes
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'])) {
 			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'] as $classRef) {
 				$hookObj= &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'addIncludes'))
-					$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-hookIncludes'] = $hookObj->addIncludes();
+					$pageRenderer->addHeaderData($hookObj->addIncludes());
 			}
 		}
+		$includesAdded = TRUE;
 	}
 
 	/**
@@ -663,14 +668,18 @@ class tx_feeditadvanced_editpanel {
 	* @return	void
 	*/
 	protected function addFormIncludes($tceforms=0) {
+		/** @var $pageRenderer t3lib_PageRenderer */
+		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		
 			// code for dynamic tabs
-		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/getDynTabMenuJScode.js"></script>';
-
+		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/getDynTabMenuJScode.js');
+		
 			// forms on page CSS
+			// one time we will have $GLOBALS['TBE_STYLES'] available :)
+		$pageRenderer->addCssFile($GLOBALS['TBE_STYLES']['stylesheet'] ? $GLOBALS['TBE_STYLES']['stylesheet'] : 'typo3/stylesheet.css'); 
 		$cssfile = $this->modTSconfig['properties']['skin.']['cssFormFile'];
 		$cssFormFile =  $cssfile ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_formsOnPage.css';
-		$incJS .= '<link href="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $cssFormFile . '" rel="stylesheet" type="text/css" />';
+		$pageRenderer->addCssFile($cssFormFile);
 
 			// this allows toggling advanced/simple buttons on form
 		$incJS .= '<script type="text/javascript">
@@ -702,12 +711,7 @@ class tx_feeditadvanced_editpanel {
 		}
 
 			// @todo: Dave -- this is needed because top.busy is not defined for jsunc.tbe_editor.js -- needs a workaround
-		$incJS .= '<script type="text/javascript" src="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/fe_logout_timer.js"></script>';
-
-		if (t3lib_div::_GP('eID') != 'feeditadvanced') {
-			$GLOBALS['TSFE']->additionalHeaderData['feEditAdvanced-formIncludes'] = $incJS;
-			$incJS = "";
-		}
+		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/fe_logout_timer.js');
 
 		return $incJS;
 	}

@@ -53,7 +53,6 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 	
 	public function __construct() {
 		parent::__construct();
-		$this->loadJavascriptLib('typo3/contrib/prototype/prototype.js');
 	}
 
 	/**
