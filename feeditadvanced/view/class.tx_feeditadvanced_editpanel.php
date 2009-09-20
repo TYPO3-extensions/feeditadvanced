@@ -76,6 +76,13 @@ class tx_feeditadvanced_editpanel {
 	protected $disabled = false;
 	
 	/**
+	 * Indicates if mod was disabled
+	 *
+	 * @var		boolean
+	 */
+	protected $areIncludesAdded = false;
+	
+	/**
 	 * Initializes the edit panel.
 	 *
 	 * @param		array 	configuration array
@@ -618,10 +625,8 @@ class tx_feeditadvanced_editpanel {
 	 * @return		void
 	 */
 	protected function addIncludes() {
-		static $includesAdded = FALSE;
-		
 			// if already included, then return
-		if ($includesAdded) {
+		if ($this->areIncludesAdded) {
 			return;
 		}
 		/** @var $pageRenderer t3lib_PageRenderer */
@@ -657,7 +662,7 @@ class tx_feeditadvanced_editpanel {
 					$pageRenderer->addHeaderData($hookObj->addIncludes());
 			}
 		}
-		$includesAdded = TRUE;
+		$this->areIncludesAdded = TRUE;
 	}
 
 	/**
