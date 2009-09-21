@@ -674,6 +674,8 @@ class tx_feeditadvanced_ajax {
 			$cObjOutput = $cObj->editPanel('', array('allow' => 'edit, new, hide'), $table . ':' . $uid, $this->contentElementRow);
 		}
 
+			// Set a simplified template file for use in the AJAX response.  No title, meta tags, etc.
+		$GLOBALS['TSFE']->getPageRenderer()->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
 		$content = $this->renderHeaderData() . $cObjOutput . $this->renderFooterData();
 
 		if ($GLOBALS['TSFE']->isINTincScript()) {
