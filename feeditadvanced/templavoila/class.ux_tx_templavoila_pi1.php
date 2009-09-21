@@ -114,7 +114,7 @@ class ux_tx_templavoila_pi1 extends tx_templavoila_pi1 {
 							 **/
 							if (is_object($GLOBALS['BE_USER']) && $GLOBALS['BE_USER']->isFrontendEditingActive()) {
 									// Calculate flexformPointers. Can we do this via API instead?.
-								foreach($dataValues as $key => &$value) {
+								foreach ($dataValues as $key => &$value) {
 									$flexformPointer = array();
 									$flexformPointer['table'] = $table;
 									$flexformPointer['uid'] = $row['uid'];
@@ -123,11 +123,14 @@ class ux_tx_templavoila_pi1 extends tx_templavoila_pi1 {
 									$flexformPointer['field'] = $key;
 									$flexformPointer['vLang'] = $vKey;
 
-										// Add a hidden field at the end of each container that provides destination pointer and ID.
-									$value[$vKey] .=  '<input type="hidden" class="flexformPointers" id="' . implode(':', $flexformPointer) . '" value="' . $originalDataValues[$key][$vKey] . '" />';
+										// Add a hidden field at the end of each container that provides destination pointer and ID, 
+										// but only to elements that are not attributes.
+									if (!(isset($DS['ROOT']['el'][$key]['type']) && $DS['ROOT']['el'][$key]['type'] === 'attr')) {
+										$value[$vKey] .=  '<input type="hidden" class="flexformPointers" id="' . implode(':', $flexformPointer) . '" value="' . $originalDataValues[$key][$vKey] . '" />';
 									
-										// Add some content to identify the container at the very beginning
+											// Add some content to identify the container at the very beginning
 										$value[$vKey] = '<div class="feEditAdvanced-firstWrapper"></div>' . $value[$vKey];
+									}
 								}
 							}
 							/**
