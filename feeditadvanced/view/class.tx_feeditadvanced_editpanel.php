@@ -633,7 +633,7 @@ class tx_feeditadvanced_editpanel {
 		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		// 
 			// loading ext JS, rudimentary for now (should be skinnable etc and only include the JS that is needed)
-		$pageRenderer->loadExtJS();
+		$pageRenderer->loadExtJS($css = FALSE);
 		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js');
 
 			// load AJAX handling functions
