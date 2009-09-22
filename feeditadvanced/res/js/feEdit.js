@@ -333,7 +333,17 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 		this.updateUpDownButtons();
 	},
-	
+
+	enable: function() {
+		this.enableHoverMenu();
+		this.el.removeClass('feEditAdvanced-noBorder');
+	},
+
+	disable: function() {
+		this.disableHoverMenu();
+		this.el.addClass('feEditAdvanced-noBorder');
+	},
+
 	addDropZone: function() {
 		if (this.sortable) {
 			this.dropZone = new TYPO3.FeEdit.DropZone(this);
@@ -636,7 +646,8 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			'tag': 'div',
 			'id': 'feEditAdvanced-dropzone-' + editPanelEl.id,
 			'cls': 'feEditAdvanced-dropzone',
-			'html': '<span class="feEditAdvanced-dropzoneLeft"></span><span class="feEditAdvanced-dropzoneCenter"> </span><span class="feEditAdvanced-dropzoneRight"></span>'
+			// @todo Localize! See about extracting markup to a template somehow too.
+			'html': '<div class="feEditAdvanced-dropzoneText">Drop content here</div>',
 		}, true);
 		this.el.setVisibilityMode(Ext.Element.DISPLAY);
 
@@ -659,7 +670,6 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			// create a new record
 			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
 			ep.create(linkedDragEl.getAttribute('href'));
-
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 			// Move a record
 			dropZoneEl.insertBefore(linkedDragEl);
@@ -1472,6 +1482,7 @@ var FrontendEditing = {
 	activateDropZones: function() {
 		FrontendEditing.editPanelsEnabled = false;
 		FrontendEditing.editPanels.each(function(panel) {
+			panel.disable();
 			panel.addDropZone();
 		});
 	},
@@ -1480,8 +1491,8 @@ var FrontendEditing = {
 	deactivateDropZones: function() {
 		FrontendEditing.editPanelsEnabled = true;
 		FrontendEditing.editPanels.each(function(panel) {
-			panel.enableHoverMenu();
 			panel.removeDropZone();
+			panel.enable();
 		});
 	}
 };

@@ -236,60 +236,27 @@ img {
 	z-index: 99999;
 }
 
+.feEditAdvanced-noBorder {
+	border: none !important;
+}
+
 /* ---------------------- DROP ZONE for Draggable ---------------------------- */
 .feEditAdvanced-dropzone {
 	width: 100%;
-	min-height: 10px;
-	margin-bottom: 10px;
-	border: 1px solid #C0C0C0;
+	height: 40px;
+	margin: 10px 0;
+	border: 1px dashed #888;
+	background: #e0e0e0;
 }
+
+.feEditAdvanced-dropzoneText {
+	margin: 10px;
+	padding-left: 20px;
+	background: transparent url(../icons/hovermenu/drop.png) no-repeat;
+}
+
 .feEditAdvanced-dropzoneActive {
 	background: #FFFF30 !important;
-}
-
-.feEditAdvanced-dropzoneLeft,
-.feEditAdvanced-dropzoneRight {
-	position: absolute;
-	display: inline-block;
-	width: 6px;
-	bottom: 0;
-	height: 7px;
-}
-
-.feEditAdvanced-dropzoneLeft {
-	left: -6px;
-	background: transparent url(../icons/hovermenu/dropbar-left-inactive.png) no-repeat 0 50%;
-}
-
-.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneLeft {
-	background: transparent url(../icons/hovermenu/dropbar-left.png) no-repeat 0 50%;
-}
-
-.feEditAdvanced-dropzoneRight {
-	right: -6px;
-	background: transparent url(../icons/hovermenu/dropbar-right-inactive.png) no-repeat 0 50%;
-}
-
-.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneRight {
-	background: transparent url(../icons/hovermenu/dropbar-right.png) no-repeat 0 50%;
-}
-
-.feEditAdvanced-dropzoneCenter {
-	position: absolute;
-	display: inline-block;
-	width: 100%;
-	height: 7px;
-	bottom: 0;
-	background: transparent url(../icons/hovermenu/dropbar-inactive.png) repeat-x 0 50%;
-}
-
-.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneCenter {
-	background: transparent url(../icons/hovermenu/dropbar.png) repeat-x 0 50%;
-}
-
-.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneLeft,
-.feEditAdvanced-dropzoneActive .feEditAdvanced-dropzoneRight {
-	height: 6px;
 }
 
 dl.feEditAdvanced-menuUserlist {
