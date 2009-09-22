@@ -236,6 +236,7 @@ class tx_feeditadvanced_newcontentelements {
 	function wizard_getItem($groupKey, $itemKey, $itemConf) {
 		$itemConf['title'] = $GLOBALS['LANG']->sL($itemConf['title']);
 		$itemConf['description'] = $GLOBALS['LANG']->sL($itemConf['description']);
+		$itemConf['icon'] = t3lib_iconWorks::skinImg('',$itemConf['icon'],'',1);
 		$itemConf['tt_content_defValues'] = $itemConf['tt_content_defValues.'];
 		unset($itemConf['tt_content_defValues.']);
 		return $itemConf;
