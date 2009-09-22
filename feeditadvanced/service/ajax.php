@@ -145,8 +145,7 @@ class tx_feeditadvanced_ajax {
 				$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record'] = $table . ':' . $uid;
 			}
 			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
-			$this->ajaxObj->setContentFormat('jsonbody');
-
+			$this->setAJAXContentFormat($cmd);
 				// Call post processing function, if applicable.
 			$cmdFunction = $cmd . 'Item';
 			if ($cmd && method_exists($this, $cmdFunction)) {
@@ -164,6 +163,30 @@ class tx_feeditadvanced_ajax {
 	}
 
 	/**
+	 * Sets the AJAX content format for the current action.
+	 *
+	 * @param	string	The action being performed.
+	 * @return	void
+	 */
+	protected function setAJAXContentFormat($action) {
+		switch ($action) {
+			case 'new':
+			case 'edit':
+			case 'save':
+				$format = 'plain';
+				break;
+			case 'saveAndClose':
+			case 'close':
+				$format = 'javascript';
+				break;
+			default:
+				$format = 'jsonbody';
+		}
+
+		$this->ajaxObj->setContentFormat($format);
+	}
+
+	/**
 	 * AJAX response to an edit action on a particular record.
 	 *
 	 * @param	string		Name of the table.
@@ -172,7 +195,6 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function editItem($table, $uid) {
 		$this->renderContentElement($table, $uid);
-		$this->ajaxObj->setContentFormat('plain');
 	}
 
 	/**
@@ -184,7 +206,6 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function newItem($table, $uid) {
 		$this->renderContentElement($table, $uid);
-		$this->ajaxObj->setContentFormat('plain');
 	}
 	
 	/**
@@ -207,8 +228,6 @@ class tx_feeditadvanced_ajax {
 		} else {
 			$this->renderContentElement($table, $uid);
 		}
-
-		$this->ajaxObj->setContentFormat('javascript');
 	}
 
 	/**
@@ -220,7 +239,6 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function saveItem($table, $uid) {
 		$this->renderContentElement($table, $uid);
-		$this->ajaxObj->setContentFormat('plain');
 	}
 
 	/**
@@ -241,8 +259,6 @@ class tx_feeditadvanced_ajax {
 		} else {
 			$this->renderContentElement($table, $uid);
 		}
-
-		$this->ajaxObj->setContentFormat('javascript');
 	}
 
 	/**
