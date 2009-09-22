@@ -76,7 +76,17 @@ class tx_feeditadvanced_ajax {
 		require_once(PATH_typo3.'classes/class.typo3ajax.php');
 		$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
 		$this->ajaxObj = new $ajaxClass('feeditadvanced');
-		$this->ajaxObj->setContentFormat('jsonbody');
+
+		/**
+		 * @todo This content format is only applicable for the login error.
+		 *		 Need to refactor constructor and processAction to reduce duplicated
+		 *		 code and make more use of HTTP_ACCEPT.
+		 */
+		if (stristr($_SERVER['HTTP_ACCEPT'], 'application/json')) {
+			$this->ajaxObj->setContentFormat('jsonbody');
+		} else {
+			$this->ajaxObj->setContentFormat('javascript');
+		}
 
 		if ($this->isFrontendEditActive()) {
 				// @todo	Is there a better way to force these values so that we're sure editAction gets called?
