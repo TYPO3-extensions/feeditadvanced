@@ -35,32 +35,32 @@
  * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_ajax {
-	
+
 	/**
 	 * The page ID for editing.
 	 *
-	 * @var		integer
+	 * @var	integer
 	 */
 	protected $pid;
-	
+
 	/**
 	 * The editing command.
 	 *
-	 * @var		string
+	 * @var	string
 	 */ 
 	protected $cmd;
 
 	/**
 	 * The AJAX object.
 	 *
-	 * @var		TYPO3AJAX
+	 * @var	TYPO3AJAX
 	 */
 	protected $ajaxObj;
-	
+
 	/**
 	 * Constructor to initialize a frontend instance and a backend user.
 	 *
-	 * @return		void
+	 * @return	void
 	 */
 	public function __construct() {
 		// @todo Change this whole class to use typo3/ajax.php only
@@ -77,8 +77,6 @@ class tx_feeditadvanced_ajax {
 		$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
 		$this->ajaxObj = new $ajaxClass('feeditadvanced');
 		$this->ajaxObj->setContentFormat('jsonbody');
-			// @todo	Remove this line eventually.  Plain can be useful for testing though.
-		//$this->ajaxObj->setContentFormat('plain');
 
 		if ($this->isFrontendEditActive()) {
 				// @todo	Is there a better way to force these values so that we're sure editAction gets called?
@@ -103,7 +101,7 @@ class tx_feeditadvanced_ajax {
 	public function isFrontendEditActive() {
 		return $GLOBALS['TSFE']->beUserLogin && ($GLOBALS['BE_USER']->frontendEdit instanceof t3lib_frontendedit);
 	}
-	
+
 	/**
 	 * Main function for handling AJAX-defined actions.
 	 *
@@ -149,9 +147,6 @@ class tx_feeditadvanced_ajax {
 			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
 			$this->ajaxObj->setContentFormat('jsonbody');
 
-				// @todo	Remove this line eventually.  Plain can be useful for testing though.
-			//$this->ajaxObj->setContentFormat('plain');
-
 				// Call post processing function, if applicable.
 			$cmdFunction = $cmd . 'Item';
 			if ($cmd && method_exists($this, $cmdFunction)) {
@@ -167,7 +162,7 @@ class tx_feeditadvanced_ajax {
 			$this->ajaxObj->render();
 		}
 	}
-	
+
 	/**
 	 * AJAX response to an edit action on a particular record.
 	 *
@@ -177,9 +172,6 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function editItem($table, $uid) {
 		$editText = $this->renderContentElement($table, $uid);
-			// remove tabs and other un-needed characters
-			// @todo	Dave, do we still need this?  Doesn't seem like it to me.
-		//$editText = str_replace("\\t","",$editText);
 		$this->ajaxObj->addContent('content', $editText);
 		$this->ajaxObj->setContentFormat('plain');
 	}
@@ -193,7 +185,7 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function newItem($table, $uid) {
 		$editText = $this->renderContentElement($table, $uid);
-		
+
 		$this->ajaxObj->addContent('content',$editText);
 		$this->ajaxObj->setContentFormat('plain');
 	}
@@ -207,12 +199,12 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function saveAndCloseItem($table, $uid) {
 		$this->saveItem($table, $uid);
-		
+
 		if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['parentEditPanel']) {
 			list($table, $uid) = split(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['parentEditPanel']);
 			$this->ajaxObj->addContent('id', $table . ':' . $uid);
 		}
-		
+
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
 		} else {
@@ -229,7 +221,6 @@ class tx_feeditadvanced_ajax {
 	 * @param	string		Name of the table.
 	 * @param	integer		UID of the record.
 	 * @return	void
-	 * @todo	Dave: allow more than tt_content to be saved here
 	 */
 	protected function saveItem($table, $uid) {
 		$editText = $this->renderContentElement($table, $uid);
@@ -250,7 +241,7 @@ class tx_feeditadvanced_ajax {
 			list($table, $uid) = split(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['parentEditPanel']);
 			$this->ajaxObj->addContent('id', $table . ':' . $uid);
 		}
-		
+
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
 		} else {
@@ -282,7 +273,7 @@ class tx_feeditadvanced_ajax {
 	protected function downItem($table, $uid) {
 		$this->moveUpDownItem($table, $uid, 1, $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['flexformPointer']);
 	}
-		
+
 	/**
 	 * AJAX response to a move up/down action on a particular record.
 	 *
@@ -339,7 +330,7 @@ class tx_feeditadvanced_ajax {
 		$thisRec = $table . '|' . $uid;
 		$_GET['CB']['el'][$thisRec] = 1;
 		$_GET['CB']['setCopyMode'] = $copyMode;
-		
+
 			// Start clipboard
 		$this->t3libClipboardObj = t3lib_div::makeInstance('t3lib_clipboard');
 			// Initialize - reads the clipboard content from the user session
@@ -401,7 +392,7 @@ class tx_feeditadvanced_ajax {
 		$this->ajaxObj->addContent('paste', $pasteText);
 		$this->ajaxObj->addContent('clear_clipboard', $clearClipText);
 	}
-	
+
 	/**
 	 * Clears the specified item from the clipboard.
 	 *
@@ -435,7 +426,7 @@ class tx_feeditadvanced_ajax {
 			$this->ajaxObj->addContent('clear_clipboard',$thisRec);
 		}
 	}
-	
+
 	/**
 	 * Handles the paste of a content element.
 	 *
@@ -508,7 +499,7 @@ class tx_feeditadvanced_ajax {
 			}
 		}
 	}
-	
+
 	/**
 	 * Initialize the TYPO3 Frontend for a given page id.
 	 * 
@@ -550,8 +541,7 @@ class tx_feeditadvanced_ajax {
 			// then initialize fe user
 		$TSFE->initFEuser();
 		$TSFE->fe_user->fetchGroupData();
-		
-		
+
 		$TT = new t3lib_timeTrack;
 		$TT->start();
 
@@ -590,7 +580,7 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function initializeBackendUser() {
 		global $BE_USER, $TYPO3_DB, $TSFE, $LANG;
-		
+
 			// @todo	What's the point here? To prevent looping?
 		if ($this->initBE) {
 			return;
@@ -626,7 +616,7 @@ class tx_feeditadvanced_ajax {
 				$GLOBALS['TSFE']->beUserLogin = false;
 			}
 		}
-		
+
 			// @todo	Is the if statement needed here?
 		//if ($GLOBALS['TSFE']->beUserLogin && is_object($GLOBALS['BE_USER']->frontendEdit))	{
 			require_once(t3lib_extMgm::extPath('lang') . 'lang.php');
@@ -663,10 +653,10 @@ class tx_feeditadvanced_ajax {
 			$this->contentElementRow = array();
 			$this->contentElementRow['uid'] = $uid;
 		}
-		
+
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($this->contentElementRow, 'tt_content');
-		
+
 			// @todo	Hack to render editPanel for records other than tt_content.
 		if($table == 'tt_content') {
 			$cObjOutput = $cObj->cObjGetSingle($this->setup['tt_content'], $this->setup['tt_content.']);
@@ -694,7 +684,7 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function renderHeaderData() {
 		$headerDataString = $GLOBALS['TSFE']->getPageRenderer()->render(t3lib_pageRenderer::PART_HEADER);
-		
+
 		foreach ($GLOBALS['TSFE']->additionalHeaderData as $headerData) {
 			$headerDataString .= $headerData;
 		}
@@ -720,11 +710,9 @@ class tx_feeditadvanced_ajax {
 	protected function getPageURL($id) {
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start(array());
-		
 		$conf = array (
 			'parameter' => $id
 		);
-		
 		return $cObj->typolink_URL($conf);
 	}
 }
