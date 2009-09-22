@@ -579,6 +579,10 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		if (json.content) {
 			FrontendEditing.JSHandler.evaluate(content);
 		}
+		
+		if (json.header) {
+			FrontendEditing.JSHandler.evaluate(json.header)
+		}
 		*/
 	},
 
@@ -852,7 +856,11 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 				if (json.content) {
 					FrontendEditing.JSHandler.evaluate(content);
 				}
-				
+
+				if (json.header) {
+					FrontendEditing.JSHandler.evaluate(json.header)
+				}
+
 				if (json.newContent) {
 					FrontendEditing.JSHandler.evaluate(newContent);
 				}

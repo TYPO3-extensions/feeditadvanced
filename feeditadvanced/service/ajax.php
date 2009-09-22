@@ -171,8 +171,7 @@ class tx_feeditadvanced_ajax {
 	 * @return	void
 	 */
 	protected function editItem($table, $uid) {
-		$editText = $this->renderContentElement($table, $uid);
-		$this->ajaxObj->addContent('content', $editText);
+		$this->renderContentElement($table, $uid);
 		$this->ajaxObj->setContentFormat('plain');
 	}
 
@@ -184,9 +183,7 @@ class tx_feeditadvanced_ajax {
 	 * @return	void
 	 */
 	protected function newItem($table, $uid) {
-		$editText = $this->renderContentElement($table, $uid);
-
-		$this->ajaxObj->addContent('content',$editText);
+		$this->renderContentElement($table, $uid);
 		$this->ajaxObj->setContentFormat('plain');
 	}
 	
@@ -208,8 +205,7 @@ class tx_feeditadvanced_ajax {
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
 		} else {
-			$editText = $this->renderContentElement($table, $uid);
-			$this->ajaxObj->addContent('content', $editText);
+			$this->renderContentElement($table, $uid);
 		}
 
 		$this->ajaxObj->setContentFormat('javascript');
@@ -223,9 +219,7 @@ class tx_feeditadvanced_ajax {
 	 * @return	void
 	 */
 	protected function saveItem($table, $uid) {
-		$editText = $this->renderContentElement($table, $uid);
-
-		$this->ajaxObj->addContent('content', $editText);
+		$this->renderContentElement($table, $uid);
 		$this->ajaxObj->setContentFormat('plain');
 	}
 
@@ -245,13 +239,12 @@ class tx_feeditadvanced_ajax {
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
 		} else {
-			$editText = $this->renderContentElement($table, $uid);
-			$this->ajaxObj->addContent('content', $editText);
+			$this->renderContentElement($table, $uid);
 		}
 
 		$this->ajaxObj->setContentFormat('javascript');
 	}
-	
+
 	/**
 	 * AJAX response to a move up action on a particular record.
 	 *
@@ -640,7 +633,8 @@ class tx_feeditadvanced_ajax {
 	}
 
 	/**
-	 * Renders the specified content element as if it appears on the specified page.
+	 * Renders the specified content element as if it appears on the specified page
+	 * and adds the content to $this->ajaxObj
 	 *
 	 * @param	integer		UID of the content element to render.
 	 * @param	integer		UID of the page to render the content element on.
@@ -665,16 +659,19 @@ class tx_feeditadvanced_ajax {
 		}
 
 			// Set a simplified template file for use in the AJAX response.  No title, meta tags, etc.
+			// @todo Should we account for footer data too?
 		$GLOBALS['TSFE']->getPageRenderer()->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
-		$content = $this->renderHeaderData() . $cObjOutput . $this->renderFooterData();
+		$header = $this->renderHeaderData();
+		$content = $cObjOutput;
 
 		if ($GLOBALS['TSFE']->isINTincScript()) {
 			$GLOBALS['TSFE']->content = $content;
 			$GLOBALS['TSFE']->INTincScript();
 			$content = $GLOBALS['TSFE']->content;
 		}
-		
-		return $content;
+
+		$this->ajaxObj->addContent('header', $header);
+		$this->ajaxObj->addContent('content', $content);
 	}
 
 	/**
