@@ -64,6 +64,20 @@ if (t3lib_extMgm::isLoaded('templavoila')) {
 
 		// Needs to be included to avoid errors when editing page properties.
 	include_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_handlestaticdatastructures.php');
+} else {
+	
+	// add the wrap for each CE container area, so we can drop new CEs into empty areas
+t3lib_extMgm::addTypoScriptSetup('
+styles.content.get.stdWrap {
+	required = 1
+	wrap3 = <div class="feEditAdvanced-firstWrapper"></div>|
+}
+
+styles.content.getLeft.stdWrap < styles.content.get.stdWrap
+styles.content.getRight.stdWrap < styles.content.get.stdWrap
+styles.content.getBorder.stdWrap < styles.content.get.stdWrap
+styles.content.getNews.stdWrap  < styles.content.get.stdWrap
+');	
 }
 
 ?>
