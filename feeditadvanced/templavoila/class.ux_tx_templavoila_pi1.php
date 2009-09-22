@@ -125,8 +125,8 @@ class ux_tx_templavoila_pi1 extends tx_templavoila_pi1 {
 
 										// Add a hidden field at the end of each container that provides destination pointer and ID, 
 										// but only to elements that are not attributes.
-									if (!(isset($DS['ROOT']['el'][$key]['type']) && $DS['ROOT']['el'][$key]['type'] === 'attr')) {
-										$value[$vKey] .=  '<input type="hidden" class="flexformPointers" id="' . implode(':', $flexformPointer) . '" value="' . $originalDataValues[$key][$vKey] . '" />';
+									if ((!isset($DS['ROOT']['el'][$key]['type']) || $DS['ROOT']['el'][$key]['type'] != 'attr') && $DS['ROOT']['el'][$key]['tx_templavoila']['eType'] == 'ce') {
+										$value[$vKey] .=  '<input type="hidden" class="feEditAdvanced-flexformPointers" title="' . implode(':', $flexformPointer) . '" value="' . $originalDataValues[$key][$vKey] . '" />';
 									
 											// Add some content to identify the container at the very beginning
 										$value[$vKey] = '<div class="feEditAdvanced-firstWrapper"></div>' . $value[$vKey];
