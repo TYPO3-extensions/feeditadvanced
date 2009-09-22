@@ -401,7 +401,9 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			var el = Ext.get(this.getEl());
 
 			FrontendEditing.activateDropZones();
+			el.setVisibilityMode(Ext.Element.DISPLAY);
 			el.hide();
+			el.next('.feEditAdvanced-dropzone').setVisibilityMode(Ext.Element.DISPLAY);
 			el.next('.feEditAdvanced-dropzone').hide();
 
 			dragEl.applyStyles({'z-index': 2000});
