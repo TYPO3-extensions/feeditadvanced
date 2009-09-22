@@ -401,13 +401,23 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			var el = Ext.get(this.getEl());
 
 			FrontendEditing.activateDropZones();
+			el.hide();
+			el.next('.feEditAdvanced-dropzone').hide();
+
+			dragEl.applyStyles({'z-index': 2000});
+			dragEl.update(el.dom.innerHTML);
+			dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
 		};
 
 			// id is the ID of the drop zone
 		this.dd.afterInvalidDrop = function(evt, id) {
+			var el = Ext.get(this.getEl());
+			el.show();
 			FrontendEditing.deactivateDropZones();
 		};
 		this.dd.afterDragDrop = function(target, evt, id) {
+			var el = Ext.get(this.getEl());
+			el.show();
 			FrontendEditing.deactivateDropZones();
 		}
 		Ext.dd.Registry.register(this.dd);
@@ -638,27 +648,37 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 
 TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
+	hasEditPanelAttached: false,
+	baseCls: 'feEditAdvanced-dropzone',
 	// the ad-hoc created element
 	el: null,
 	dz: null,
 
-	constructor: function(editPanel) {
-			//  Use an ID that relate the dropzone element back to the edit panel.
-			// Insert the drop zone after the edit panel.
-		var editPanelEl = editPanel.el;
-		this.el = Ext.DomHelper.insertAfter(editPanelEl, {
+	constructor: function(editPanelObj, hasNoEditPanelAttached) {
+		this.hasEditPanelAttached = (hasNoEditPanelAttached != true);
+		if (this.hasEditPanelAttached) {
+				//  Use an ID that relate the dropzone element back to the edit panel.
+				// Insert the drop zone after the edit panel.
+			var previousElement = editPanelObj.el;
+			var elId = this.baseCls + '-' + previousElement.id;
+		} else {
+				// the editpanelobj in this case is the first div
+			var previousElement = editPanelObj;
+			var elId = Ext.id(null, this.baseCls + '-top-');
+		}
+		this.el = Ext.DomHelper.insertAfter(previousElement, {
 			'tag': 'div',
-			'id': 'feEditAdvanced-dropzone-' + editPanelEl.id,
-			'cls': 'feEditAdvanced-dropzone',
+			'id':  elId,
+			'cls': this.baseCls,
 			// @todo Localize! See about extracting markup to a template somehow too.
-			'html': '<div class="feEditAdvanced-dropzoneText">Drop content here</div>',
+			'html': '<div class="' + this.baseCls + 'Text">Drop content here</div>',
 		}, true);
 		this.el.setVisibilityMode(Ext.Element.DISPLAY);
 
 		// create the drop zone
 		this.dz = new Ext.dd.DropZone(this.el, {
 			ddGroup: 'feeditadvanced-toolbar',
-			overClass: 'feEditAdvanced-dropzoneActive'
+			overClass: this.baseCls + 'Active'
 		});
 		this.dz.notifyEnter = this.onHover;
 		this.dz.notifyOut   = this.onHoverOut;
@@ -674,16 +694,23 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			// create a new record
 			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
 			ep.create(linkedDragEl.getAttribute('href'));
+
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 			// Move a record
-			dropZoneEl.insertBefore(linkedDragEl);
-			linkedDragEl.highlight({ duration: 1 });
+			linkedDragEl.insertBefore(dropZoneEl);
+			linkedDragEl.highlight({duration: 1});
 
-			source = FrontendEditing.editPanels.get(linkedDragEl.id);
-			destination = FrontendEditing.editPanels.get(linkedDragEl.prev('.feEditAdvanced-allWrapper').id);
-
-			var recordFields = destination.record.split(':');
-			source.moveAfter(recordFields[1]);
+			var sourceEditPanel = FrontendEditing.editPanels.get(linkedDragEl.id);
+			var previousContentElement = linkedDragEl.prev('.feEditAdvanced-allWrapper');
+			if (!previousContentElement) {
+				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
+				alert('move on first position -> call moveFirst()');
+			} else {
+				// just a basic: move one after the other
+				var destinationEditPanel = FrontendEditing.editPanels.get(previousContentElement.id);
+				var recordFields = destinationEditPanel.record.split(':');
+				sourceEditPanel.moveAfter(recordFields[1]);
+			}
 
 		} else if (linkedDragEl.hasClass('clipObj')) {
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
@@ -1464,6 +1491,7 @@ var FrontendEditing = {
 	toolbar: null,
 	actionRunning: false,
 	editWindow: null,
+	dropZones: [],	//stores all dropzones that are 
 
 	init: function() {
 		Ext.getBody().addClass('feEditAdvanced');
@@ -1493,6 +1521,11 @@ var FrontendEditing = {
 			panel.disable();
 			panel.addDropZone();
 		});
+
+		// go through each Content element container and add a dropZone
+		Ext.select('div.feEditAdvanced-firstWrapper').each(function(containerElement) {
+			FrontendEditing.dropZones.push(new TYPO3.FeEdit.DropZone(containerElement, true));
+		});
 	},
 	
 		// Disable drop indicators when a drag is done
@@ -1502,6 +1535,12 @@ var FrontendEditing = {
 			panel.removeDropZone();
 			panel.enable();
 		});
+
+		// go through each Content element container and add a dropZone
+		Ext.each(this.dropZones, function(dropZone) {
+			dropZone.remove();
+		});
+		this.dropZones = [];
 	}
 };
 

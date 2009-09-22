@@ -13,11 +13,19 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 			linkedDragEl.insertBefore(dropZoneEl);
 			linkedDragEl.highlight({duration: 1});
 
-			source = FrontendEditing.editPanels.get(linkedDragEl.id);
-			destination = FrontendEditing.editPanels.get(linkedDragEl.prev('.feEditAdvanced-allWrapper').id);
-			source.moveAfter(destination.getDestinationPointer());
+			var sourceEditPanel = FrontendEditing.editPanels.get(linkedDragEl.id);
+			var previousContentElement = linkedDragEl.prev('.feEditAdvanced-allWrapper');
+			if (!previousContentElement) {
+				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
+				alert('move on first position -> call moveFirst()');
+			} else {
+				// just a basic: move one after the other
+				var destinationEditPanel = FrontendEditing.editPanels.get(previousContentElement.id);
+				sourceEditPanel.moveAfter(destinationEditPanel.getDestinationPointer());
+			}
 
 		} else if (linkedDragEl.hasClass('clipObj')) {
+			// clipboard action
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
 			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd').first().getValue();
 
@@ -67,11 +75,22 @@ Ext.override(TYPO3.FeEdit.EditPanel, {
 	},
 
 	getDestinationPointer: function() {
-		return this.el.select('form input.feEditAdvanced-tsfeedit-input-destinationPointer').first().getValue();
+		var destPointer = this.el.select('form input.feEditAdvanced-tsfeedit-input-destinationPointer').first();
+		if (destPointer) {
+			return destPointer.getValue();
+		} else {
+			alert('no destination pointer found');
+			return false;
+		}
 	},
 
-	setDestinationPointer: function(destinationPointer) {
-		this.el.select('form input.feEditAdvanced-tsfeedit-input-destinationPointer').first().set({'value': destinationPointer});
+	setDestinationPointer: function(destinationPointerValue) {
+		var destPointer = this.el.select('form input.feEditAdvanced-tsfeedit-input-destinationPointer').first();
+		if (destPointer) {
+			destPointer.set({'value': destinationPointerValue});
+		} else {
+			alert('no destination pointer found');
+		}
 	},
 
 	moveAfter: function(destinationPointerString) {
@@ -100,11 +119,15 @@ TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_isModalAction: false
 });
 
+/* basically this functions goes through all "input class=flexformPointers" elements 
+ * which are at the end of every container with CEs; and then 
+ * TODO: THis function does not work if CEs are hidden but not shown
+ */
 FrontendEditing.addFlexformPointers = function() {
-	Ext.select('input.flexformPointers').each(function(pointerElement) {
+	Ext.select('input.feEditAdvanced-flexformPointers').each(function(pointerElement) {
 		pointerElement = Ext.get(pointerElement);
 		// will be something like pages:25:sDEF:lDEF:field_content:vDEF
-		var containerName = pointerElement.getAttribute('id');
+		var containerName = pointerElement.getAttribute('title');
 
 		// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
 		var pointerArray = pointerElement.getValue().split(',');
@@ -116,7 +139,7 @@ FrontendEditing.addFlexformPointers = function() {
 				counter++;
 				firstElement = Ext.get(pointerElementArray.first());
 				if (firstElement) {
-					recordElement = Ext.get(firstElement.select('form input.feEditAdvanced-tsfeedit-input-record').first());
+					recordElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-record').first());
 					if (recordElement.getValue() == 'tt_content:' + pointerValue) {
 							// flexformPointer element
 						Ext.DomHelper.insertAfter(recordElement, {
@@ -142,15 +165,15 @@ FrontendEditing.addFlexformPointers = function() {
 							'cls':  'feEditAdvanced-tsfeedit-input-destinationPointer',
 							'value': containerName + ':' + counter
 						});
-						
-							// and remove the element which is now not needed anymore
-						pointerElementArray.removeElement(firstElement);
 					}
+						// and remove the element which is now not needed anymore
+					pointerElementArray.removeElement(firstElement);
 				}
 			});
 		}
 	});
 };
+
 Ext.onReady(function() {
 	FrontendEditing.addFlexformPointers();
 });
