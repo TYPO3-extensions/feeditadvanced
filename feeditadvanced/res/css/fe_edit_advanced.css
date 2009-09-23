@@ -78,6 +78,7 @@ img {
 	float: left;
 	padding: 1px;
 	height: 32px;
+
 }
 
 #feEditAdvanced-actionToolbar {
@@ -88,8 +89,43 @@ img {
 	margin-right: 20px;
 	padding-top: 8px;
 	padding-bottom: 8px;
+	top:0px;
+	left:0px;
+	z-index:551;
+	overflow:show;
+	height:32px;
 }
 
+#feEditAdvanced-contentTypeToolbar-wrapper {
+	height:32px;
+	position:relative;
+}
+#feEditAdvanced-contentTypeToolbar-arrLeft,
+#feEditAdvanced-contentTypeToolbar-arrRight {
+	width:20px;
+	float:left;
+	color:red;
+	font-weight:bold;
+	font-size:20px;
+	position:absolute;
+	top:0px;
+	z-index:556;
+	background: url(../icons/menubar/menu2_back.png) repeat-x 0 0;
+	line-height:150%;
+	text-align:center;
+}
+#feEditAdvanced-contentTypeToolbar-arrLeft {
+	left:0px;
+}
+#feEditAdvanced-contentTypeToolbar-arrRight {
+	right:0px;
+}
+#feEditAdvanced-contentTypeToolbar-scrollPanel {
+	position:relative;
+	top:0px;
+	left:20px;
+	z-index:550;
+}
 #feEditAdvanced-contextToolbar {
 	display: block;
 	position: fixed;
