@@ -171,9 +171,9 @@ FrontendEditing.addFlexformPointers = function() {
 							'cls':  'feEditAdvanced-tsfeedit-input-destinationPointer',
 							'value': containerName + ':' + counter
 						});
+							// and remove the element which is now not needed anymore
+						pointerElementArray.removeElement(firstElement);
 					}
-						// and remove the element which is now not needed anymore
-					pointerElementArray.removeElement(firstElement);
 				}
 			});
 		}
