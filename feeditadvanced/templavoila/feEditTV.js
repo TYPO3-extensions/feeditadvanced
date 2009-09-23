@@ -23,13 +23,13 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 			var previousContentElement = linkedDragEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
 				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
-				alert('move on first position -> call moveFirst()');
+				destinationPointer = sourceEditPanel.el.next('input.feEditAdvanced-flexformPointers').getAttribute('title') + ':0';
 			} else {
 				// just a basic: move one after the other
 				var destinationEditPanel = FrontendEditing.editPanels.get(previousContentElement.id);
-				sourceEditPanel.moveAfter(destinationEditPanel.getDestinationPointer());
+				destinationPointer = destinationEditPanel.getDestinationPointer();
 			}
-
+			sourceEditPanel.moveAfter(destinationPointer);
 		} else if (linkedDragEl.hasClass('clipObj')) {
 			// clipboard action
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
