@@ -318,6 +318,7 @@ div.typo3-dyntabmenu-divs-foldout div.disabled_over {
 div.typo3-dyntabmenu-tabs {
 	background: url(../icons/forms/tab_background.png) repeat-x !important;
 	height: 33px !important;
+	margin-top: 0 !important;
 }
 
 table.typo3-dyntabmenu {
