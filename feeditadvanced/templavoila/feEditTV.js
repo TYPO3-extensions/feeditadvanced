@@ -5,8 +5,14 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 
 		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
 			// create a new record
-			ep = FrontendEditing.editPanels.get(dropZoneEl.prev('.feEditAdvanced-allWrapper').id);
-			ep.create(linkedDragEl.getAttribute('href'));
+			var previousContentElement = dropZoneEl.prev('.feEditAdvanced-allWrapper');
+			if (!previousContentElement) {
+				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
+				alert('insert on first position -> call createFirst()');
+			} else {
+				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
+				editPanel.create(linkedDragEl.getAttribute('href'));
+			}
 
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 			// Move a record
