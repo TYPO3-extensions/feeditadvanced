@@ -967,7 +967,10 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		this.parent.removeContent();
+		recordInfo =  this.parent.record.split(':');
+		if (recordInfo[0] != 'pages') {
+			this.parent.removeContent();
+		}
 	},
 
 	trigger: function() {
@@ -990,9 +993,12 @@ TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		this.parent.el.addClass('feEditAdvanced-hiddenElement');
-		Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('block');
-		Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('none');
+		recordInfo =  this.parent.record.split(':');
+		if (recordInfo[0] != 'pages') {		
+			this.parent.el.addClass('feEditAdvanced-hiddenElement');
+			Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('block');
+			Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('none');
+		}
 	},
 
 	_getCmd: function() {
@@ -1010,9 +1016,12 @@ TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 TYPO3.FeEdit.UnhideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		this.parent.el.removeClass('feEditAdvanced-hiddenElement');
-		Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('none');
-		Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('block');
+		recordInfo =  this.parent.record.split(':');
+		if (recordInfo[0] != 'pages') {		
+			this.parent.el.removeClass('feEditAdvanced-hiddenElement');
+			Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('none');
+			Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('block');
+		}
 	},
 
 	_getCmd: function() {

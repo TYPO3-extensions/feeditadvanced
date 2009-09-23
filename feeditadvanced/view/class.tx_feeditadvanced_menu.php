@@ -97,7 +97,7 @@ class tx_feeditadvanced_menu {
 				// @todo does not work by now
 			$data = $GLOBALS['TSFE']->page;
 			$this->cObj->start($data, 'pages');
-			$markerArray['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('',array('allow'=>'edit'));
+			$markerArray['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('',array('allow'=>'edit,new,delete,hide'));
 				
 				// show all sections and accompanying items that are in the first row
 			$sectionParts = $this->cObj->getSubpart($this->templateCode ,'###SECTIONS_FIRST_ROW###');
@@ -106,7 +106,6 @@ class tx_feeditadvanced_menu {
 			$itemSeparator = $this->cObj->getSubpart($sectionParts,'###SEPARATOR###');
 			
 			$subPartArray['SECTIONS_FIRST_ROW'] = '';
-					
 			for ($i = 0; $i < count($this->sections); $i++) {
 				$sec = $this->sections[$i];
 				if (($total = count($this->itemList[$sec['name']])) && ($sec['firstRow'] == true)) {

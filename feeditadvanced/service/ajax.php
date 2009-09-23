@@ -272,6 +272,38 @@ class tx_feeditadvanced_ajax {
 	}
 
 	/**
+	 * AJAX response to a delete action on a particular record.
+	 *
+	 * @param	string		Name of the table.
+	 * @param	integer		UID of the record.
+	 * @return	void
+	 */
+	protected function deleteItem($table, $uid) {
+		if ($table == 'pages') {
+			$parentPageUID = $GLOBALS['TSFE']->page['pid'];
+			if ($parentPageUID) {
+ 				$this->ajaxObj->addContent('url', $this->getPageURL($parentPageUID));
+			}
+		}
+	}
+
+	/**
+	 * AJAX response to a hide action on a particular record.
+	 *
+	 * @param	string		Name of the table.
+	 * @param	integer		UID of the record.
+	 * @return	void
+	 */
+	protected function hideItem($table, $uid) {
+		if ($table == 'pages') {
+			$parentPageUID = $GLOBALS['TSFE']->page['pid'];
+			if ($parentPageUID) {
+				$this->ajaxObj->addContent('url', $this->getPageURL($parentPageUID));
+			}
+		}
+	}
+			
+	/**
 	 * AJAX response to a move up action on a particular record.
 	 *
 	 * @param	string		Name of the table.

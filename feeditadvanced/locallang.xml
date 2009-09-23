@@ -38,6 +38,10 @@
 			<label index="saveCloseButton">Save &amp; Close</label>
 			<label index="closeButton">Close</label>
 
+			<label index="pageEditButton">Page Properties</label>
+			<label index="pageNewButton">New Page</label>
+			<label index="pageDeleteButton">Delete Page</label>
+			<label index="pageHideButton">Hide Page</label>
 		</languageKey>
 	</data>
 </T3locallang>

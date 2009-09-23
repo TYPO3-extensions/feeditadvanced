@@ -272,6 +272,18 @@ class tx_feeditadvanced_editpanel {
 			$subpartMarker['###EDITFORM###'] = '';
 		}
 
+			// handle adding actions to type=pages
+		if ($table == 'pages') {
+			$pageBtnOrder = $this->modTSconfig['properties']['showPageIcons'] ? $this->modTSconfig['properties']['showPageIcons'] : $conf['allow'];
+			$allPageActions = array('new','edit','delete','hide');
+			$pageActions = t3lib_div::trimExplode(',', $pageBtnOrder);
+			foreach ($allPageActions as $i=>$act) {
+				if (!in_array($act,$pageActions)) {
+					$subpartMarker['###EDITPANEL_ACTION_'.strtoupper($act).'###'] = '';
+				}
+				$markerArray['###EDITPANEL_'.strtoupper($act).'_BUTTONTEXT###'] = $GLOBALS['BE_USER']->extGetLL('page'.ucfirst($act).'Button');
+			}
+		}
 			// load in template for edit panel
 			// if special template for table is present, use it, else use default
 		$templateEditPanel = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_'.strtoupper($table).'###')) ? $code : $this->cObj->getSubpart($this->template, '###EDITPANEL###');
