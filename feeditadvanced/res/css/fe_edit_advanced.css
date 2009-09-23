@@ -102,6 +102,7 @@ img {
 }
 #feEditAdvanced-contentTypeToolbar-arrLeft,
 #feEditAdvanced-contentTypeToolbar-arrRight {
+	cursor: pointer;
 	width:20px;
 	float:left;
 	color:red;
