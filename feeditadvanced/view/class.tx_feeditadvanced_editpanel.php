@@ -644,8 +644,8 @@ class tx_feeditadvanced_editpanel {
 		/** @var $pageRenderer t3lib_PageRenderer */
 		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		// 
-			// loading ext JS, rudimentary for now (should be skinnable etc and only include the JS that is needed)
-		$pageRenderer->loadExtJS($css = FALSE);
+			// loading Ext JS (a special compiled version, that includes the base and DD and some things for the lightbox)
+		$pageRenderer->addJsFile('typo3/contrib/extjs/adapter/ext/ext-base.js');
 		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js');
 
 			// load AJAX handling functions
