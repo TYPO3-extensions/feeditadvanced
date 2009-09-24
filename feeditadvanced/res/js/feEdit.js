@@ -709,7 +709,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				additionalParams += '&pid=' + pageId;
 
 				var action = new TYPO3.FeEdit.NewRecordAction();
-				action.trigger(additionalParams);
+				action.trigger(additionalParams, contentElementContainerId);
 			} else {
 				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
 				editPanel.create(linkedDragEl.getAttribute('href'));

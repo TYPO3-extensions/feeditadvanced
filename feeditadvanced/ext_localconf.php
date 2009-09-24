@@ -77,7 +77,7 @@ styles.content.get.stdWrap {
 	prepend = TEXT
 	prepend.value = 0
 	prepend.dataWrap = |-pages-{TSFE:id}
-	prepend.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-|">av</div>
+	prepend.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-|"></div>
 }
 
 styles.content.getLeft.stdWrap < styles.content.get.stdWrap
