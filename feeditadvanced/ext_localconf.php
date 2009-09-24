@@ -66,19 +66,28 @@ if (t3lib_extMgm::isLoaded('templavoila')) {
 		// Needs to be included to avoid errors when editing page properties.
 	include_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_handlestaticdatastructures.php');
 } else {
-	
+
 	// add the wrap for each CE container area, so we can drop new CEs into empty areas
-t3lib_extMgm::addTypoScriptSetup('
+t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
+#############################################
+## TypoScript added by extension "FE Editing Advanced"
+#############################################
+
 styles.content.get.stdWrap {
 	required = 1
-	wrap3 = <div class="feEditAdvanced-firstWrapper"></div>|
+	wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-0"></div>|
 }
 
 styles.content.getLeft.stdWrap < styles.content.get.stdWrap
+styles.content.getLeft.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-1"></div>|
 styles.content.getRight.stdWrap < styles.content.get.stdWrap
+styles.content.getRight.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-2"></div>|
 styles.content.getBorder.stdWrap < styles.content.get.stdWrap
+styles.content.getBorder.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-3"></div>|
 styles.content.getNews.stdWrap  < styles.content.get.stdWrap
-');	
+styles.content.getNews.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-news"></div>|
+', 43); // add this code AFTER the "css_styled_content" code (43) (because CSC empties styles > and would delete our changes)
+
 }
 
 ?>
