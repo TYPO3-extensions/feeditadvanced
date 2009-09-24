@@ -666,7 +666,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 		} else {
 				// the editpanelobj in this case is the first div
 			var previousElement = editPanelObj;
-			var elId = Ext.id(previousElement, this.baseCls + '-top-');
+			var elId = Ext.id(null, this.baseCls + '-top-');
 		}
 		this.el = Ext.DomHelper.insertAfter(previousElement, {
 			'tag': 'div',
