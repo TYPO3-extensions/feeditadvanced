@@ -710,9 +710,13 @@ class tx_feeditadvanced_ajax {
 		$cObj->start($this->contentElementRow, 'tt_content');
 
 			// @todo	Hack to render editPanel for records other than tt_content.
-		if($table == 'tt_content') {
+		if(($table == 'tt_content') && ($uid != 'NEW')) {
 			$cObjOutput = $cObj->cObjGetSingle($this->setup['tt_content'], $this->setup['tt_content.']);
 		} else {
+			if ($uid == 'NEW') {
+				$conf['newRecordFromTable'] = $table;
+			}
+			
 			$cObjOutput = $cObj->editPanel('', array('allow' => 'edit, new, hide'), $table . ':' . $uid, $this->contentElementRow);
 		}
 

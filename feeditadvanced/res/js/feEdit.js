@@ -862,9 +862,17 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 	// function to return additional parameters that will be sent to the server through the AJAX call or iframe GET parameters
 	_getAjaxRequestParameters: function(additionalParams) {
 		var requestParams = 'eID=feeditadvanced';
-		this.parent.getFormParameters();
-		if (this.parent.params) {
-			requestParams += '&' + this.parent.params;
+		if (this.parent) {
+			this.parent.getFormParameters();
+			if (this.parent.params) {
+				requestParams += '&' + this.parent.params;
+			}
+		
+			pid = this.parent.pid
+			pidRequestParam = '&pid=' + pid;
+		} else {
+			// @todo	Grab the PID from some global location.
+			pidRequestParam = '';
 		}
 
 		if (additionalParams != undefined) {
@@ -872,7 +880,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 		}
 		// remove the doubled TSFE_EDIT[cmd] (because it's empty) before we add the real cmd value
 		requestParams  = requestParams.replace(/&TSFE_EDIT%5Bcmd%5D=&/, '&');
-		requestParams += '&TSFE_EDIT[cmd]=' + this.cmd + '&pid=' + this.parent.pid;
+		requestParams += '&TSFE_EDIT[cmd]=' + this.cmd + pidRequestParam;
 		return requestParams;
 	},
 
@@ -1500,8 +1508,11 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 				this.displayStaticMessage(json.error);
 			} else if (json.url) {
 				window.location = json.url;
-			} else {
+			} else if (this.editPanel) {
 				this.editPanel.pushContentUpdate(json);
+			} else {
+				// @todo edit panel means we have a new content element.  Where does it go?
+				alert("We got a new content element but we don't know where to put it.");
 			}
 		}
 		FrontendEditing.editPanelsEnabled = true;
