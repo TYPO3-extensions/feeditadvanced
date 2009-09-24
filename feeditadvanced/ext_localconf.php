@@ -74,16 +74,18 @@ t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
 #############################################
 
 styles.content.get.stdWrap {
-	required = 1
-	wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-0"></div>|
+	prepend = TEXT
+	prepend.value = 0
+	prepend.dataWrap = |-pages-{TSFE:id}
+	prepend.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-|"></div>
 }
 
 styles.content.getLeft.stdWrap < styles.content.get.stdWrap
-styles.content.getLeft.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-1"></div>|
+styles.content.getLeft.stdWrap.prepend.value = 1
 styles.content.getRight.stdWrap < styles.content.get.stdWrap
-styles.content.getRight.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-2"></div>|
+styles.content.getRight.stdWrap.prepend.value = 2
 styles.content.getBorder.stdWrap < styles.content.get.stdWrap
-styles.content.getBorder.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-3"></div>|
+styles.content.getBorder.stdWrap.prepend.value = 3
 styles.content.getNews.stdWrap  < styles.content.get.stdWrap
 styles.content.getNews.stdWrap.wrap3 = <div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-colPos-news"></div>|
 ', 43); // add this code AFTER the "css_styled_content" code (43) (because CSC empties styles > and would delete our changes)
