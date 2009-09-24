@@ -694,12 +694,11 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 
 		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
 			// create a new record
-
 			var previousContentElement = dropZoneEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
 					// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
 					// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
-				var contentElementContainerId = linkedDragEl.prev('.feEditAdvanced-firstWrapper').id;
+				var contentElementContainerId = dropZoneEl.prev('.feEditAdvanced-firstWrapper').id;
 				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
 				var colPos = contentElementContainerId.substr(35, 1);
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
