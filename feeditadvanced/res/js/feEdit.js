@@ -955,10 +955,13 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	requestType: 'iframe',
 
-	trigger: function(additionalParams) {
+	trigger: function(additionalParams, targetID) {
 		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
 		var url = this.getRequestUrl(additionalParams);
 		FrontendEditing.editWindow.displayIframe('New Content Block', url);
+		if (targetID) {
+			FrontendEditing.editWindow.setTargetID(targetID);
+		}
 	},
 
 	_process: function () {},
@@ -1480,6 +1483,7 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 
 TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 	editPanel: null,
+	targetID: null,
 	
 	constructor: function(editPanel) {
 		this.editPanel = editPanel;
@@ -1511,8 +1515,10 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 				window.location = json.url;
 			} else if (this.editPanel) {
 				this.editPanel.pushContentUpdate(json);
+			} else if (this.targetID) {
+				Ext.DomHelper.insertAfter(Ext.get(this.targetID), json.content);
+				FrontendEditing.scanForEditPanels();
 			} else {
-				// @todo edit panel means we have a new content element.  Where does it go?
 				alert("We got a new content element but we don't know where to put it.");
 			}
 		}
@@ -1523,6 +1529,10 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 			TBE_EDITOR.elements = {};
 			TBE_EDITOR.nested = {'field':{}, 'level':{}};
 		}
+	},
+
+	setTargetID: function(id) {
+		this.targetID = id;
 	}
 });
 
