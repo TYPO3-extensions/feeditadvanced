@@ -162,7 +162,11 @@ class tx_feeditadvanced_adminpanel {
 
 		$markerArray['###MENU_BAR###'] = $this->buildMenu();
 
-		return $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template,'###MAIN_TEMPLATE###'),$markerArray);
+		$content = $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template,'###MAIN_TEMPLATE###'),$markerArray);
+			// @todo	This code runs after content has been created, thus we cannot insert data into the head using the page renderer.  Are there any other options?
+		$includes = $this->getIncludes();
+		
+		return $content . $includes;
 	}
 
 	/**
@@ -276,7 +280,62 @@ class tx_feeditadvanced_adminpanel {
 		
 		
 	}
+	
+	/**
+	 *  Gets the CSS and Javascript includes needed for the top panel.
+	 *
+	 * @return		void
+	 */
+	protected function getIncludes() {
+		$includes = array();
+		$includes[] = $this->getScriptTag('typo3/contrib/extjs/adapter/ext/ext-base.js');
+		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js');
 
+			// load AJAX handling functions
+		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js');
+		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/lightbox.js');
+		$includes[] = $this->getLinkTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/lightbox.css');
+
+			// include anything from controller
+		$controllerIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
+		if ($controllerIncludes) {
+			$includes[] = $controllerIncludes;
+		}
+			// hook to load in any extra / additional JS includes
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['addIncludes'])) {
+			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['addIncludes'] as $classRef) {
+				$hookObj= &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'addIncludes'))
+					$includes[] = $hookObj->addIncludes();
+			}
+		}
+		
+		return implode(chr(10), $includes);
+	}
+
+	/**
+	 * Creates a script tag for the given src.
+	 *
+	 * @param	string	The src.
+	 * @param	string	The type.
+	 * @return	string
+	 */
+	protected function getScriptTag($src, $type="text/javascript") {
+		return '<script type="' . $type . '" src="' . $src . '"></script>';
+	}
+
+	/**
+	 * Creates a link tag for the given href.
+	 *
+	 * @param	string	The href.
+	 * @param	string	The type.
+	 * @param	string	The rel.
+	 * @param	string	The media.
+	 * @return	string
+	 */
+	protected function getLinkTag($href, $type="text/css", $rel="stylesheet", $media="screen") {
+		return '<link rel="' . $rel . '" type="' . $type . '" media="' . $media . '" href="' . $href . '" />';
+	}
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']) {

@@ -125,11 +125,6 @@ class tx_feeditadvanced_editpanel {
 		$GLOBALS['BE_USER']->uc['TSFE_adminConfig']['edit_editFormsOnPage'] = true;
 			// otherwise do not see hidden records
 		$GLOBALS['TSFE']->showHiddenRecords = true;
-
-			// edit operates in an iframe and does need the standard Javascript libraries.
-		if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] != 'edit') {
-			$this->addIncludes();
-		}
 	}
 
 	/**
@@ -629,52 +624,6 @@ class tx_feeditadvanced_editpanel {
 	 */
 	public function editIcons($content, $params, array $conf=array(), $currentRecord='', array $dataArr=array(), $addUrlParamStr='', $table, $editUid, $fieldList) {
 		return $content; //.'<div style="background-color: #ccc; padding: 5px">Edit Icons should go here.</div>';
-	}
-
-	/**d
-	 *  Add Javascript and CSS includes for editPanel
-	 *
-	 * @return		void
-	 */
-	protected function addIncludes() {
-			// if already included, then return
-		if ($this->areIncludesAdded) {
-			return;
-		}
-		/** @var $pageRenderer t3lib_PageRenderer */
-		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
-		// 
-			// loading Ext JS (a special compiled version, that includes the base and DD and some things for the lightbox)
-		$pageRenderer->addJsFile('typo3/contrib/extjs/adapter/ext/ext-base.js');
-		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js');
-
-			// load AJAX handling functions
-		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js');
-		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/lightbox.js');
-		$pageRenderer->addCssFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/lightbox.css');
-
-		
-			// @todo Do we need to load these now?
-		if (t3lib_extMgm::isLoaded('tinyrte')) {
-			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('tinyrte') . 'tiny_mce/tiny_mce.js');
-		} else if (t3lib_extMgm::isLoaded('tinymce_rte')) {
-			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('tinymce_rte') . 'res/tiny_mce/tiny_mce.js');
-		}
-
-			// include anything from controller
-		$controllerIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
-		if ($controllerIncludes) {
-			$pageRenderer->addHeaderData($controllerIncludes);
-		}
-			// hook to load in any extra / additional JS includes
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'])) {
-			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addIncludes'] as $classRef) {
-				$hookObj= &t3lib_div::getUserObj($classRef);
-				if (method_exists($hookObj, 'addIncludes'))
-					$pageRenderer->addHeaderData($hookObj->addIncludes());
-			}
-		}
-		$this->areIncludesAdded = TRUE;
 	}
 
 	/**
