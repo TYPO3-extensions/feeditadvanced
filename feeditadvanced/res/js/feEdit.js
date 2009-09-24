@@ -703,10 +703,12 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
 				var colPos = contentElementContainerId.substr(35, 1);
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
+				
+				var additionalParams = linkedDragEl.getAttribute('href') + '&defVals[tt_content][colPos]=' + colPos;
 
 				// @TODO: this does not work currently as this needs an existing editPanel.
 				var action = new TYPO3.FeEdit.NewRecordAction(editPanel);
-				action.trigger(linkedDragEl.getAttribute('href'));
+				action.trigger(additionalParams);
 			} else {
 				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
 				editPanel.create(linkedDragEl.getAttribute('href'));
