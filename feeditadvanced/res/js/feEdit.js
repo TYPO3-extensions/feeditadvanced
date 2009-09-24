@@ -704,9 +704,11 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
 				
 				var additionalParams = linkedDragEl.getAttribute('href') + '&defVals[tt_content][colPos]=' + colPos;
+				additionalParams += '&TSFE_EDIT[record]=tt_content:NEW';
+				additionalParams += '&TSFE_EDIT[pid]=' + pageId;
+				additionalParams += '&pid=' + pageId;
 
-				// @TODO: this does not work currently as this needs an existing editPanel.
-				var action = new TYPO3.FeEdit.NewRecordAction(editPanel);
+				var action = new TYPO3.FeEdit.NewRecordAction();
 				action.trigger(additionalParams);
 			} else {
 				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
