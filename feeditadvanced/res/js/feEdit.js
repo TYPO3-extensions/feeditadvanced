@@ -666,7 +666,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 		} else {
 				// the editpanelobj in this case is the first div
 			var previousElement = editPanelObj;
-			var elId = Ext.id(null, this.baseCls + '-top-');
+			var elId = Ext.id(previousElement, this.baseCls + '-top-');
 		}
 		this.el = Ext.DomHelper.insertAfter(previousElement, {
 			'tag': 'div',
@@ -694,10 +694,19 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 
 		if (linkedDragEl.hasClass('feEditAdvanced-contentTypeItem')) {
 			// create a new record
+
 			var previousContentElement = dropZoneEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
-				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
-				alert('insert on first position -> call createFirst()');
+					// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
+					// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
+				var contentElementContainerId = linkedDragEl.prev('.feEditAdvanced-firstWrapper').id;
+				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
+				var colPos = contentElementContainerId.substr(35, 1);
+				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
+
+				// @TODO: this does not work currently as this needs an existing editPanel.
+				var action = new TYPO3.FeEdit.NewRecordAction(editPanel);
+				action.trigger(linkedDragEl.getAttribute('href'));
 			} else {
 				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
 				editPanel.create(linkedDragEl.getAttribute('href'));
@@ -717,8 +726,8 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				var colPos = contentElementContainerId.substr(35, 1);
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
 				var moveAfter = '-' + pageId;
-				// TODO: moving for a specific colPos does not work, probably needs an additional call "doUpdate" or "doSave" with the UID of the sourceEditPanel and the colPos
-				
+				// @TODO: moving for a specific colPos does not work, probably needs an 
+				// additional call "doUpdate" or "doSave" with the UID of the sourceEditPanel and the colPos
 			} else {
 				// just a basic: move one after the other
 				var destinationEditPanel = FrontendEditing.editPanels.get(previousContentElement.id);
@@ -848,7 +857,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 		return this.ajaxRequestUrl + (this.ajaxRequestUrl.indexOf('?') == -1 ? '?' : '&') + this._getAjaxRequestParameters(additionalParams);
 	},
 
-	// function to return additional parameters that will be sent to the server through the AJAX call or iframe GeT parameters
+	// function to return additional parameters that will be sent to the server through the AJAX call or iframe GET parameters
 	_getAjaxRequestParameters: function(additionalParams) {
 		var requestParams = 'eID=feeditadvanced';
 		this.parent.getFormParameters();
