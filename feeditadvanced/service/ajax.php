@@ -713,11 +713,12 @@ class tx_feeditadvanced_ajax {
 		if(($table == 'tt_content') && ($uid != 'NEW')) {
 			$cObjOutput = $cObj->cObjGetSingle($this->setup['tt_content'], $this->setup['tt_content.']);
 		} else {
+			$conf = array('allow' => 'edit, new, hide');
 			if ($uid == 'NEW') {
 				$conf['newRecordFromTable'] = $table;
 			}
 			
-			$cObjOutput = $cObj->editPanel('', array('allow' => 'edit, new, hide'), $table . ':' . $uid, $this->contentElementRow);
+			$cObjOutput = $cObj->editPanel('', $conf, $table . ':' . $uid, $this->contentElementRow);
 		}
 
 			// Set a simplified template file for use in the AJAX response.  No title, meta tags, etc.
