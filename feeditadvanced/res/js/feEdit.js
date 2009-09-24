@@ -710,14 +710,22 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			var sourceEditPanel = FrontendEditing.editPanels.get(linkedDragEl.id);
 			var previousContentElement = linkedDragEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
-				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
-				alert('move on first position -> call moveFirst()');
+					// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
+					// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
+				var contentElementContainerId = linkedDragEl.prev('.feEditAdvanced-firstWrapper').id;
+				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
+				var colPos = contentElementContainerId.substr(35, 1);
+				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
+				var moveAfter = '-' + pageId;
+				// TODO: moving for a specific colPos does not work, probably needs an additional call "doUpdate" or "doSave" with the UID of the sourceEditPanel and the colPos
+				
 			} else {
 				// just a basic: move one after the other
 				var destinationEditPanel = FrontendEditing.editPanels.get(previousContentElement.id);
 				var recordFields = destinationEditPanel.record.split(':');
-				sourceEditPanel.moveAfter(recordFields[1]);
+				var moveAfter = recordFields[1];
 			}
+			sourceEditPanel.moveAfter(moveAfter);
 
 		} else if (linkedDragEl.hasClass('clipObj')) {
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
