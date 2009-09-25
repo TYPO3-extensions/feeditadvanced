@@ -562,7 +562,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	// @todo Is this beter suited as an action?
 	pushContentUpdate: function(json) {
 		if (json.content) {
-			content = json.content;
+			var content = json.content;
 			json.content = Ext.util.Format.stripScripts(content);
 		}
 		id = this.el.id;
