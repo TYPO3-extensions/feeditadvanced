@@ -7,8 +7,23 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 			// create a new record
 			var previousContentElement = dropZoneEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
-				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
-				alert('insert on first position -> call createFirst()');
+					// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
+					// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
+				var contentElementContainerId = dropZoneEl.prev('.feEditAdvanced-firstWrapper').id;
+				// the ID looks like this: feEditAdvanced-firstWrapper-pages-13
+				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
+				var destinationPointer = Ext.get(contentElementContainerId).next('input.feEditAdvanced-flexformPointers').getAttribute('title') + ':0';
+				var additionalParams = linkedDragEl.getAttribute('href');
+
+				additionalParams += '&TSFE_EDIT[record]=tt_content:NEW';
+				additionalParams += '&TSFE_EDIT[pid]=' + pageId;
+
+				// @todo Destination pointer not currently accounted for when saving.
+				additionalParams += '&TSFE_EDIT[destinationPointer]=' + destinationPointer;
+				additionalParams += '&pid=' + pageId;
+
+				var action = new TYPO3.FeEdit.NewRecordAction();
+				action.trigger(additionalParams, contentElementContainerId);
 			} else {
 				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
 				editPanel.create(linkedDragEl.getAttribute('href'));

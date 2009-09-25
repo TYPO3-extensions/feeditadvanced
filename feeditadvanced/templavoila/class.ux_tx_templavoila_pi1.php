@@ -129,7 +129,7 @@ class ux_tx_templavoila_pi1 extends tx_templavoila_pi1 {
 										$value[$vKey] .=  '<input type="hidden" class="feEditAdvanced-flexformPointers" title="' . implode(':', $flexformPointer) . '" value="' . $originalDataValues[$key][$vKey] . '" />';
 									
 											// Add some content to identify the container at the very beginning
-										$value[$vKey] = '<div class="feEditAdvanced-firstWrapper"></div>' . $value[$vKey];
+										$value[$vKey] = '<div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-field-' . $flexformPointer['field'] . '-pages-' . $GLOBALS['TSFE']->id . '"></div>' . $value[$vKey];
 									}
 								}
 							}
