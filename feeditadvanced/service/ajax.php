@@ -70,7 +70,6 @@ class tx_feeditadvanced_ajax {
 
 		tslib_eidtools::connectDB();
 		$this->initializeTSFE($this->pid);
-		$this->initializeBackendUser();
 
 			// Setup ajax object
 		require_once(PATH_typo3.'classes/class.typo3ajax.php');
@@ -592,6 +591,9 @@ class tx_feeditadvanced_ajax {
 			// then initialize fe user
 		$TSFE->initFEuser();
 		$TSFE->fe_user->fetchGroupData();
+
+			// initialize the backend user
+		$this->initializeBackendUser();
 
 		$TT = new t3lib_timeTrack;
 		$TT->start();
