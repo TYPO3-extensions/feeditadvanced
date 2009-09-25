@@ -129,23 +129,20 @@ class tx_templavoila_frontendedit extends t3lib_frontendedit {
 	 * Deletes a record.
 	 *
 	 * @return		none
-	 * @todo		Currently commented out while we decide if unlink or a real delete is better.
 	 */
-	/*
 	public function doDelete($table, $uid) {
 		if ($table == 'tt_content') {
 			$templaVoilaObj = $this->getTemplaVoilaObj();
 			$sourcePointerString = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['flexformPointer'];
 			$sourcePointer = $this->flexform_getPointerFromString($sourcePointerString);
 
-				// Unlinking rather than deleting to be consistent throughout TemplaVoila.
+				// Unlinking rather than deleting to be consistent with TemplaVoila's backend interface.
 			$templaVoilaObj->unlinkElement($sourcePointer);
 		} else {
 			parent::doDelete($table, $uid);
 		}
 	}
-	*/
-	
+
 	/**
 	 * @todo	We should really use native TV functions here.
 	 */
