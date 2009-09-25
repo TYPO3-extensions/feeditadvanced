@@ -1554,6 +1554,7 @@ var FrontendEditing = {
 		Ext.getBody().addClass('feEditAdvanced');
 		this.scanForEditPanels();
 		this.initializeMenuBar();
+		this.updatePageStyling();
 	},
 
 		// @todo	We eventually want to encapsulate this in a class or something, but it
@@ -1570,7 +1571,21 @@ var FrontendEditing = {
 	initializeMenuBar: function() {
 		this.toolbar = new TYPO3.FeEdit.Toolbar('feEditAdvanced-menuBar');
 	},
-	
+
+		// Update page styling to account for the menu bar at the top. Currently, background-position is adjusted.
+	updatePageStyling: function() {
+		var body = Ext.getBody();
+		backgroundPosition = body.getStyle('background-position').split(' ');
+		xPosition = backgroundPosition[0];
+		yPosition = backgroundPosition[1];
+		var menuBarHeight = Ext.get('feEditAdvanced-menuBar').getHeight();
+		if (yPosition == '0' || yPosition == '0px' || yPosition == '0pt' || yPosition == '0%') {
+			body.setStyle('background-position', xPosition + ' ' + menuBarHeight + 'px');
+		} else if (yPosition.indexOf('px')) {
+			body.setStyle('background-position', xPosition + ' ' + (parseInt(yPosition.substr(0, yPosition.length-2)) + menuBarHeight) + 'px');
+		}
+	},
+
 		// Enable drop indicators when a drag is started.
 	activateDropZones: function() {
 		FrontendEditing.editPanelsEnabled = false;
