@@ -221,8 +221,7 @@ class tx_templavoila_frontendedit extends t3lib_frontendedit {
 	 */
 	protected function getTemplaVoilaObj($table='pages') {
 		if(!is_object($this->templaVoilaObj) || $table != $this->templaVoilaObjTable) {
-			$apiClassName = t3lib_div::makeInstanceClassName('tx_templavoila_api');
-			$this->templaVoilaObj = new $apiClassName($table);
+			$this->templaVoilaObj = t3lib_div::makeInstance('tx_templavoila_api', $table);
 			$this->templaVoilaObjTable = $table;
 		}
 		

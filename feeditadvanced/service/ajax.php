@@ -73,8 +73,7 @@ class tx_feeditadvanced_ajax {
 
 			// Setup ajax object
 		require_once(PATH_typo3.'classes/class.typo3ajax.php');
-		$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
-		$this->ajaxObj = new $ajaxClass('feeditadvanced');
+		$this->ajaxObj = t3lib_div::makeInstance('TYPO3AJAX', 'feeditadvanced');
 
 		/**
 		 * @todo This content format is only applicable for the login error.
@@ -121,8 +120,7 @@ class tx_feeditadvanced_ajax {
 
 				// Setup ajax object
 			require_once(PATH_typo3.'classes/class.typo3ajax.php');
-			$ajaxClass = t3lib_div::makeInstanceClassName('TYPO3AJAX');
-			$this->ajaxObj = new $ajaxClass('feeditadvanced');
+			$this->ajaxObj = t3lib_div::makeInstance('TYPO3AJAX', 'feeditadvanced');
 
 			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
 				// Map values from TCEForms submission to editing actions.
@@ -513,9 +511,7 @@ class tx_feeditadvanced_ajax {
 		$flexPtr = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['flexformPointer'];
 		if ($flexPtr) {
 			require_once(t3lib_extMgm::extPath('templavoila') . 'class.tx_templavoila_api.php');
-			$apiClassName = t3lib_div::makeInstanceClassName('tx_templavoila_api');
-			$TVObj = new $apiClassName($sourcePointer['table']);
-
+			$TVObj = t3lib_div::makeInstance('tx_templavoila_api', $sourcePointer['table']);
 			$srcRec = $TVObj->flexform_getRecordByPointer($sourcePointer);
 			$destRec = $TVObj->flexform_getRecordByPointer($destinationPointer);
 			$elID = $srcRec['uid'];
@@ -577,8 +573,7 @@ class tx_feeditadvanced_ajax {
 		}
 
 			// create object instances:
-		$temp_TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
-		$TSFE = new $temp_TSFEclassName($TYPO3_CONF_VARS, $pid, 0, true);
+		$TSFE = t3lib_div::makeInstance('tslib_fe', $TYPO3_CONF_VARS, $pid, 0, true);
 
 		$TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
 		$TSFE->tmpl = t3lib_div::makeInstance('t3lib_tstemplate');
