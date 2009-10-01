@@ -146,7 +146,7 @@ class tx_feeditadvanced_ajax {
 					$uid = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID'];
 				}
 					// If we're dealing with a new record, get the UID of the previous sibling.
-				if ($uid == 'NEW') {
+				if (($uid == 'NEW') && ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]['NEW']['pid'] < 0)) {
 					$uid = abs($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]['NEW']['pid']);
 				}
 				$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record'] = $table . ':' . $uid;

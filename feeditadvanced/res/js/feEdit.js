@@ -900,6 +900,8 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 				FrontendEditing.editWindow.displayStaticMessage(json.error);
 			} else if (json.url) {
 				window.location = json.url;
+			} else if (json.uid == 'NEW') {
+				// New element was not saved so do nothing and discard it.
 			} else {
 				if (json.content) {
 					content = json.content;
@@ -1513,6 +1515,8 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 				this.displayStaticMessage(json.error);
 			} else if (json.url) {
 				window.location = json.url;
+			} else if (json.uid == 'NEW') {
+				// New element was not saved so do nothing and discard it.
 			} else if (this.editPanel) {
 				this.editPanel.pushContentUpdate(json);
 			} else if (this.targetID) {
