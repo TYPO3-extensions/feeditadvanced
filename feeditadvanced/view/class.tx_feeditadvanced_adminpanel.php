@@ -152,9 +152,6 @@ class tx_feeditadvanced_adminpanel {
 			return;
 		}
 		
-		$cssFileName = ($cssfile = $this->modTSconfig['properties']['skin.']['cssFile']) ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css';
-		$markerArray['###INCLUDES###'] = '<link href="' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $cssFileName . '" rel="stylesheet" type="text/css" />';
-
 			// have a form for adminPanel processing and saving of vars
 		$markerArray['###HIDDEN_FORM###'] = '<form id="TSFE_ADMIN_PANEL_Form" name="TSFE_ADMIN_PANEL_Form" action="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '" method="post">';
 		$markerArray['###HIDDEN_FORM###'] .= $this->getAdmPanelFields();
@@ -162,9 +159,14 @@ class tx_feeditadvanced_adminpanel {
 
 		$markerArray['###MENU_BAR###'] = $this->buildMenu();
 
-		$content = $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template,'###MAIN_TEMPLATE###'),$markerArray);
 			// @todo	This code runs after content has been created, thus we cannot insert data into the head using the page renderer.  Are there any other options?
-		$includes = $this->getIncludes();
+		if ($this->menuOpen) {
+			$markerArray['###INCLUDES###'] = $this->getIncludes();
+		} else {
+			$markerArray['###INCLUDES###'] = $this->getLinkTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_closed.css');
+		}
+
+		$content = $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template,'###MAIN_TEMPLATE###'),$markerArray);
 		
 		return $content . $includes;
 	}
@@ -295,6 +297,10 @@ class tx_feeditadvanced_adminpanel {
 		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js');
 		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/lightbox.js');
 		$includes[] = $this->getLinkTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/lightbox.css');
+
+			// load main CSS file
+		$cssFile = ($this->modTSconfig['properties']['skin.']['cssFile']) ? $this->modTSconfig['properties']['skin.']['cssFile'] : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css';
+		$includes[] = $this->getLinkTag($cssFile);
 
 			// include anything from controller
 		$controllerIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
