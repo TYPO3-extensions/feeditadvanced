@@ -486,7 +486,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		}
 	},
 
-	editClick: function(evt) {
+	clickContentToEdit: function(evt) {
 			// if in middle of dragging, exit
 		if (!FrontendEditing.editPanelsEnabled || !this.hoverMenuEnabled) {
 			return;
@@ -551,10 +551,11 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			// Setup event handler for edit on click
 		if (editPanelToolbar.next('.editableOnClick')) {
 			var editableOnClick = editPanelToolbar.next('.editableOnClick');
-			Ext.get(editableOnClick).on('click', this.editClick, this);
-		} else {
-				// Not editable on click means there's no visible content
-				// and so the hover menu should always be visible.
+			Ext.get(editableOnClick).on('click', this.clickContentToEdit, this);
+		}
+
+			// If the content element is empty, always show the hover menu as there's no other way to activate it.
+		if (editPanelToolbar.next('.feEditAdvanced-emptyContentElement')) {
 			this.hoverMenuAlwaysVisible = true;
 		}
 	},

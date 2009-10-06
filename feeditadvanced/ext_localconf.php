@@ -25,6 +25,7 @@ t3lib_extMgm::addPageTSConfig('
 		disable = 0
 		
 		useAjax = 1
+		clickContentToEdit = 0
 		showIcons = edit, new, copy, cut, hide, delete, draggable
 		showPageIcons = edit, new
 		skin {

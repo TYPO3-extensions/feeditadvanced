@@ -194,7 +194,11 @@ class tx_feeditadvanced_editpanel {
 			if (isset($allow['edit'])) {
 				if ($content) {
 					$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-editButton editAction';
-					$this->panelItems['editClick'] = 'value="' . $GLOBALS['BE_USER']->extGetLL('editIcon') . '" title="' . $GLOBALS['BE_USER']->extGetLL('editTitle') . '" ';
+					if ($this->modTSconfig['properties']['clickContentToEdit']) {
+						$this->panelItems['clickContentToEdit'] = 'value="' . $GLOBALS['BE_USER']->extGetLL('editIcon') . '" title="' . $GLOBALS['BE_USER']->extGetLL('editTitle') . '" ';
+					}
+				} else {
+					$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-emptyContentElement';
 				}
 				
 				$this->panelItems['edit'] = $this->editIconLinkWrap('edit', 'editIcon', 'editTitle');
@@ -344,7 +348,7 @@ class tx_feeditadvanced_editpanel {
 					// expand hide to hide + unhide
 				if ($isThere && ($value == 'hide') && isset($this->panelItems['hide'])) {
 					$editpanelItems .= $this->panelItems['hide'] . $this->panelItems['unhide'];
-				} elseif ($isThere && ($value != 'editClick') && ($value != 'draggable')) {
+				} elseif ($isThere && ($value != 'clickContentToEdit') && ($value != 'draggable')) {
 					$editpanelItems .= $this->panelItems[$value];
 				}
 				// expand move to up + down
@@ -384,10 +388,10 @@ class tx_feeditadvanced_editpanel {
 		if ($recordData['hidden']) {
 			$markerArray['###ALLWRAPPER_CLASS###'] .= ' feEditAdvanced-hiddenElement';
 		}
-		if (isset($this->panelItems['editClick']) && !empty($this->panelItems['editClick'])) {
-			if ($this->panelItems['editClick'] != 'return false;') {
+		if (isset($this->panelItems['clickContentToEdit']) && !empty($this->panelItems['clickContentToEdit'])) {
+			if ($this->panelItems['clickContentToEdit'] != 'return false;') {
 				$markerArray['###CWRAPPER_CLASS###'] .= ' editableOnClick';
-				$markerArray['###CWRAPPER_EXTRA###'] .= $this->panelItems['editClick'];
+				$markerArray['###CWRAPPER_EXTRA###'] .= $this->panelItems['clickContentToEdit'];
 			}
 		}
 		if (isset($this->panelItems['draggable'])) {
@@ -419,7 +423,7 @@ class tx_feeditadvanced_editpanel {
 			case 'move':
 				$content = $this->panelItems['up'] . $this->panelItems['down'] . $this->panelItems['drag'];
 				break;
-			case 'editClick':
+			case 'clickContentToEdit':
 			case 'draggable':
 				// Do nothing
 				break;
