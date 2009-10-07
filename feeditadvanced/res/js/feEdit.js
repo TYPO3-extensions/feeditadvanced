@@ -313,6 +313,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	sortable: false,
 	hoverMenuEnabled: false,
 	alwaysVisible: false,
+	clickContentToEdit: false,
 
 	constructor: function(wrapperElement) {
 		this.el = Ext.get(wrapperElement);
@@ -470,6 +471,10 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		if (!this.hoverMenuAlwaysVisible && FrontendEditing.editPanelsEnabled && this.hoverMenuEnabled) {
 			this.menuEl.show();
 			this.el.addClass('feEditAdvanced-allWrapperHover');
+
+			if (this.clickContentToEdit) {
+				this.el.addClass('feEditAdvanced-clickContentToEdit');
+			}
 		}
 		if (evt != undefined) {
 			evt.stopEvent();
@@ -480,13 +485,17 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		if (!this.hoverMenuAlwaysVisible) {
 			this.menuEl.hide();
 			this.el.removeClass('feEditAdvanced-allWrapperHover');
+
+			if (this.clickContentToEdit) {
+				this.el.removeClass('feEditAdvanced-clickContentToEdit');
+			}
 		}
 		if (evt != undefined) {
 			evt.stopEvent();
 		}
 	},
 
-	clickContentToEdit: function(evt) {
+	editOnClick: function(evt) {
 			// if in middle of dragging, exit
 		if (!FrontendEditing.editPanelsEnabled || !this.hoverMenuEnabled) {
 			return;
@@ -551,7 +560,8 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			// Setup event handler for edit on click
 		if (editPanelToolbar.next('.editableOnClick')) {
 			var editableOnClick = editPanelToolbar.next('.editableOnClick');
-			Ext.get(editableOnClick).on('click', this.clickContentToEdit, this);
+			Ext.get(editableOnClick).on('click', this.editOnClick, this);
+			this.clickContentToEdit = true;
 		}
 
 			// If the content element is empty, always show the hover menu as there's no other way to activate it.

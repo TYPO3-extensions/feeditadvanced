@@ -336,9 +336,12 @@ div.feEditAdvanced-allWrapper {
 }
 
 div.feEditAdvanced-allWrapperHover {
-	border: 1px solid #888;
 	background-color: #e0e0e0 !important;
+	border: 1px solid #888;
 	margin: 1px;
+}
+
+div.feEditAdvanced-clickContentToEdit {
 	cursor: pointer;
 }
 
