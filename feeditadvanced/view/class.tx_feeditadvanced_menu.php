@@ -244,30 +244,32 @@ class tx_feeditadvanced_menu {
 		$user = 0;
 		$userList = array();
 		$openedRecords = array();
-		foreach($records AS $lockedRecord) {
-			$user = $lockedRecord['userid'];
-			
-			if($user != $oldUser) {
-				$userList[$user] = ($lockedRecord['realName'] != '' ? $lockedRecord['realName'] : $lockedRecord['username']);
-				$openedRecords[$user] = array('page' => 99999999999, 'content' => 99999999999, 'data' =>99999999999);		
+		if (is_array($records)) {
+			foreach($records AS $lockedRecord) {
+				$user = $lockedRecord['userid'];
+				
+				if($user != $oldUser) {
+					$userList[$user] = ($lockedRecord['realName'] != '' ? $lockedRecord['realName'] : $lockedRecord['username']);
+					$openedRecords[$user] = array('page' => 99999999999, 'content' => 99999999999, 'data' =>99999999999);		
+				}
+				switch ($lockedRecord['record_table']) {
+					case 'pages':
+						if( $lockedRecord['tstamp'] < $openedRecords[$user]['page'] ) {
+							$openedRecords[$user]['page'] = $lockedRecord['tstamp'];
+						}
+						break;
+					case 'tt_content':
+						if( $lockedRecord['tstamp'] < $openedRecords[$user]['content'] ) {
+							$openedRecords[$user]['content'] = $lockedRecord['tstamp'];
+						}
+					default:
+						if( $lockedRecord['tstamp'] < $openedRecords[$user]['data'] ) {
+							$openedRecords[$user]['data'] = $lockedRecord['tstamp'];
+						}
+						break;
+				}
+				$oldUser = $user;	
 			}
-			switch ($lockedRecord['record_table']) {
-				case 'pages':
-					if( $lockedRecord['tstamp'] < $openedRecords[$user]['page'] ) {
-						$openedRecords[$user]['page'] = $lockedRecord['tstamp'];
-					}
-					break;
-				case 'tt_content':
-					if( $lockedRecord['tstamp'] < $openedRecords[$user]['content'] ) {
-						$openedRecords[$user]['content'] = $lockedRecord['tstamp'];
-					}
-				default:
-					if( $lockedRecord['tstamp'] < $openedRecords[$user]['data'] ) {
-						$openedRecords[$user]['data'] = $lockedRecord['tstamp'];
-					}
-					break;
-			}
-			$oldUser = $user;	
 		}
 		$renderedListing = array();
 		foreach($userList AS $userID => $userName) {
