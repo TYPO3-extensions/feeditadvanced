@@ -1,0 +1,31 @@
+2009-10-20  Oliver Hader  <oliver@typo3.org>
+
+	* Set version to 0.1.1
+	* Tagged release for TYPO3 4-3-beta2
+
+2009-10-16  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Added array checking on foreach loop to fix bug #4988. Thanks to Dan Osipov for the patch.
+
+2009-10-07  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Tweak CSS styling when click content to edit is disabled.
+	* Set height of closed menu bar to 0 so that it does not overlap content. Fixes bug #4923.
+
+2009-10-06  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Only load full Javascript and CSS when top menu is open. Fixes bug #4806.
+	* Add TSConfig option for clickContentToEdit, disabled by default. Fixes bug #4809.
+
+2009-10-01  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed any issue where closing a new element without saving resulted in a PHP error. Fixes bug #4792.
+
+2009-09-30  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Replaced calls to deprecated function t3lib_div::makeInstanceClassName(). Fixes #4808.
+
+2009-09-28  Benjamin Mack  <benni@typo3.org>
+
+	* Set version to 0.1.0
+	* Tagged release for TYPO3 4.3-beta1
