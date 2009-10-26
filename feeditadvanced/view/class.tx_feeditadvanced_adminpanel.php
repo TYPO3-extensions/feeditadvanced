@@ -90,7 +90,7 @@ class tx_feeditadvanced_adminpanel {
 			$GLOBALS['TSFE']->determineId();
 		}
 
-		if ($this->modTSconfig['properties']['disable']) {
+		if ($this->modTSconfig['properties']['disable'] || (!$GLOBALS['BE_USER']->frontendEdit instanceOf t3lib_FrontendEdit)) {
 			$this->disabled = true;
 			return;
 		}
