@@ -1599,6 +1599,14 @@ var FrontendEditing = {
 		} else if (yPosition.indexOf('px')) {
 			body.setStyle('background-position', xPosition + ' ' + (parseInt(yPosition.substr(0, yPosition.length-2)) + menuBarHeight) + 'px');
 		}
+
+		// If the firstWrapper is behind the menu, shift it down so that it and all edit panels are visible.
+		var menuBarBottom = Ext.get('feEditAdvanced-menuBar').getBottom();
+		Ext.select('div.feEditAdvanced-firstWrapper').each(function(wrapper) {
+			if (wrapper.getTop() <= (menuBarBottom + 5)) {
+				wrapper.setStyle('margin-top', (menuBarHeight + 25) + 'px');
+			}
+		});
 	},
 
 		// Enable drop indicators when a drag is started.

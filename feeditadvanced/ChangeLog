@@ -1,3 +1,7 @@
+2009-10-28  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #4784: Top menu can overlap first content element.
+
 2009-10-26  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #4814: Hide top menu when frontend editing is disabled via admin panel.
