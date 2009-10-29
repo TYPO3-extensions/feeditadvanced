@@ -18,24 +18,22 @@ table.formsOnPage {
 
 /* added to fix flexforms in frontend... */
 .formsOnPage div.bgColor5 {
-	float: left;
-	width: 30%;
+	display: inline-block;
+	width: 150px;
 	margin-bottom: 4px;
 	padding-top: 2px;
 	padding-bottom: 2px;
-	background-color: #d7dbe2;
+	background-color: transparent;
 	font-size: 10px;
-}
-
-/* Temporary fix for long flexform labels being cut off */
-.formsOnPage .typo3-TCEforms-flexForm div.bgColor5 {
-	min-width: 30%;
-	width: auto;
+	vertical-align: top;
+	white-space: normal;
 }
 
 .formsOnPage div.bgColor4 {
+	display: inline-block;
 	margin-bottom: 4px;
 	margin-left: 4px;
+	background-color: transparent;
 }
 
 .formsOnPage .typo3-TCEforms-palette img {
@@ -91,6 +89,7 @@ table.typo3-TCEforms select.formField {
 .formsOnPage .class-main23 *,
 .formsOnPage .class-main25 * {
 	font-size: 11px !important;
+	line-height: 12px;
 }
 
 .formsOnPage #typo3-tree td,

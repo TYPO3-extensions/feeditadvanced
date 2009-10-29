@@ -1,3 +1,7 @@
+2009-10-29  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #4989: Flexform layout problems
+
 2009-10-28  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #4784: Top menu can overlap first content element.
