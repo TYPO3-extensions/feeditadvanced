@@ -38,7 +38,6 @@ require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadva
  * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_adminpanel {
-	// @todo	Add docs for the member variables.
 
 	/**
 	 * Admin panel related configuration.
@@ -59,14 +58,14 @@ class tx_feeditadvanced_adminpanel {
 	 *
 	 * @var		boolean
 	 */
-	protected $menuOpen = true;
+	protected $menuOpen = false;
 
 	/**
 	 * Holder of the menu bar object
 	 *
 	 * @var		object
 	 */
-	protected $menuBar = 0;
+	protected $menuBar = NULL;
 	
 	/**
 	 * Indicates if mod was disabled
@@ -74,38 +73,17 @@ class tx_feeditadvanced_adminpanel {
 	 * @var		boolean
 	 */
 	protected $disabled = false;
-	
-	
 
 	/**
-	 * Initialize the adminPanel. Handle actions here.
-	 *
-	 * @return	void
+	 * HTML marker template string for the menu
+	 * @var		string
 	 */
-	public function init() {
-			// general configuration
-		if (empty($this->admPanelTSconfig)) {
-			$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
-			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
-			$GLOBALS['TSFE']->determineId();
-		}
+	protected $template = '';
 
-		if ($this->modTSconfig['properties']['disable'] || (!$GLOBALS['BE_USER']->frontendEdit instanceOf t3lib_FrontendEdit)) {
-			$this->disabled = true;
-			return;
-		}
 
-			// loading template
-		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$this->template = ($templateFile = $this->modTSconfig['properties']['skin.']['templateFile']) ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl';
-		$this->template = $this->cObj->fileResource($this->template);
-		
-		$this->menuOpen = (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] !== '0')) ? true : false;
-		$this->actionHandler();
-	}
 	
 	/**
-	 * Static method for displaying the top menu bar. 
+	 * Static method for displaying the top menu bar, this is where TYPO3 hooks in. 
 	 *
 	 * @note edited the method to work with better than temporarily solution.
 	 *
@@ -113,36 +91,78 @@ class tx_feeditadvanced_adminpanel {
 	 */
 	public static function showMenuBar($params,&$parent) {
 		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->beUserLogin) {
-				$adminPanel = t3lib_div::makeInstance('tx_feeditadvanced_adminpanel');
-				$adminPanel->init();
-				$parent->content  = str_replace('</body>',$adminPanel->display().'</body>',$parent->content);
+			$adminPanel = t3lib_div::makeInstance('tx_feeditadvanced_adminpanel');
+			$adminPanel->init();
+			$feEditContent = $adminPanel->display();
+			$parent->content = str_replace('</body>', $feEditContent . '</body>', $parent->content);
 		}
+	}
+	
+	
+	/**
+	 * Initialize the adminPanel. Handle actions here.
+	 *
+	 * @return	void
+	 */
+	public function init() {
+			// set up general configuration
+		if (!count($this->admPanelTSconfig)) {
+			$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
+			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
+			$GLOBALS['TSFE']->determineId();
+		}
+
+			// check if frontend editing is enabled
+		if ($this->modTSconfig['properties']['disable'] || (!$GLOBALS['BE_USER']->frontendEdit instanceOf t3lib_FrontendEdit)) {
+			$this->disabled = true;
+			return;
+		}
+
+			// loading template
+		$templateFile = $this->modTSconfig['properties']['skin.']['templateFile'];
+		$templateFile = ($templateFile ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl');
+		$templateFile = $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
+		$this->template = $GLOBALS['TSFE']->tmpl->fileContent($templateFile);
+		
+			// check if the menu is already opened
+		if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) {
+			$this->menuOpen = true;
+		}
+
+			// run through the actions
+		$this->actionHandler();
 	}
 
 	/**
-	 * Handles actions passed in through TSFE_ADMIN_PANEL Form
+	 * Handles actions passed in through the TSFE_ADMIN_PANEL Form
 	 *
 	 * @return	void
 	 */
 	public function actionHandler() {
 		$action = t3lib_div::_POST('TSFE_ADMIN_PANEL');
+
 			// handle toggling the menu on and off
+			// if the menu is going to be switched on/off, then it's also stored in the userconfiguration of the BE user
 		if ($action && isset($action['menuOpen'])) {
-			$this->menuOpen = $action['menuOpen'];
-			$GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] = $this->menuOpen;
+			$GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] = $this->menuOpen = (bool) $action['menuOpen'];
 		}
 
 			// hook to handle actions that define in menu
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['actionHandler'])) {
-			$_params = array('action' => &$action, 'pObj' => &$this);
+			$_params = array(
+				'action' => &$action,
+				'pObj' => &$this
+			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['actionHandler'] as $_funcRef) {
-				t3lib_div::callUserFunction($_funcRef,$_params,$this);
+				t3lib_div::callUserFunction($_funcRef, $_params, $this);
 			}
 		}
 	}
 
+
 	/**
-	 * Displays the admin panel...which now becomes a menu
+	 * Displays the admin panel out of the template
+	 * ...which now becomes a menu
 	 *
 	 * @return	string
 	 */
@@ -152,24 +172,24 @@ class tx_feeditadvanced_adminpanel {
 			return;
 		}
 		
+		$markers = array(
 			// have a form for adminPanel processing and saving of vars
-		$markerArray['###HIDDEN_FORM###'] = '<form id="TSFE_ADMIN_PANEL_Form" name="TSFE_ADMIN_PANEL_Form" action="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '" method="post">';
-		$markerArray['###HIDDEN_FORM###'] .= $this->getAdmPanelFields();
-		$markerArray['###HIDDEN_FORM###'] .= '</form>';
+			'HIDDEN_FORM' => '<form id="TSFE_ADMIN_PANEL_Form" name="TSFE_ADMIN_PANEL_Form" action="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '" method="post">' . $this->getAdmPanelFields() . '</form>',
+			'MENU_BAR' => $this->buildMenu()
+		);
 
-		$markerArray['###MENU_BAR###'] = $this->buildMenu();
-
-			// @todo	This code runs after content has been created, thus we cannot insert data into the head using the page renderer.  Are there any other options?
+			// @todo	This code runs after content has been created, 
+			// thus we cannot insert data into the head using the page renderer.  Are there any other options?
 		if ($this->menuOpen) {
-			$markerArray['###INCLUDES###'] = $this->getIncludes();
+			$markers['INCLUDES'] = $this->getIncludes();
 		} else {
-			$markerArray['###INCLUDES###'] = $this->getLinkTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_closed.css');
+			$markers['INCLUDES'] = $this->getLinkTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_closed.css');
 		}
 
-		$content = $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template,'###MAIN_TEMPLATE###'),$markerArray);
-		
-		return $content . $includes;
+		$content = t3lib_parsehtml::getSubpart($this->template, '###MAIN_TEMPLATE###');
+		return t3lib_parsehtml::substituteMarkerArray($content, $markers, '###|###');
 	}
+
 
 	/**
 	 * Add all the form fields that need to be saved when doing admin panel actions
@@ -178,7 +198,7 @@ class tx_feeditadvanced_adminpanel {
 	 * @return	string
 	 */
 	function getAdmPanelFields() {
-		$out = '
+		$content = '
 		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_displayFieldIcons]" value="' . ($this->admPanelTSconfig['properties']['module.']['edit.']['forceDisplayFieldIcons'] ? 1 : 0) . '" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_displayIcons]" value="' . ($this->admPanelTSconfig['properties']['module.']['edit.']['forceDisplayIcons'] ? 1 : 0) . '" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_editFormsOnPage]" value="' . ($this->uc['TSFE_adminConfig']['forceFormsOnPage'] ? 1 : 0) . '" />
@@ -187,19 +207,22 @@ class tx_feeditadvanced_adminpanel {
 		<input type="hidden" name="TSFE_ADMIN_PANEL[preview_showHiddenRecords]" value="1" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[display_preview]" value="0" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[display_top]" value="1" />
-		<input type="hidden" name="TSFE_ADMIN_PANEL[menuOpen]" value="' . $this->menuOpen . '" />
+		<input type="hidden" name="TSFE_ADMIN_PANEL[menuOpen]" value="' . intval($this->menuOpen) . '" />
 		';
 
 			// hook to add additional hidden fields
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'])) {
-			$_params = array('input' => &$input, 'pObj' => &$this);
+			$_params = array(
+				'input' => &$input,
+				'pObj' => &$this
+			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'] as $_funcRef) {
-				$out .= t3lib_div::callUserFunction($_funcRef,$_params,$this);
+				$content .= t3lib_div::callUserFunction($_funcRef, $_params, $this);
 			}
 		}
-
-		return $out;
+		return $content;
 	}
+
 
 	/**
 	 * Builds the menu. Can hook in CSS and own menu here.
@@ -207,16 +230,21 @@ class tx_feeditadvanced_adminpanel {
 	 * @return	string		HTML to display the menu
 	 */
 	function buildMenu() {
+		$content = '';
 
-			// Allow to hook in new menu here...will overwrite existing
+			// Allow to hook in the buildMenu process here, 
+			// this way you can exchange the menu building completely
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'])) {
-			$_params = array('input' => &$input, 'pObj' => &$this);
+			$_params = array(
+				'input' => &$input,
+				'pObj' => &$this
+			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'] as $_funcRef) {
-				$menuOut = t3lib_div::callUserFunction($_funcRef,$_params,$this);
+				$content = t3lib_div::callUserFunction($_funcRef, $_params, $this);
 			}
 		}
 
-		if (!$menuOut) {
+		if (!$content) {
 			$this->menuBar = t3lib_div::makeInstance('tx_feeditadvanced_menu');
 
 				// add sections for menu
@@ -227,16 +255,28 @@ class tx_feeditadvanced_adminpanel {
 
 				// build the menus here
 			// @todo need to check permissions here too
-			$tsMenuBar = $this->modTSconfig['properties']['menuBar.'];
-			$menuConfig = $tsMenuBar['config'] ? t3lib_div::trimExplode(',',$tsMenuBar['config']) : array('action','type','clipboard','context');
+			$tsMenuBar  = $this->modTSconfig['properties']['menuBar.'];
+			$menuConfig = $tsMenuBar['config'] ? t3lib_div::trimExplode(',', $tsMenuBar['config']) : array('action', 'type', 'clipboard', 'context');
 			if (in_array('action', $menuConfig)) {
 				$tsActions = t3lib_div::trimExplode(',', $tsMenuBar['actionMenu']);
-				if (in_array('page', $tsActions)) $this->menuBar->addItem('Actions', 'Page', 'fePageFunctions', '', 'Page functions', '');
-				if (in_array('file', $tsActions)) $this->menuBar->addItem('Actions', 'File', 'feFileFunctions', '', 'File functions', '');
-				if (in_array('user', $tsActions)) $this->menuBar->addItem('Actions', 'User', 'feUserFunctions', '', 'User functions');
-				if (in_array('events', $tsActions)) $this->menuBar->addItem('Actions', 'Events', 'feEventFunctions', '', 'Event functions');
-				if (in_array('addplugin', $tsActions)) $this->menuBar->addItem('Actions','Add Plugin','feAddPlugin', '', 'Add Plugin', '');
-				if (count($tsActions)) $this->menuBar->addItem('Actions', '', '', '', '', '', 'spacer');
+				if (in_array('page', $tsActions)) {
+					$this->menuBar->addItem('Actions', 'Page', 'fePageFunctions', '', 'Page functions', '');
+				}
+				if (in_array('file', $tsActions)) {
+					$this->menuBar->addItem('Actions', 'File', 'feFileFunctions', '', 'File functions', '');
+				}
+				if (in_array('user', $tsActions)) {
+					$this->menuBar->addItem('Actions', 'User', 'feUserFunctions', '', 'User functions');
+				}
+				if (in_array('events', $tsActions)) {
+					$this->menuBar->addItem('Actions', 'Events', 'feEventFunctions', '', 'Event functions');
+				}
+				if (in_array('addplugin', $tsActions)) {
+					$this->menuBar->addItem('Actions', 'Add Plugin', 'feAddPlugin', '', 'Add Plugin', '');
+				}
+				if (count($tsActions)) {
+					$this->menuBar->addItem('Actions', '', '', '', '', '', 'spacer');
+				}
 			}
 			
 			// render new content element icons
@@ -244,21 +284,26 @@ class tx_feeditadvanced_adminpanel {
 			
 			if (in_array('context', $menuConfig)) {
 				$tsContext = t3lib_div::trimExplode(',', $tsMenuBar['contextMenu']);
-				if (in_array('preview', $tsContext)) $this->menuBar->addItem('ContextActions', 'Preview', '', '', 'Preview this page', '', 'button disabled');
-				$this->menuBar->addItem('ContextActions', 'Close', '', '', 'Close FrontEnd Editing', ' onclick="' . htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=0; document.TSFE_ADMIN_PANEL_Form.submit(); return false;') . '"');
+				if (in_array('preview', $tsContext)) {
+					$this->menuBar->addItem('ContextActions', 'Preview', '', '', 'Preview this page', '', 'button disabled');
+				}
+				$this->menuBar->addItem('ContextActions', 'Close', '', '', 'Close Frontend Editing', ' onclick="' . htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=0; document.TSFE_ADMIN_PANEL_Form.submit(); return false;') . '"');
 			}
 			if (in_array('clipboard', $menuConfig)) {
 				$this->menuBar->addItem('Clipboard', '', '', '', '', '', 'spacer');
 			}
-
-			$menuOut = $this->menuBar->build();
+			$content = $this->menuBar->build();
 		}
-
-		$out .= $menuOut;
-
-		return $out;
+		return $content;
 	}
-	
+
+
+	/**
+	 * renders all icons on the menu bar
+	 *
+	 * @param	$menuConfig
+	 * @param	$tsMenuBar
+	 */
 	protected function renderNewContentElementIcons($menuConfig, $tsMenuBar) {
 		// get new content elements from cms wizard
 		$newCE = t3lib_div::makeInstance('tx_feeditadvanced_newcontentelements');
@@ -269,77 +314,81 @@ class tx_feeditadvanced_adminpanel {
  				$this->menuBar->addItem(
  					'ContentType', 
  					$ce['title'],
- 					'', 
+ 					'',
  					t3lib_div::resolveBackPath('../../../../../typo3/' . $ce['icon']), 
  					'Drag widgets onto the page', 
  					'',
  					'feEditAdvanced-contentTypeItem draggable', 
  					'feEditAdvanced-buttonLabel', 
  					substr($ce['params'], 1)
- 					);			
+ 				);
 			}
 		}
-		
-		
 	}
-	
+
+
 	/**
-	 *  Gets the CSS and Javascript includes needed for the top panel.
+	 * Gets the CSS and Javascript includes needed for the top panel.
 	 *
 	 * @return		void
 	 */
 	protected function getIncludes() {
-		$includes = array();
-		$includes[] = $this->getScriptTag('typo3/contrib/extjs/adapter/ext/ext-base.js');
-		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced')  . 'res/js/ext-dd.js');
+		$extPath = t3lib_extMgm::siteRelPath('feeditadvanced');
+		$includes = array(
+			'ext-base.js'  => $this->getScriptTag('typo3/contrib/extjs/adapter/ext/ext-base.js'),
+			'ext-dd.js'    => $this->getScriptTag($extPath . 'res/js/ext-dd.js'),
 
-			// load AJAX handling functions
-		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/feEdit.js');
-		$includes[] = $this->getScriptTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/lightbox.js');
-		$includes[] = $this->getLinkTag(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/lightbox.css');
+				// load AJAX handling functions
+			'feedit.js'    => $this->getScriptTag($extPath . 'res/js/feEdit.js'),
+			'lightbox.js'  => $this->getScriptTag($extPath . 'res/js/lightbox.js'),
+			'lightbox.css' => $this->getLinkTag($extPath . 'res/css/lightbox.css')
+		);
 
 			// load main CSS file
-		$cssFile = ($this->modTSconfig['properties']['skin.']['cssFile']) ? $this->modTSconfig['properties']['skin.']['cssFile'] : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_edit_advanced.css';
-		$includes[] = $this->getLinkTag($cssFile);
+		$cssFile = $this->modTSconfig['properties']['skin.']['cssFile'];
+		$includes[] = $this->getLinkTag($cssFile ? $cssFile : $extPath . 'res/css/fe_edit_advanced.css');
 
 			// include anything from controller
 		$controllerIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
 		if ($controllerIncludes) {
 			$includes[] = $controllerIncludes;
 		}
+
 			// hook to load in any extra / additional JS includes
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['addIncludes'])) {
 			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['addIncludes'] as $classRef) {
-				$hookObj= &t3lib_div::getUserObj($classRef);
-				if (method_exists($hookObj, 'addIncludes'))
+				$hookObj = &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'addIncludes')) {
 					$includes[] = $hookObj->addIncludes();
+				}
 			}
 		}
-		
 		return implode(chr(10), $includes);
 	}
 
+
 	/**
-	 * Creates a script tag for the given src.
+	 * Creates a script tag for the given src to include an external JS file.
 	 *
-	 * @param	string	The src.
-	 * @param	string	The type.
-	 * @return	string
+	 * @param	string	The src attribute.
+	 * @param	string	The type attribute ('text/javascript' by default).
+	 * @return	string	the HTML tag, ready to output
 	 */
-	protected function getScriptTag($src, $type="text/javascript") {
+	protected function getScriptTag($src, $type = 'text/javascript') {
 		return '<script type="' . $type . '" src="' . $src . '"></script>';
 	}
 
+
 	/**
-	 * Creates a link tag for the given href.
+	 * Creates a link tag for the given href to include e.g. a CSS file.
 	 *
-	 * @param	string	The href.
-	 * @param	string	The type.
-	 * @param	string	The rel.
-	 * @param	string	The media.
-	 * @return	string
+	 * @param	string	The href attribute - the path to the CSS file.
+	 * @param	string	The type attribute - (text/css by default)
+	 * @param	string	The rel attribute ('stylesheet' by default).
+	 * @param	string	The media attribute ('media' by default).
+	 * @return	string	the HTML tag, ready to output
 	 */
-	protected function getLinkTag($href, $type="text/css", $rel="stylesheet", $media="screen") {
+	protected function getLinkTag($href, $type = 'text/css', $rel = 'stylesheet', $media = 'screen') {
 		return '<link rel="' . $rel . '" type="' . $type . '" media="' . $media . '" href="' . $href . '" />';
 	}
 }
