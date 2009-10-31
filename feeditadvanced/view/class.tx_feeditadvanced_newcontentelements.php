@@ -25,7 +25,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
+/**
+ * Gets a list of all content elements that are usually shown in the new content element wizard in the backend
+ * but is returned in an array so Frontend Editing can render the icons and buttons inthe menu.
+ * see tx_feeditadvanced_adminpanel for more.
+ *
+ * @package TYPO3
+ * @subpackage feeditadvanced
+ */
 class tx_feeditadvanced_newcontentelements {
 
 		// Internal, static (from GPvars):

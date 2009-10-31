@@ -20,7 +20,7 @@
 *
 *  This script is distributed in the hope that it will be useful,
 *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 *  GNU General Public License for more details.
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
@@ -28,6 +28,13 @@
 
 /**
  * Menu for advanced frontend editing.
+ * This class is responsible for building the HTML of the items on top of the FE editing
+ * but does not worry about the overall (rights etc)
+ * 
+ * This class delivers four main functions
+ *   => init() sets up the paths and templates
+ *   => addToolbar() and addItem() to add sections to the menu, and items to the sections
+ *   => build() which renders the sections and items added previously 
  *
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
@@ -35,21 +42,79 @@
  * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_menu {
+
 	/**
-    * local copy of cObject to perform various template operations
-    * @var         array
-    */
-	protected $cObj = 0;
+	 * local copy of cObject to perform various template operations
+	 * @var		tslib_content
+	 */
+	protected $cObj = NULL;
 	
 	/**
-	 * template for edit panel
+	 * the ID of the current page (references pages::uid)
+	 * @var 	int
+	 */
+	protected $pid = 0;
+	
+	/**
+	 * the name of the current user (FE takes precedence over BE)
+	 * @todo	why is this needed?
+	 * @var 	string
+	 */
+	protected $username = '';
+	
+	/**
+	 * the path to the images
+	 * @var 	string
+	 */
+	protected $imagePath = '';
+
+	/**
+	 * the array with the TSconfig
+	 * @var 	array
+	 */
+	protected $modTSconfig = '';
+
+	/**
+	 * HTML marker template string for the edit panel
 	 * @var		string
 	 */
-	protected $templateCode = '';
+	protected $template = '';
 
 
-	// @todo	Add docs for the member variables.
-	protected $menuOpen;
+	/**
+	 * flag whether the menu is opened
+	 * @var		boolean
+	 */
+	protected $menuOpen = false;
+
+
+	/**
+	 * prefix for all CSS-classes outputted through this file
+	 * @var		string
+	 */
+	protected $cssPrefix = 'feEditAdvanced';
+
+
+	/**
+	 * holds all the sections of the menu
+	 * @var		array
+	 */
+	protected $sections = array();
+	
+	
+	/**
+	 * holds all the sections of the menu, and in each section the items for the section
+	 * @var		array
+	 */
+	protected $itemList = array();
+
+
+	/**
+	 * note: don't know when this is needed currently
+	 *
+	 */
+	protected $userList = false;
+
 
 	/**
 	 * Initializes the menu.
@@ -58,186 +123,224 @@ class tx_feeditadvanced_menu {
 	 * @todo	Any reason this isn't a constructor?
 	 */
 	public function init() {
-		$this->pid = $GLOBALS['TSFE']->id;
-		$this->getUserListing();
-		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id,'FeEdit');
-		
-		$this->menuOpen = (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] !== '0')) ? true : false;
-		$this->username = $GLOBALS['TSFE']->fe_user->user['username'] ? $GLOBALS['TSFE']->fe_user->user['username'] : $GLOBALS['BE_USER']->user['username'];
-		
-		$imgPath = $this->modTSconfig['properties']['skin.']['imagePath'];
-		$this->imagePath = $imgPath  ? $imgPath : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/';
-		
-		  	// loading template
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$this->template = ($templateFile = $this->modTSconfig['properties']['skin.']['templateFile']) ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl';
-		$this->template = $this->cObj->fileResource($this->template);
-		
-      $this->templateCode = $this->cObj->getSubPart($this->template , '###MENU_'. ( $this->menuOpen ? 'OPENED' : 'CLOSED' ) .'###' );
-            
+		$this->pid  = intval($GLOBALS['TSFE']->id);
+		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($this->pid, 'FeEdit');
+
+			// TODO: do we need this?
+		$this->getUserListing();
+
+			// check if the menu is opened
+		if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'])
+			|| ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] == true)) {
+			$this->menuOpen = true;
+		}
+
+		$this->username = ($GLOBALS['TSFE']->fe_user->user['username'] ? $GLOBALS['TSFE']->fe_user->user['username'] : $GLOBALS['BE_USER']->user['username']);
+
+			// setting the base path for the icons
+		$this->imagePath = $this->modTSconfig['properties']['skin.']['imagePath'];
+		$this->imagePath = ($this->imagePath ? $this->imagePath : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/');
+
+			// loading template
+		$templateFile = $this->modTSconfig['properties']['skin.']['templateFile'];
+		$templateFile = ($templateFile ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl');
+		$templateFile = $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
+		$templateFile = $GLOBALS['TSFE']->tmpl->fileContent($templateFile);
+		$this->template = t3lib_parsehtml::getSubpart($templateFile, '###MENU_' . ($this->menuOpen ? 'OPENED' : 'CLOSED' ) . '###');
 	}
 
+
 	/**
-	 * @todo	What does this do?
+	 * This actually renders the top menu (depending on the state whether it's opened or not)
+	 * and takes care of the templating and HTML
+	 * 
+	 * called from tx_feeditadvanced_adminpanel->buildMenu()
 	 *
-	 * @return	string
+	 * @return	string the ready to go HTML
 	 */
 	public function build() {
 		$this->init();
 
-			// if not open, then just show "open edit"  box
+		$markers = array(
+			'EXTPATH'   => t3lib_extMgm::siteRelPath('feeditadvanced'),
+			'CSSPREFIX' => $this->cssPrefix
+		);
+
+			// if the menu is not open, then just show "open edit" box
 		if (!$this->menuOpen) {
-		        $markerArray['ON_CLICK'] = htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=1; document.TSFE_ADMIN_PANEL_Form.submit(); return false;');
-		        $markerArray['OPEN_EDIT_MODE'] = $this->extGetLL('openEditMode');
-		        $menuOut = $this->cObj->substituteMarkerArray($this->templateCode ,$markerArray,'###|###');
- 		} else {
-				// else if open...
+				$markers['OPEN_EDIT_MODE'] = $this->getLL('openEditMode');
+		} else {
+				// otherwise, the menu is open
 
 				// @todo Temporary code to draw and "Edit Page" button.
 				// @todo does not work by now
 			$data = $GLOBALS['TSFE']->page;
 			$this->cObj->start($data, 'pages');
-			$markerArray['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('',array('allow'=>'edit,new,delete,hide'));
-				
-				// show all sections and accompanying items that are in the first row
-			$sectionParts = $this->cObj->getSubpart($this->templateCode ,'###SECTIONS_FIRST_ROW###');
-			$sectionTemp = $this->cObj->getSubpart($sectionParts,'###SECTION###');
-			$itemTemp = $this->cObj->getSubpart($sectionParts,'###SINGLE_ITEM###');
-			$itemSeparator = $this->cObj->getSubpart($sectionParts,'###SEPARATOR###');
-			
-			$subPartArray['SECTIONS_FIRST_ROW'] = '';
-			for ($i = 0; $i < count($this->sections); $i++) {
-				$sec = $this->sections[$i];
-				if (($total = count($this->itemList[$sec['name']])) && ($sec['firstRow'] == true)) {
-					$sectionArray['SECTION_CSSID'] = $sec['cssID'];
-					$sectionArray['SECTION_EXTRACSS'] = ($sec['extraCSS'] ? $sec['extraCSS'] : '');
-					$sectionArray['SECTION_ITEMS']='';
-					for ($j = 0; $j < $total; $j++) {
-						$itemArray= array();
-						if ($sec['useSeparator']) {
-					 		$itemArray['ITEM_SEPARATOR'] .= $itemSeparator;
-						} else {
-							$itemArray['ITEM_SEPARATOR'] = '';
-						}
-						$itemArray['ITEM_NAME'] .= $this->itemList[$sec['name']][$j];
-						$sectionArray['SECTION_ITEMS'] .= $this->cObj->substituteMarkerArray($itemTemp,$itemArray,'###|###');
-					}
-					$subPartArray['SECTIONS_FIRST_ROW'] .= $this->cObj->substituteMarkerArray($sectionTemp,$sectionArray,'###|###');
-				}
-			}
+			$markers['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('', array('allow'=>'edit,new,delete,hide'));
 
-				// show all sections and accompanying items that are in the second row.
-			$subPartArray['SECTIONS_SECOND_ROW'] = '';
-			for ($i = 0; $i < count($this->sections); $i++) {
-				$sec = $this->sections[$i];
-				if (($total = count($this->itemList[$sec['name']])) && ($sec['firstRow'] == false)) {
-						$sectionArray['SECTION_CSSID'] = $sec['cssID'];
-					$sectionArray['SECTION_EXTRACSS'] = ($sec['extraCSS'] ? $sec['extraCSS'] : '');
-					$sectionArray['SECTION_ITEMS']='';
-					for ($j = 0; $j < $total; $j++) {
-						$itemArray= array();
-						if ($sec['useSeparator']) {
-					 		$itemArray['ITEM_SEPARATOR'] .= $itemSeparator;
-						} else {
-							$itemArray['ITEM_SEPARATOR'] = '';
-						}
-						$itemArray['ITEM_NAME'] .= $this->itemList[$sec['name']][$j];
-						$sectionArray['SECTION_ITEMS'] .= $this->cObj->substituteMarkerArray($itemTemp,$itemArray,'###|###');
-					}
-					$subPartArray['SECTIONS_SECOND_ROW'] .= $this->cObj->substituteMarkerArray($sectionTemp,$sectionArray,'###|###');
+				// show all sections and accompanying items that are in the first row
+			$sectionParts  = t3lib_parsehtml::getSubpart($this->template, '###SECTIONS_FIRST_ROW###');
+			$templateSection    = t3lib_parsehtml::getSubpart($sectionParts, '###SECTION###');
+			$templateSingleItem = t3lib_parsehtml::getSubpart($sectionParts, '###SINGLE_ITEM###');
+			$templateSeparator  = t3lib_parsehtml::getSubpart($sectionParts, '###SEPARATOR###');
+
+			$subparts = array(
+				'SECTIONS_FIRST_ROW'  => '',
+				'SECTIONS_SECOND_ROW' => '',
+				'USERLISTING' => '',
+			);
+			
+			// loop through each section and render the section and the items
+			foreach ($this->sections as $section) {
+				$items = $this->itemList[$section['name']];
+				if (!count($items)) {
+					continue;
+				}
+				$sectionMarkers = array(
+					'CSSID'     => $section['id'],
+					'INLINECSS' => $section['inlineCSS'],
+					'ITEMS'     => ''
+				);
+				foreach ($items as $item) {
+					$itemMarkers = array(
+						'SEPARATOR' => ($section['useSeparator'] ? $templateSeparator : ''),
+						'NAME'      => $item
+					);
+					$sectionMarkers['ITEMS'] .= t3lib_parsehtml::substituteMarkerArray($templateSingleItem, $itemMarkers, '###ITEM_|###');
+				}
+				if ($section['isInFirstRow']) {
+					$subparts['SECTIONS_FIRST_ROW'] .= t3lib_parsehtml::substituteMarkerArray($templateSection, $sectionMarkers, '###SECTION_|###');
+				} else {
+					$subparts['SECTIONS_SECOND_ROW'] .= t3lib_parsehtml::substituteMarkerArray($templateSection, $sectionMarkers, '###SECTION_|###');
 				}
 			}
 
 				// add section = showing users online
 			if ($this->userList) {
-				$subPartArray['USERLISTING'] = $this->cObj->getSubpart($this->templateCode ,'###USERLISTING###');
-				$subPartArray['USERLISTING'] = $this->cObj->substituteMarkerArray($subPartArray['USERLISTING'], array('USER_LIST' => $this->userList,'USER_LABEL'=> $this->extGetLL('usersOnPage')),'###|###'); ;
-			} else {
-				$subPartArray['USERLISTING'] = '';
+				$userMarkers = array('USER_LIST' => $this->userList, 'USER_LABEL' => $this->getLL('usersOnPage'));
+				$subparts['USERLISTING'] = t3lib_parsehtml::getSubpart($this->template, '###USERLISTING###');
+				$subparts['USERLISTING'] = t3lib_parsehtml::substituteMarkerArray($subparts['USERLISTING'], $userMarkers, '###|###');
 			}
-			$markerArray['EXT_PATH'] = t3lib_extMgm::siteRelPath('feeditadvanced');
-			foreach ($subPartArray AS $key => $content) {
-				$this->templateCode = $this->cObj->substituteSubpart($this->templateCode ,'###' . $key . '###',$content);
+
+			// replace each subpart
+			foreach ($subparts as $subpartKey => $subpartContent) {
+				$this->template = $this->cObj->substituteSubpart($this->template, '###' . $subpartKey . '###', $subpartContent);
 			}
-			$menuOut = $this->cObj->substituteMarkerArray($this->templateCode ,$markerArray,'###|###');
+		}
+
+		$content = t3lib_parsehtml::substituteMarkerArray($this->template, $markers, '###|###');
+
+			// hook to add additional menu features, including a sidebar
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
+			$_params = array(
+				'menuOut' => &$content,	// deprecated, should use "content" now
+				'content' => &$content,
+				'isMenuOpen' => $menuOpen,
+				'pObj' => &$this
+			);
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'] as $_funcRef) {
+				$content = t3lib_div::callUserFunction($_funcRef, $_params, $this);
+			}
+		}
+		return $content;
+	}
+
+
+	/***
+	  * API functions to add sections to the toolbar and items to the sections
+	  * 
+	  * these two functions add the content that later buildMenu() renders
+	  */
+	/**
+	 * adds an item to the toolbar on top by taking all the need components and build the HTML element
+	 * 
+	 * is usually called by feeditadvanced_adminpanel
+	 * 
+	 * @param	$name	name of the section, later used in the addItem() function to put the item to right spot
+	 * @param	$id	the ID of the HTML element used 
+	 * @param	$useSeparator	whether to use the template with the separator
+	 * @param	$inlineCSS		whether to add inline CSS to the element
+	 * @param	$isInFirstRow	whether this section should be put in the first row or in second row
+	 * @return	void
+	 */
+	public function addToolbar($name, $id = 0, $useSeparator = false, $inlineCSS = '', $isInFirstRow = false) {
+		$this->sections[] = array(
+			'name'         => $name,
+			'id'           => $this->cssPrefix . '-' . ($id ? $id : lcfirst($name)),
+			'useSeparator' => $useSeparator,
+			'inlineCSS'    => $inlineCSS,
+			'isInFirstRow' => $isInFirstRow
+		);
+	}
+
+
+	/**
+	 * adds an item to the toolbar on top by taking all the need components and build the HTML element
+	 * 
+	 * is usually called by feeditadvanced_adminpanel
+	 * 
+	 * @param	$section	the section the item is placed in
+	 * @param	$name	the name of the item
+	 * @param	$action	the action the item is called (used as an ID for the HTML)
+	 * @param	$image	the image associated with the item
+	 * @param	$title	the value of the title attribute for the anchor tag, optional
+	 * @param	$onClick	additional Javascript (note: needs the onclick="" as well in the parameter)
+	 * @param	$btnClass	the additional class for the whole button
+	 * @param	$labelClass	the additional class for the label (is inside a <span> tag)
+	 * @param	$hrefParameters	the additional parameters added to the href="" attribute of the link, not used but sent to the server when adding this element to the page.
+	 * @return	void
+	 */
+	public function addItem($section, $name, $action, $image, $title = '', $onClick = '', $btnClass = '', $labelClass = '', $hrefParams = '') {
+
+		$ATagParams = array();
+		$ATagParams[] = 'href="' . (strlen($hrefParams) ? $hrefParams : '#') . '"';
 		
-				// hook to add additional menu features, including a sidebar
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
-				$_params = array('menuOut' => &$menuOut, 'pObj' => &$this);
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'] as $_funcRef) {
-					$menuOut = t3lib_div::callUserFunction($_funcRef,$_params,$this);
-				}
-			}
+		if (strlen($action)) {
+			$ATagParams[] = 'id="' . $action . '"';
+		}
+		$ATagParams[] = 'class="' . $this->cssPrefix . '-button' . (strlen($btnClass) ? ' ' . $btnClass : '') . '"';
+		if (strlen($title)) {
+			$ATagParams[] = 'title="' . $title . '"';
+		}
+		if (strlen($onClick)) {
+			$ATagParams[] = $onClick;
+		}
+		if (strlen($image)) {
+			$imageTag = '<img src="' . $this->imagePath . $image . '" class="' . $this->cssPrefix . '-buttonImage" alt="" />';
 		}
 
-		return $menuOut;
+		$label = '<span class="' . $this->cssPrefix . '-buttonText' . (strlen($labelClass) ? ' ' . $labelClass : '') . '">' . $name . '</span>';
+
+		$this->itemList[$section][] = '<a ' . implode(' ', $ATagParams) . '>' . $imageTag . $label . '</a>';
 	}
 
+
 	/**
-	 * @todo	Add documentation
+	 * returns a label from the Locallang TSFE file, based on the key
+	 * this is mainly a shortcut version to not write the LL file with it all the time
+	 * @
+	 * @return	string	the localized label
 	 */
-	public function addToolbar($name, $cssID=0, $useSeparator=0, $extraCSS='', $firstRow = false) {
-		$this->sections[] = array('name' => $name, 'cssID' => $cssID, 'useSeparator' => $useSeparator, 'extraCSS' => $extraCSS, 'firstRow' => $firstRow);
+	protected function getLL($key) {
+		return $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_tsfe.xml:' . $key, true);
 	}
 
-	/**
-	 * @todo	Add documentation
-	 */
-	function addItem($sec, $name, $action, $image, $title='', $onclick='', $btnClass='feEditAdvanced-button', $labelClass='feEditAdvanced-feEditAdvanced-buttonText', $additionalParams='') {
-		$actionCode = strlen($action) ? ' id="' . $action . '"' : '';
-		$btnClassCode = strlen($btnClass) ? ' class="' . $btnClass . '"' : '';
-		$titleCode = strlen($title) ? ' title="' . $title . '"' : '' ;
-		$imageCode = strlen($image) ? '<img src="' . (($this->imagePath ? $this->imagePath : t3lib_extMgm::siteRelPath('feeditadvanced')."res/icons/") . $image) .'" />' : '';
-		$labelCode = strlen($labelClass) ? ' class="' . $labelClass . '"' : '';
-		$this->itemList[$sec][] =
-			'<a href="' . $additionalParams . '"' . $actionCode . $btnClassCode . $titleCode . '' . $onclick . '>' .
-				 $imageCode .
-				'<span' . $labelCode . '>' . $name . '</span>
-			</a>';
-	}
 
 	/**
-	 * @todo	Add documentation
-	 */
-	function addItemCode($sec, $code) {
-		$this->itemList[$sec][] = $code;
-	}
-
-	/**
-	 * Returns the label for key, $key. If a translation for the language set in $GLOBALS['BE_USER']->uc['lang'] is found that is returned, otherwise the default value.
-	 * IF the global variable $GLOBALS['LOCAL_LANG'] is NOT an array (yet) then this function loads the global $GLOBALS['LOCAL_LANG'] array with the content of "sysext/lang/locallang_tsfe.php" so that the values therein can be used for labels in the Admin Panel
+	 * returns a list of all users editing something currently
+	 * 
+	 * @note don't know when and how we need this, also, this method needs cleanup, badly!
 	 *
-	 * @param	string		Key for a label in the $GLOBALS['LOCAL_LANG'] array of "sysext/lang/locallang_tsfe.php"
-	 * @return	string		Label text
+	 * @return	void	all the info is stored in $this->userList
 	 */
-	protected function extGetLL($key)	{
-		if (!is_array($GLOBALS['LOCAL_LANG'])) {
-			$GLOBALS['LANG']->includeLLFile('EXT:lang/locallang_tsfe.php');
-			if (!is_array($GLOBALS['LOCAL_LANG'])) {
-				$GLOBALS['LOCAL_LANG'] = array();
-			}
-		}
-			// Label string in the default backend output charset.
-		$labelStr = htmlspecialchars($GLOBALS['LANG']->getLL($key));
-		if ($labelStr) {
-				// Convert to utf-8, then to entities:
-			if ($GLOBALS['LANG']->charSet != 'utf-8') {
-				$labelStr = $GLOBALS['LANG']->csConvObj->utf8_encode($labelStr,$GLOBALS['LANG']->charSet);
-			}
-			$labelStr = $GLOBALS['LANG']->csConvObj->utf8_to_entities($labelStr);
-		}
-
-			// Return the result
-		return $labelStr;
-	}
-	
 	protected function getUserListing() {
 		$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'locks.*, user.realName',
 			'sys_lockedrecords AS locks LEFT JOIN be_users AS user ON locks.userid=user.uid',
 			'locks.userid!='.intval($GLOBALS['BE_USER']->user['uid']).'
 			AND locks.tstamp > '.($GLOBALS['EXEC_TIME']-2*3600) .' 
-			AND ( (locks.record_pid='.intval($this->pid) .' AND  locks.record_table!=\'pages\') OR
+			AND ( (locks.record_pid='.intval($this->pid) .' AND	 locks.record_table!=\'pages\') OR
 			(locks.record_uid='.intval($this->pid) .' AND  locks.record_table=\'pages\') )'
 			);
 		$oldUser = 0;
@@ -306,7 +409,6 @@ class tx_feeditadvanced_menu {
 		
 		$this->userList = implode(', ',$renderedListing);
 	}
-			
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']) {

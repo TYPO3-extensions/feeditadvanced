@@ -1,51 +1,54 @@
-<h1>Main Template</h1>
 
+<h1>Main Template</h1>
 <!-- ###MAIN_TEMPLATE### begin -->
 ###INCLUDES###
 <!-- this allows csshover.htc to be put at top of page -->
-<div id="bodyattach"></div>
-<div id="typo3-feEditAdvanced">
-###MENU_BAR###
-###HIDDEN_FORM###
+<div id="###CSSPREFIX###-bodyattach"></div>
+<div id="###CSSPREFIX###-container">
+	###MENU_BAR###
+	###HIDDEN_FORM###
 </div>
 <!-- ###MAIN_TEMPLATE### end -->
 
-<h1>Template, to show the button "open editing" when editing is enabled but
-not activce</h1>
+
+
+<h1>Template, to show the button "open editing" when editing is enabled but not activce</h1>
 <!-- ###MENU_CLOSED### begin -->
-<div id="feEditAdvanced-menuBar" class="closedMenu">
-	<a class="feEditAdvanced-smallButton" href="#" onclick="###ON_CLICK###" title="###OPEN_EDIT_MODE###">###OPEN_EDIT_MODE###</a>
+<div id="###CSSPREFIX###-menuBar" class="###CSSPREFIX###-closedMenu closedMenu">
+	<a class="###CSSPREFIX###-smallButton" href="#" onclick="document.TSFE_ADMIN_PANEL_Form.elements['TSFE_ADMIN_PANEL[menuOpen]'].value = 1; document.TSFE_ADMIN_PANEL_Form.submit(); return false;" title="###OPEN_EDIT_MODE###">###OPEN_EDIT_MODE###</a>
 </div>
 <!-- ###MENU_CLOSED### end -->
 
+
+
 <h1>Template, holding the menubar</h1>
 <!-- ###MENU_OPENED### begin -->
-<div id="feEditAdvanced-menuBar">
-	<div class="feEditAdvanced-firstRow">
-		<div class="feEditAdvanced-menuToolbar">###PAGE_EDIT_PANEL###</div>
-		
+<div id="###CSSPREFIX###-menuBar">
+	<div class="###CSSPREFIX###-firstRow">
+		<div id="###CSSPREFIX###-pageEditToolbar" class="###CSSPREFIX###-menuToolbar">###PAGE_EDIT_PANEL###</div>
 		<!-- ###SECTIONS_FIRST_ROW### begin -->
 			<!-- ###SECTION### begin -->
-				<div id="###SECTION_CSSID###" class="feEditAdvanced-menuToolbar" ###SECTION_EXTRACSS###>###SECTION_ITEMS###</div>
+				<div id="###SECTION_CSSID###" class="###CSSPREFIX###-menuToolbar" ###SECTION_INLINECSS###>###SECTION_ITEMS###</div>
 			<!-- ###SECTION### end -->
 			<!-- ###SINGLE_ITEM### begin -->###ITEM_SEPARATOR######ITEM_NAME###<!-- ###SINGLE_ITEM### end -->
-			<!-- ###SEPARATOR### begin --><span class="separatorBar"> </span><!-- ###SEPARATOR### end -->
+			<!-- ###SEPARATOR### begin --><span class="###CSSPREFIX###-separator separatorBar"></span><!-- ###SEPARATOR### end -->
 				
 		<!-- ###SECTIONS_FIRST_ROW### end -->
 		
 		<!-- ###USERLISTING### begin -->
-				<dl class="feEditAdvanced-menuUserlist"><dt>###USER_LABEL###</dt><dd>###USER_LIST###</dd></dl>
-			<!-- ###USERLISTING### end -->
+			<dl class="###CSSPREFIX###-menuUserlist"><dt>###USER_LABEL###</dt><dd>###USER_LIST###</dd></dl>
+		<!-- ###USERLISTING### end -->
 	</div>
-	<div class="feEditAdvanced-secondRow">
+	<div class="###CSSPREFIX###-secondRow">
 	<!-- ###SECTIONS_SECOND_ROW### begin -->
 		Templates from first Row are used!
 	<!-- ###SECTIONS_SECOND_ROW### end-->
-		<span class="feEditAdvanced-logo"><a href="http://www.typo3.com/"><img src="###EXT_PATH###/res/icons/typo3logo_mini_transparent.gif" /></a></span>
+		<div id="###CSSPREFIX###-logo"><a href="http://www.typo3.com/"><img src="###EXTPATH###/res/icons/typo3logo_mini_transparent.gif" /></a></div>
 	</div>
-	
 </div>
 <!-- ###MENU_OPENED### end -->
+
+
 
 <h1>Default edit-panel</h1>
 <!-- ###EDITPANEL### begin -->
@@ -72,10 +75,13 @@ not activce</h1>
 </div>
 <!-- ###EDITPANEL### end-->
 
+
+
 <h1>Default editpanel Action</h1>
 <!-- ###EDITPANEL_ACTION### start -->
 <input type="button" class="feEditAdvanced-editButton ###ACTION_CLASS###" value="###ACTION_VALUE###" title="###ACTION_LABEL###" ###ACTION_PARAMS###/>
 <!-- ###EDITPANEL_ACTION### end -->
+
 
 
 <h1>Overwriting Editpanel Action for table pages</h1>
@@ -121,6 +127,7 @@ not activce</h1>
 	</div>
 </div>
 <!-- ###EDITPANEL_PAGES### end-->
+
 
 <h1>Overwriting Editpanel Action for table pages</h1>
 <h2>works with any other db table: just put EDITPANEL_tablenameInUppercase or EDITPANEL_ACTION_tablenameInUppercase subparts to the templatefile</h2

@@ -61,9 +61,9 @@ class tx_feeditadvanced_adminpanel {
 	protected $menuOpen = false;
 
 	/**
-	 * Holder of the menu bar object
+	 * contains the menu bar object
 	 *
-	 * @var		object
+	 * @var		tx_feeditadvanced_menu object
 	 */
 	protected $menuBar = NULL;
 	
@@ -79,6 +79,13 @@ class tx_feeditadvanced_adminpanel {
 	 * @var		string
 	 */
 	protected $template = '';
+
+
+	/**
+	 * prefix for all CSS-classes outputted through this file
+	 * @var		string
+	 */
+	protected $cssPrefix = 'feEditAdvanced';
 
 
 	
@@ -108,7 +115,7 @@ class tx_feeditadvanced_adminpanel {
 			// set up general configuration
 		if (!count($this->admPanelTSconfig)) {
 			$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
-			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
+			$this->modTSconfig      = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
 			$GLOBALS['TSFE']->determineId();
 		}
 
@@ -175,7 +182,8 @@ class tx_feeditadvanced_adminpanel {
 		$markers = array(
 			// have a form for adminPanel processing and saving of vars
 			'HIDDEN_FORM' => '<form id="TSFE_ADMIN_PANEL_Form" name="TSFE_ADMIN_PANEL_Form" action="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '" method="post">' . $this->getAdmPanelFields() . '</form>',
-			'MENU_BAR' => $this->buildMenu()
+			'MENU_BAR'    => $this->buildMenu(),
+			'CSSPREFIX'   => $this->cssPrefix
 		);
 
 			// @todo	This code runs after content has been created, 
@@ -248,17 +256,17 @@ class tx_feeditadvanced_adminpanel {
 			$this->menuBar = t3lib_div::makeInstance('tx_feeditadvanced_menu');
 
 				// add sections for menu
-			$this->menuBar->addToolbar('Actions', 'feEditAdvanced-actionToolbar', false, '', true);
-			$this->menuBar->addToolbar('ContentType', 'feEditAdvanced-contentTypeToolbar', false);
-			$this->menuBar->addToolbar('ContextActions','feEditAdvanced-contextToolbar');
-			$this->menuBar->addToolbar('Clipboard', 'clipboardToolbar', false, 'style="display:none;"');
+			$this->menuBar->addToolbar('Actions',        'actionToolbar', false, '', true);
+			$this->menuBar->addToolbar('ContextActions', 'contextToolbar', false, '', true);
+			$this->menuBar->addToolbar('ContentType',    'contentTypeToolbar');
+			$this->menuBar->addToolbar('Clipboard',      'clipboardToolbar', false, 'style="display:none;"');
 
 				// build the menus here
 			// @todo need to check permissions here too
 			$tsMenuBar  = $this->modTSconfig['properties']['menuBar.'];
-			$menuConfig = $tsMenuBar['config'] ? t3lib_div::trimExplode(',', $tsMenuBar['config']) : array('action', 'type', 'clipboard', 'context');
+			$menuConfig = t3lib_div::trimExplode(',', ($tsMenuBar['config'] ? $tsMenuBar['config'] : 'action,type,clipboard,context'));
 			if (in_array('action', $menuConfig)) {
-				$tsActions = t3lib_div::trimExplode(',', $tsMenuBar['actionMenu']);
+				$tsActions = t3lib_div::trimExplode(',', $tsMenuBar['actionMenu'], true);
 				if (in_array('page', $tsActions)) {
 					$this->menuBar->addItem('Actions', 'Page', 'fePageFunctions', '', 'Page functions', '');
 				}
@@ -278,7 +286,7 @@ class tx_feeditadvanced_adminpanel {
 					$this->menuBar->addItem('Actions', '', '', '', '', '', 'spacer');
 				}
 			}
-			
+
 			// render new content element icons
 			$this->renderNewContentElementIcons($menuConfig, $tsMenuBar);
 			
@@ -299,7 +307,7 @@ class tx_feeditadvanced_adminpanel {
 
 
 	/**
-	 * renders all icons on the menu bar
+	 * renders all icons on the menu bar to add new content elements
 	 *
 	 * @param	$menuConfig
 	 * @param	$tsMenuBar
@@ -312,14 +320,14 @@ class tx_feeditadvanced_adminpanel {
 		foreach ($newCE->menuItems as $group => $items) {
 			foreach ($items['ce'] as $ce) {
  				$this->menuBar->addItem(
- 					'ContentType', 
+ 					'ContentType',
  					$ce['title'],
  					'',
- 					t3lib_div::resolveBackPath('../../../../../typo3/' . $ce['icon']), 
- 					'Drag widgets onto the page', 
+ 					TYPO3_mainDir . $ce['icon'],
+ 					$ce['description'] . ' - Drag widgets onto the page',
  					'',
- 					'feEditAdvanced-contentTypeItem draggable', 
- 					'feEditAdvanced-buttonLabel', 
+ 					$this->cssPrefix . '-contentTypeItem ' . $this->cssPrefix . '-draggable draggable',
+ 					$this->cssPrefix . '-buttonLabel',
  					substr($ce['params'], 1)
  				);
 			}

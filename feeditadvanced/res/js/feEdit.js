@@ -32,7 +32,7 @@ TYPO3.FeEdit.Toolbar = function(toolbarElementId) {
 		// Problem: selecting items with multiple classes while having a different root node
 		// than the original document results in nothing
 		// var allWidgets = Ext.DomQuery.select('.draggable', this.el);
-		var allWidgets = Ext.select('#' + this.el.id + ' .draggable');
+		var allWidgets = Ext.select('#' + this.el.id + ' .feEditAdvanced-draggable');
 		// Create all the draggable buttons in the toolbar
 		allWidgets.each(function(draggableElement) {
 			this.widgets.push(new TYPO3.FeEdit.ToolbarWidget(draggableElement));
@@ -45,7 +45,7 @@ TYPO3.FeEdit.Toolbar = function(toolbarElementId) {
 	this.addDraggable = function(toolbarElement) {
 		// get draggable item
 		// var draggableElements = Ext.DomQuery.select('.draggable', toolbarElement);
-		var draggableElements = Ext.select('#' + toolbarElement.id + ' .draggable');
+		var draggableElements = Ext.select('#' + toolbarElement.id + ' .feEditAdvanced-draggable');
 		draggableElements.each(function(draggableElement) {
 			this.widgets.push(new TYPO3.FeEdit.ToolbarWidget(draggableElement));
 		}, this);
@@ -93,9 +93,6 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 		FrontendEditing.deactivateDropZones();
 	};
 	
-	this.dd.afterDragDrop = function(target, evt, id) {
-		//FrontendEditing.deactivateDropZones();
-	};
 	Ext.dd.Registry.register(this.dd);
 };
 
@@ -309,6 +306,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 	pid: null,
 	record: null,
+	isPagePanel: false,	// whether this panel edits the page (thus it's in the menupanel), or a content panel
 	
 	sortable: false,
 	hoverMenuEnabled: false,
@@ -321,15 +319,21 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		this.menuEl = Ext.get(this.el.select('div.feEditAdvanced-editPanelDiv').first());
 		this.formEl = Ext.get(this.el.select('form').first());	// todo: we should use a class here
 		this.hoverMenuEnabled = true;
+		this.isPagePanel = (this.el.up('.feEditAdvanced-menuToolbar') ? true : false);
 		this.getFormParameters();
 		this.setupEventListeners();
-		if (this.el.hasClass('draggable')) {
+
+		if (this.el.hasClass('draggable') && !this.isPagePanel) {
 			this.sortable = true;
 			this._makeDraggable();
 		}
 		
-		if (this.el.hasClass('alwaysVisible')) {
+		if (this.el.hasClass('alwaysVisible') || this.isPagePanel) {
 			this.alwaysVisible = true;
+		}
+		
+		if (this.isPagePanel) {
+			this.el.show();
 		}
 
 		this.updateUpDownButtons();
@@ -387,6 +391,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		this.dd = new Ext.dd.DragSource(this.el, {
 			// TODO: different group please
 			ddGroup: 'feeditadvanced-toolbar'
+			,maintainOffset: true
 //			,dropAllowed: 'feEditAdvanced-dropzone'
 		});
 		
@@ -468,7 +473,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 
 	showMenu: function(evt) {
-		if (!this.hoverMenuAlwaysVisible && FrontendEditing.editPanelsEnabled && this.hoverMenuEnabled) {
+		if (!this.alwaysVisible && FrontendEditing.editPanelsEnabled && this.hoverMenuEnabled) {
 			this.menuEl.show();
 			this.el.addClass('feEditAdvanced-allWrapperHover');
 
@@ -482,7 +487,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 
 	hideMenu: function(evt) {
-		if (!this.hoverMenuAlwaysVisible) {
+		if (!this.alwaysVisible && !this.isPagePanel) {
 			this.menuEl.hide();
 			this.el.removeClass('feEditAdvanced-allWrapperHover');
 
@@ -566,7 +571,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 			// If the content element is empty, always show the hover menu as there's no other way to activate it.
 		if (editPanelToolbar.next('.feEditAdvanced-emptyContentElement')) {
-			this.hoverMenuAlwaysVisible = true;
+			this.alwaysVisible = true;
 		}
 	},
 	
@@ -1577,7 +1582,7 @@ var FrontendEditing = {
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
 		Ext.each(Ext.query('div.feEditAdvanced-allWrapper'), function (el) {
-			if (el.id && !this.editPanels.get(el.id)) {	
+			if (el.id && !this.editPanels.get(el.id)) {
 				this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
 			}
 		}, this);
@@ -1631,20 +1636,18 @@ var FrontendEditing = {
 			panel.enable();
 		});
 
-		// go through each Content element container and add a dropZone
+		// go through each Content element container and remove the dropZone
 		Ext.each(this.dropZones, function(dropZone) {
 			dropZone.remove();
 		});
 		this.dropZones = [];
 	},
+
 	scrollContentTypeToolbar: function(amount) {
 		var celementToolBar = Ext.get('feEditAdvanced-contentTypeToolbar');
-		var oldValue = celementToolBar.getStyle('left').replace('px','');
-		//alert (oldValue);
+		var oldValue = celementToolBar.getStyle('left').replace('px', '');
 		oldValue = Number(oldValue);
-		//alert (oldValue);
-		//alert (amount);
-		var scrollPanelWidth = parseInt(Ext.get('feEditAdvanced-contentTypeToolbar-scrollPanel').getStyle('width').replace('px',''));
+		var scrollPanelWidth = parseInt(Ext.get('feEditAdvanced-contentTypeToolbar-scrollPanel').getStyle('width').replace('px', ''));
 		if(amount < 0 && ((this.toolbarWidth - scrollPanelWidth + oldValue) >= 0)) {
 			//celementToolBar.setStyle('left',(oldValue + amount)+'px');
 			celementToolBar.animate(
