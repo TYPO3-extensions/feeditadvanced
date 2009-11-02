@@ -562,8 +562,8 @@ div.feEditAdvanced-contentWrapper form.typo3-editPanel {
 #feEditAdvanced-menuBar div.feEditAdvanced-editPanelDiv {
 	background: none;
 	border: none;
-	top: 0;
 	min-width: 0;
+	position: static;
 }
 
 #feEditAdvanced-menuBar div.feEditAdvanced-allWrapper {
