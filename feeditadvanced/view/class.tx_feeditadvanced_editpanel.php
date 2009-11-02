@@ -191,14 +191,17 @@ class tx_feeditadvanced_editpanel {
 			// generate the panel items, unless this is a new or edit command
 		if (($theCmd != 'edit') && ($theCmd != 'new')) {
 			$panel = '';
+			
+			if (!$content) {
+				$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-emptyContentElement';
+			}
+			
 			if (isset($allow['edit'])) {
 				if ($content) {
 					$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-editButton editAction';
 					if ($this->modTSconfig['properties']['clickContentToEdit']) {
 						$this->panelItems['clickContentToEdit'] = 'value="' . $GLOBALS['BE_USER']->extGetLL('editIcon') . '" title="' . $GLOBALS['BE_USER']->extGetLL('editTitle') . '" ';
 					}
-				} else {
-					$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-emptyContentElement';
 				}
 				
 				$this->panelItems['edit'] = $this->editIconLinkWrap('edit', 'editIcon', 'editTitle');
