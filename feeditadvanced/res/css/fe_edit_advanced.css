@@ -330,6 +330,7 @@ div.feEditAdvanced-contentWrapper {
 
 div.feEditAdvanced-allWrapper form {
 	min-height: 0;
+	margin: 0;
 }
 
 div.feEditAdvanced-allWrapper {
