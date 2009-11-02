@@ -3,6 +3,7 @@
 	* Fixed bug #3329: Page properties button has wrong position.
 	* Fixed bug: Reset browser defaults for form margin to avoid larger edit panels.
 	* Fixed bug: Edit panel without content disappears on mouseout.
+	* Fixed bug: Edit panel for pages throws Javascript errors because it is considered draggable. 
 
 2009-10-29  Jeff Segars  <jeff@webempoweredchurch.org>
 
