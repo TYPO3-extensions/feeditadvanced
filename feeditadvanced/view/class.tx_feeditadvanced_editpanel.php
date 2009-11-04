@@ -196,6 +196,12 @@ class tx_feeditadvanced_editpanel {
 				$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-emptyContentElement';
 			}
 			
+			if (isset($allow['toolbar'])) {
+				$allow['move'] = TRUE;
+				$allow['new'] = TRUE;
+				$allow['edit'] = TRUE;
+			}
+			
 			if (isset($allow['edit'])) {
 				if ($content) {
 					$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-editButton editAction';
@@ -210,10 +216,10 @@ class tx_feeditadvanced_editpanel {
 			if (isset($allow['move']) && $sortField && $GLOBALS['BE_USER']->workspace===0)	{	// Hiding in workspaces because implementation is incomplete
 				$this->panelItems['up'] 	= $this->editIconLinkWrap('up', 'upIcon', 'upTitle', '');
 				$this->panelItems['down'] 	= $this->editIconLinkWrap('down', 'downIcon', 'downTitle', '');
-				$this->panelItems['drag'] 	= '<span class="feEditAdvanced-dragHandle" title="' . $GLOBALS['BE_USER']->extGetLL('dragTitle') . '"></span>';
 
 				// @note	We don't currently support a drag&drop UI for pages, so make sure page edit panels are not flagged as draggable
 				if ($table != 'pages') {
+					$this->panelItems['drag'] 	= '<span class="feEditAdvanced-dragHandle" title="' . $GLOBALS['BE_USER']->extGetLL('dragTitle') . '"></span>';
 					$this->panelItems['draggable'] = ' draggable';
 				}
 			}

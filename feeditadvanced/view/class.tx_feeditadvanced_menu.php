@@ -177,7 +177,11 @@ class tx_feeditadvanced_menu {
 				// @todo does not work by now
 			$data = $GLOBALS['TSFE']->page;
 			$this->cObj->start($data, 'pages');
-			$markers['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('', array('allow'=>'edit,new,delete,hide'));
+			$conf = array(
+				'allow' => 'edit,new,delete,hide',
+				'template' => 'EXT:feeditadvanced/res/template/page_buttons.tmpl'
+			);
+			$markers['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('', $conf);
 
 				// show all sections and accompanying items that are in the first row
 			$sectionParts  = t3lib_parsehtml::getSubpart($this->template, '###SECTIONS_FIRST_ROW###');

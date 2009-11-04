@@ -447,7 +447,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 				this.up();
 			} else if (targetEl.hasClass('downAction')) {
 				this.down();
-			} else if (targetEl.hasClass('newRecordAction')) {
+			} else if (targetEl.hasClass('newRecordAction') || targetEl.hasClass('newPageAction')) {
 				this.create();
 			} else if (targetEl.hasClass('hideAction')) {
 				this.hide();
@@ -572,6 +572,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			// If the content element is empty, always show the hover menu as there's no other way to activate it.
 		if (editPanelToolbar.next('.feEditAdvanced-emptyContentElement')) {
 			this.alwaysVisible = true;
+			this.menuEl.show();
 		}
 	},
 	
