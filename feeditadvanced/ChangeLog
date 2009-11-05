@@ -1,6 +1,7 @@
 2009-11-05
 
 	* Fixed bug #4862: Unable to close editing form for new records due to required fields.
+	* Fixed bug #5178: Page content is rendered with every frontend editing action.
 
 2009-11-04  Jeff Segars  <jeff@webempoweredchurch.org>
 

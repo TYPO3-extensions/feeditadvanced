@@ -615,10 +615,6 @@ class tx_feeditadvanced_ajax {
 
 			// Save the setup
 		$this->setup = $template->setup;
-
-			// Including pagegen will make sure that extension PHP files are included
-		require_once(PATH_tslib.'class.tslib_pagegen.php');
-		include(PATH_tslib.'pagegen.php');
 	}
 
 	/**
@@ -696,6 +692,13 @@ class tx_feeditadvanced_ajax {
 	 * @return	string		HTML output for the content element.
 	 */
 	protected function renderContentElement($table, $uid) {
+			// Including pagegen will make sure that extension PHP files are included
+		if (($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'close') || ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'saveAndClose')) {
+			global $TSFE, $TT;
+			require_once(PATH_tslib . 'class.tslib_pagegen.php');
+			include(PATH_tslib . 'pagegen.php');
+		}
+
 		if(intval($uid)) {
 			$this->contentElementRow = $this->getRow($table, $uid);
 		} else {
