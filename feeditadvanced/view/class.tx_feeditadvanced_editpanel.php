@@ -538,7 +538,18 @@ class tx_feeditadvanced_editpanel {
 		$buttons = '<div class="feEditAdvanced-editControls" id="feEditAdvanced-editControls">';
 		$buttons .= '<button type="submit" name="TSFE_EDIT[update]" value="1" class="feEditAdvanced-actionButton saveAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveButton').'</span></button>';
 		$buttons .= '<button type="submit" name="TSFE_EDIT[update_close]" value="1" class="feEditAdvanced-actionButton saveCloseAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveCloseDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveCloseButton').'</span></button>';
-		$buttons .= '<button type="submit" name="TSFE_EDIT[close]" value="1" class="feEditAdvanced-actionButton closeAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.closeDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('closeButton').'</span></button>';
+
+			// Inline Javascript for form close. Bypasses TBE_EDITOR checks and submits the form.
+		$onclick  = "editingForm = document.getElementById('" . $tceforms->formName . "'); ";
+		$onclick .= "hiddenElement = document.createElement('input'); ";
+		$onclick .= "hiddenElement.type = 'hidden'; ";
+		$onclick .= "hiddenElement.value = 1; ";
+		$onclick .= "hiddenElement.name = 'TSFE_EDIT[close]'; ";
+		$onclick .= "editingForm.appendChild(hiddenElement); ";
+		$onclick .= "document." . $tceforms->formName . ".submit(); ";
+		$onclick .= "return false;";
+
+		$buttons .= '<button type="submit" name="TSFE_EDIT[close]" value="1" onclick="' . $onclick . '" class="feEditAdvanced-actionButton closeAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.closeDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('closeButton').'</span></button>';
 		$buttons .= '</div>';
 
 			// Buttons top
