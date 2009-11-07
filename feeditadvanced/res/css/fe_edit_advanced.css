@@ -397,7 +397,7 @@ div.feEditAdvanced-contentWrapper .formsOnPage {
 
 .feEditAdvanced-hiddenElement,
 .hidden .formsOnPage {
-	background-color: #bbb !important;
+	opacity: 0.6;
 }
 
 .feEditAdvanced-label,
@@ -412,6 +412,16 @@ input.feEditAdvanced-editButton,
 	font-size: 11px;
 	color: #646;
 }
+
+div.feEditAdvanced-contentWrapperSmall input.feEditAdvanced-editButton {
+	width: 20px;
+	text-indent: 20px;
+	padding-left: 0;
+	padding-right: 0;
+	background-position: 0px 50%;
+}
+
+div.feEditAdvanced-contentWrapperSmall div.feEditAdvanced-editPanelDiv { min-width: 170px; }
 
 .feEditAdvanced-label {
 	font-weight: bold;
@@ -473,13 +483,8 @@ input.feEditAdvanced-editButton.downAction {
 	padding: 2px 3px 0 25px;
 }
 
-.doCut {
-	background-color: #f8e0e0;
-}
-
-.doCopy {
-	background-color: #d8f0d8;
-}
+.doCut { background-color: #f8e0e0; }
+.doCopy { background-color: #d8f0d8; }
 
 div.feEditAdvanced-contentWrapper form.typo3-editPanel {
 	float: right;

@@ -1,3 +1,8 @@
+2009-11-07  Benjamin Mack  <benni@typo3.org>
+
+	* Fixed bug #3328: Block with editing icons should be shown without text when under 350px wide.
+	* Fixed bug #5029: Layout problems with small columns and dark background
+
 2009-11-07  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug: Empty table rows and cells in editing form.

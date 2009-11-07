@@ -1586,6 +1586,7 @@ var FrontendEditing = {
 				this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
 			}
 		}, this);
+		this.checkContentElements();
 	},
 	
 	initializeMenuBar: function() {
@@ -1643,7 +1644,23 @@ var FrontendEditing = {
 			dropZone.remove();
 		});
 		this.dropZones = [];
+		this.checkContentElements();
+	},
+	
+	/**
+	 * checks if one of the CEs is too small, thus adds another class, so it is modifiable
+	 * via CSS
+	 */
+	checkContentElements: function() {
+		this.editPanels.each(function(panel) {
+			if (panel.el.getWidth() < 300) {
+				panel.el.addClass('feEditAdvanced-contentWrapperSmall');
+			} else {
+				panel.el.removeClass('feEditAdvanced-contentWrapperSmall');
+			}
+		});
 	}
+	
 };
 
 
