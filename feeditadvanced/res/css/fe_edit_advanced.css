@@ -16,7 +16,7 @@ div#feEditAdvanced-menuBar {
 	color: #fff;
 	padding: 0;
 	margin: 0;
-	z-index: 800;
+	z-index: 8000;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 90%;
 }
@@ -100,7 +100,7 @@ div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow {
 
 div#feEditAdvanced-menuBar div.feEditAdvanced-firstRow { background: url(../icons/menubar/menu_back.png) repeat-x 0 0; }
 div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow { background: url(../icons/menubar/menu2_back.png) repeat-x 0 0; }
-div#feEditAdvanced-menuBar div.feEditAdvanced-logo { float: right; padding: 6px 15px; }
+div#feEditAdvanced-logo { float: right; padding: 5px 15px; }
 
 
 div.feEditAdvanced-menuToolbar { margin: 1px; height: 32px; }
@@ -137,11 +137,14 @@ div#feEditAdvanced-contentTypeToolbar {
 	left: 0;
 	z-index: 551;
 	overflow: visible;
+	float: left;
+	width: 80%;
 	height: 32px;
 }
 
 div#feEditAdvanced-contentTypeToolbar-wrapper {
 	height: 32px;
+	float: left;
 	position: relative;
 }
 
@@ -195,7 +198,7 @@ div#feEditAdvanced-menuBar span.feEditAdvanced-buttonText {
 }
 
 div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
-	color: black;
+	color: #000;
 	margin-left: 3px;
 	font-size: 11px;
 }
@@ -206,7 +209,7 @@ div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
 
 /* ---------------------- Top Menu: clipboard ---------------------------- */
 
-#clipboardToolbar {
+#feEditAdvanced-clipboardToolbar {
 	margin-right: 20px;
 	width: 180px;
 	height: 30px;
@@ -215,7 +218,7 @@ div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
 }
 
 .feEditAdvanced-contentTypeItem,
-#clipboardToolbar .clipObj {
+#feEditAdvanced-clipboardToolbar .clipObj {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
 	margin: 0;
@@ -228,18 +231,18 @@ div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
 }
 
 
-#clipboardToolbar .clipObj {
+#feEditAdvanced-clipboardToolbar .clipObj {
 	background-color: #44a;
 }
 
-#clipboardToolbar .clipContainer {
+#feEditAdvanced-clipboardToolbar .clipContainer {
 	float: left;
 	width: 45px;
 	height: 32px;
 	margin: 0 6px 0 4px;
 }
 
-#clipboardToolbar .clipObj {
+#feEditAdvanced-clipboardToolbar .clipObj {
 	width: 100%;
 	height: 24px;
 	font-size: 8px;
@@ -248,7 +251,7 @@ div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
 	overflow: hidden;
 }
 
-#clipboardToolbar .clearBtn {
+#feEditAdvanced-clipboardToolbar .clearBtn {
 	position: relative;
 	width: 16px;
 	height: 16px;
@@ -259,7 +262,7 @@ div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
 	z-index: 3 !important;
 }
 
-#clipboardToolbar .clearBtn:hover {
+#feEditAdvanced-clipboardToolbar .clearBtn:hover {
 	background-color: #fcc;
 }
 
