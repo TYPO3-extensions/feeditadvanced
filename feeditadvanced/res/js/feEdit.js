@@ -76,10 +76,9 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 		var dragEl = Ext.get(this.getDragEl());
 		var el = Ext.get(this.getEl());
 
-		dragEl.applyStyles({'z-index': 2000});
+		dragEl.applyStyles({'z-index': 20000 });
 		dragEl.update(el.dom.innerHTML);
 		dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
-
 		FrontendEditing.activateDropZones();
 	};
 
@@ -1289,7 +1288,7 @@ TYPO3.FeEdit.CopyAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		this.parent.el.addClass('doCopy');
 
 			// create new "copy" object in menubar clipboard
-		clipboardObj = Ext.fly('clipboardToolbar');
+		clipboardObj = Ext.fly('feEditAdvanced-clipboardToolbar');
 		if (clipboardObj) {
 			FrontendEditing.clipboard.addToClipboard(this);
 		}
@@ -1310,7 +1309,7 @@ TYPO3.FeEdit.CutAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		this.parent.el.addClass('doCut');
 
 			// create new "cut" object in menubar clipboard
-		clipboardObj = Ext.fly('clipboardToolbar');
+		clipboardObj = Ext.fly('feEditAdvanced-clipboardToolbar');
 		if (clipboardObj) {
 			FrontendEditing.clipboard.addToClipboard(this);
 		}
@@ -1423,9 +1422,9 @@ Ext.override(TYPO3.FeEdit.EditPanel, {
 TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 	showClipboard: function(onOff) {
 		if (onOff) {
-			Ext.get('clipboardToolbar').show();
+			Ext.get('feEditAdvanced-clipboardToolbar').show();
 		} else {
-			Ext.get('clibpoardToolbar').hide();
+			Ext.get('feEditAdvanced-clibpoardToolbar').hide();
 		}
 	},
 
@@ -1604,7 +1603,7 @@ var FrontendEditing = {
 			body.setStyle('background-position', xPosition + ' ' + menuBarHeight + 'px');
 		} else if (yPosition.indexOf('px')) {
 			body.setStyle('background-position', xPosition + ' ' + (parseInt(yPosition.substr(0, yPosition.length-2)) + menuBarHeight) + 'px');
-		}
+	}
 
 		// If the firstWrapper is behind the menu, shift it down so that it and all edit panels are visible.
 		var menuBarBottom = Ext.get('feEditAdvanced-menuBar').getBottom();
@@ -1627,6 +1626,7 @@ var FrontendEditing = {
 		Ext.select('div.feEditAdvanced-firstWrapper').each(function(containerElement) {
 			FrontendEditing.dropZones.push(new TYPO3.FeEdit.DropZone(containerElement, true));
 		});
+		Ext.getBody().setStyle('cursor', 'move');
 	},
 	
 		// Disable drop indicators when a drag is done
@@ -1636,98 +1636,127 @@ var FrontendEditing = {
 			panel.removeDropZone();
 			panel.enable();
 		});
+		Ext.getBody().setStyle('cursor', 'pointer');
 
 		// go through each Content element container and remove the dropZone
 		Ext.each(this.dropZones, function(dropZone) {
 			dropZone.remove();
 		});
 		this.dropZones = [];
-	},
-
-	scrollContentTypeToolbar: function(amount) {
-		var celementToolBar = Ext.get('feEditAdvanced-contentTypeToolbar');
-		var oldValue = celementToolBar.getStyle('left').replace('px', '');
-		oldValue = Number(oldValue);
-		var scrollPanelWidth = parseInt(Ext.get('feEditAdvanced-contentTypeToolbar-scrollPanel').getStyle('width').replace('px', ''));
-		if(amount < 0 && ((this.toolbarWidth - scrollPanelWidth + oldValue) >= 0)) {
-			//celementToolBar.setStyle('left',(oldValue + amount)+'px');
-			celementToolBar.animate(
-				{
-					left: { 'by': amount, 'unit': 'px' }
-				},
-				0.7,
-				null,
-				'easeOut',
-				'motion'
-			);
-		}
-		if (amount > 0 && (oldValue+amount)<=0 ) {
-			//celementToolBar.setStyle('left',(oldValue + amount)+'px');
-			celementToolBar.animate(
-				{
-					left: { 'by': amount, 'unit': 'px' }
-				},
-				0.7,
-				null,
-				'easeOut',
-				'motion'
-			);
-		}
-		
-	},
-	toolbarWidth : null,
-	initContentTypeToolbar: function () {
-		this.toolbarWidth = 0;
-		// Calculate width of all childs 
-		Ext.each(Ext.query('.feEditAdvanced-contentTypeItem'), function (el) { 
-			width = parseInt(Ext.get(el).getStyle('width').replace('px',''));
-			width += parseInt(Ext.get(el).getStyle('margin-left').replace('px',''));
-			width += parseInt(Ext.get(el).getStyle('margin-right').replace('px',''));
-			width += parseInt(Ext.get(el).getStyle('padding-right').replace('px',''));
-			width += parseInt(Ext.get(el).getStyle('padding-left').replace('px',''));
-			width += parseInt(Ext.get(el).getStyle('border-left-width').replace('px',''));
-			width += parseInt(Ext.get(el).getStyle('border-right-width').replace('px',''));
-			FrontendEditing.toolbarWidth += width; 
-		}, this); 
-			// if the elements are bigger then the toolbar wide, resize it and wrap the scroller arround
-		var celementToolBar = Ext.get('feEditAdvanced-contentTypeToolbar');
-		if(parseInt(celementToolBar.getStyle('width').replace('px','')) < this.toolbarWidth) {
-			Ext.DomHelper.insertBefore(celementToolBar, {
-				id: 'feEditAdvanced-contentTypeToolbar-wrapper',
-				cn: [{
-					tag: 'div',
-					id: 'feEditAdvanced-contentTypeToolbar-arrLeft',
-					html: '&laquo;',
-					onclick: 'FrontendEditing.scrollContentTypeToolbar(100)'
-				},
-				{
-					tag: 'div',
-					id: 'feEditAdvanced-contentTypeToolbar-scrollPanel'
-				},
-				{
-					tag: 'div',
-					id: 'feEditAdvanced-contentTypeToolbar-arrRight',
-					html: '&raquo;',
-					onclick: 'FrontendEditing.scrollContentTypeToolbar(-100)'
-				}]
-			});
-			var wrapper = Ext.get('feEditAdvanced-contentTypeToolbar-wrapper');
-			var scrollPanel = Ext.get('feEditAdvanced-contentTypeToolbar-scrollPanel');
-			scrollPanel.setStyle('width',(document.width - 260) +'px');
-			wrapper.setStyle('width',(document.width - 200) +'px');
-			scrollPanel.appendChild(celementToolBar);
-			
-			celementToolBar.setStyle('width',this.toolBarWidth);
-			celementToolBar.setStyle('margin-right','0px');
-			celementToolBar.setStyle('position','absolute');
-		}	
 	}
 };
 
-var ToolBarWidth = 0;
+
+/**
+ * class for rendering the horizontal slider
+ */
+TYPO3.FeEdit.ContentTypeToolbar = Ext.extend(TYPO3.FeEdit.Base, {
+	toolbarWidth: 0,
+	totalElementWidth: 0,
+	el: null,
+	innerEl: null,
+	totalWidth: null,
+
+	constructor: function() {
+		this.el = Ext.get('feEditAdvanced-contentTypeToolbar');
+
+		// create two divs. the first will hold the scrolling div, th
+		// latter will contain all contentTypeItems
+		this.innerEl = this.el.insertFirst({
+			'id':  'feEditAdvanced-contentTypeToolbar-inner',
+			'tag': 'div',
+			'cn': [{
+				'tag': 'div',
+				'id': 'feEditAdvanced-contentTypeToolbar-scroller'
+			}]
+		});
+
+
+		// move all draggables in the scrolling container
+		Ext.select('.feEditAdvanced-contentTypeItem', false, this.el.dom).each(function (el) { 
+			el = Ext.get(el);
+			this.totalElementWidth += el.getWidth();
+			el.appendTo(this.innerEl.first());
+		}, this);
+
+		// create the arrows
+		Ext.DomHelper.insertBefore(this.innerEl, {
+			tag: 'div',
+			id: 'feEditAdvanced-contentTypeToolbar-arrLeft',
+			html: '&laquo;'
+		}, true).on('click', function() { this.scroll('left'); }, this);
+		Ext.DomHelper.insertAfter(this.innerEl, {
+			tag: 'div',
+			id: 'feEditAdvanced-contentTypeToolbar-arrRight',
+			html: '&raquo;'
+		}, true).on('click', function() { this.scroll('right'); }, this);
+
+		// reset the left margin and set the innerWidth of the scroller to the maximum size
+		this.el.setStyle('marginLeft', '0px');
+		Ext.get('feEditAdvanced-contentTypeToolbar-scroller').setWidth(this.totalElementWidth + 20);
+
+		// calculate the width for the scrolling bar and set up an event for that
+		this.recalculateAvailableWidth();
+		Ext.EventManager.on(window, 'resize', this.recalculateAvailableWidth, this);
+	},
+
+	/**
+	 * this method calculates the width in the secondRow that is available
+	 * for the new Content Elements
+	 */
+	recalculateAvailableWidth: function() {
+		var availableWidth = Ext.getBody().getWidth();
+
+		// get all divs that are in the second row and subtract the available width
+		Ext.select('div.feEditAdvanced-secondRow > div').each(function(el) {
+			var el = Ext.get(el);
+			var width = el.getWidth();
+			if (el.dom.id != this.el.dom.id && width > 0) {
+				availableWidth -= width;
+			}
+		}, this);
+		this.toolbarWidth = availableWidth;
+		this.el.setWidth(this.toolbarWidth);
+		
+		// check if scrolling is needed
+		if (this.toolbarWidth <= this.totalElementWidth) {
+			this.innerEl.setWidth(this.toolbarWidth - 40);
+			Ext.get('feEditAdvanced-contentTypeToolbar-arrLeft').show();
+			Ext.get('feEditAdvanced-contentTypeToolbar-arrRight').show();
+		} else {
+			// all icons have space without scrolling
+			this.innerEl.setWidth('auto');
+			this.el.setWidth(this.innerEl.getWidth() + 40);
+			Ext.get('feEditAdvanced-contentTypeToolbar-arrLeft').hide();
+			Ext.get('feEditAdvanced-contentTypeToolbar-arrRight').hide();
+		}
+	},
+
+	/*
+	 * this method actually does the scrolling, which is currently done by a certain fix
+	 * amount of pixels (100), but could be on a per item basis later on
+	 */
+	scroll: function(direction) {
+		var by = -100;
+		var currentPos = parseInt(this.innerEl.first().getStyle('marginLeft'));
+		var anim = {by: by, unit: 'px' };
+		if (direction == 'left') {
+			anim.by = Math.abs(by);
+			if (currentPos >= 0) {
+				anim = { to: 0, unit: 'px' };
+			}
+		} else {
+			if (Math.abs(currentPos) >= (this.totalElementWidth-this.toolbarWidth)) {
+				anim = { by: 0, unit: 'px' };
+			}
+		}
+		this.innerEl.first().animate({ marginLeft: anim }, 0.3, null, 'easeOut', 'run');
+	}
+});
+
 
 // Set the edit panels and menu bar on window load 
 Ext.onReady(function() { 
 	FrontendEditing.init();  
-	FrontendEditing.initContentTypeToolbar();
+	new TYPO3.FeEdit.ContentTypeToolbar();
 });

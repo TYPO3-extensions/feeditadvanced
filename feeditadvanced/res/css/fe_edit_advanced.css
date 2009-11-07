@@ -88,7 +88,7 @@ div#feEditAdvanced-menuBar a.feEditAdvanced-disabled:hover {
 	background-color: #ddd;
 }
 
-div#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover { color: white; }
+div#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover { color: #fff; }
 
 div#feEditAdvanced-menuBar div.feEditAdvanced-firstRow,
 div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow {
@@ -100,7 +100,7 @@ div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow {
 
 div#feEditAdvanced-menuBar div.feEditAdvanced-firstRow { background: url(../icons/menubar/menu_back.png) repeat-x 0 0; }
 div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow { background: url(../icons/menubar/menu2_back.png) repeat-x 0 0; }
-div#feEditAdvanced-logo { float: right; padding: 5px 15px; }
+div#feEditAdvanced-logo { float: right; padding: 0 15px; position: absolute; right: 0; top: 39px; }
 
 
 div.feEditAdvanced-menuToolbar { margin: 1px; height: 32px; }
@@ -111,16 +111,9 @@ div#feEditAdvanced-actionToolbar { margin-right: 20px; }
 
 
 /* ---------------------- Top Menu: Close Button on the right ---------------------------- */
-div#feEditAdvanced-contextToolbar {
-	display: block;
-	position: absolute;
-	right: 0;
-	top: 0;
-}
+div#feEditAdvanced-contextToolbar { display: block; position: absolute; right: 0; top: 0; }
 
 div#feEditAdvanced-menuBar div#feEditAdvanced-contextToolbar a.feEditAdvanced-button { float: right; display: block; }
-div#feEditAdvanced-menuBar div#feEditAdvanced-contextToolbar a.feEditAdvanced-button span.feEditAdvanced-buttonText {}
-
 
 /* ---------------------- Top Menu: Page edit buttons on the left ---------------------------- */
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar { float: left; width: 80%; }
@@ -128,24 +121,27 @@ div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div.feEditAdvanced
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar a.feEditAdvanced-button { float: left; display: block; }
 
 
-
-
 /* ---------------------- Top Menu: List of Content Element Types ---------------------------- */
 div#feEditAdvanced-contentTypeToolbar {
-	margin-right: 20px;
-	top: 0;
-	left: 0;
-	z-index: 551;
+	z-index: 500;
 	overflow: visible;
 	float: left;
 	width: 80%;
+	margin-left: 20px;
 	height: 32px;
+	text-align: left;
 }
 
-div#feEditAdvanced-contentTypeToolbar-wrapper {
+div#feEditAdvanced-contentTypeToolbar-inner {
 	height: 32px;
-	float: left;
-	position: relative;
+	overflow: hidden;
+	position: absolute;
+	left: 20px;
+	text-align: left;
+	z-index: 9200;
+}
+div#feEditAdvanced-contentTypeToolbar-scroller {
+	width: 2000px; /** needs to be an abnormal amount */
 }
 
 div#feEditAdvanced-contentTypeToolbar-arrLeft,
@@ -154,23 +150,16 @@ div#feEditAdvanced-contentTypeToolbar-arrRight {
 	width: 20px;
 	float: left;
 	color: #000;
-	font-weight: bold;
+	font-weight: normal;
 	font-size: 20px;
-	position: absolute;
-	top: 0;
-	z-index: 556;
-	background: url(../icons/menubar/menu2_back.png) repeat-x 0 0;
-	line-height: 150%;
-	text-align: center;
-}
-div#feEditAdvanced-contentTypeToolbar-arrLeft { left: 0; }
-div#feEditAdvanced-contentTypeToolbar-arrRight { right: 0; }
-div#feEditAdvanced-contentTypeToolbar-scrollPanel {
+	z-index: 9500;
 	position: relative;
-	top: 0;
-	left: 20;
-	z-index: 550;
+	line-height: 31px;
+	text-align: center;
+	background: url(../icons/menubar/menu2_back.png) repeat-x 0 0;
 }
+
+div#feEditAdvanced-contentTypeToolbar-arrRight { float: right; }
 
 img.feEditAdvanced-buttonImage {
 	vertical-align: middle;
@@ -178,7 +167,8 @@ img.feEditAdvanced-buttonImage {
 	margin: 4px 0 0;
 }
 
-div#feEditAdvanced-menuBar div#feEditAdvanced-contentTypeToolbar a.feEditAdvanced-button {
+div.x-dd-drag-proxy a.feEditAdvanced-contentTypeItem,
+div#feEditAdvanced-menuBar a.feEditAdvanced-contentTypeItem {
 	background: none;
 	width: auto;
 	margin: 0;
@@ -186,25 +176,37 @@ div#feEditAdvanced-menuBar div#feEditAdvanced-contentTypeToolbar a.feEditAdvance
 	padding: 0 6px;
 }
 
+div.x-dd-drag-proxy a.feEditAdvanced-button span,
 div#feEditAdvanced-menuBar div#feEditAdvanced-contentTypeToolbar a.feEditAdvanced-button span {
 	float: left;
 	line-height: 32px;
 	padding-left: 3px;
 }
 
-div#feEditAdvanced-menuBar span.feEditAdvanced-buttonText {
-	display: inline-block;
-	font-size: 12px;
-}
-
-div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
+span.feEditAdvanced-buttonLabel {
 	color: #000;
 	margin-left: 3px;
 	font-size: 11px;
+	line-height: 32px;
+}
+
+div#feEditAdvanced-menuBar .feEditAdvanced-contentTypeItem {
+	border-right: 1px dotted #afafaf;
 }
 
 
+.feEditAdvanced-contentTypeItem {
+	display: block; /*opera*/
+	display: inline-block; /*ie*/
+	margin: 0;
+	text-decoration: none !important;
+	color: #ddd;
+	cursor: move;
+	padding: 0 10px;
+	height: 34px;
+}
 
+div.x-dd-drag-proxy { background: #e0e0e0; border: 1px dotted #999; }
 
 
 /* ---------------------- Top Menu: clipboard ---------------------------- */
@@ -217,7 +219,6 @@ div#feEditAdvanced-menuBar span.feEditAdvanced-buttonLabel {
 	background: url(../icons/menubar/clipboard_back.png) no-repeat;
 }
 
-.feEditAdvanced-contentTypeItem,
 #feEditAdvanced-clipboardToolbar .clipObj {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
