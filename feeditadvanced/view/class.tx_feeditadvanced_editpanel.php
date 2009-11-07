@@ -518,6 +518,8 @@ class tx_feeditadvanced_editpanel {
 			// configuration for edit panels
 		$formOnPageConf = $GLOBALS['TSFE']->tmpl->setup[$table.'.']['stdWrap.']['editPanel.'];
 
+		$panel = '';
+
 			// hook to add additional JavaScript or CSS before the actual form
 		$addHeaderHook = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['addJSorCSSforFormsOnPage'];
 		if (isset($addHeaderHook) && is_array($addHeaderHook)) {
@@ -529,11 +531,13 @@ class tx_feeditadvanced_editpanel {
 			}
 		} elseif ($formOnPageConf['formsOnPage.']['advFields']) {
 				// should not be set for edit icons because they must be handled differently
+				// @todo	Think this is dead code that can be removed.
 			if (t3lib_div::_POST('mode')!='editIcons') {
 				$toggle .= '<div class="toggleShowHide class-main21"><a href="#" onclick="toggleSimpleAdvanced();return false;"><span id="simpleadv_toggle">' . $GLOBALS['BE_USER']->extGetLL('toggle_advanced') . '</span></a></div>';
+					// Buttons top
+				$panel .= $tceforms->intoTemplate(array('ITEM' => $toggle));
 			}
 		}
-		$panel = '';
 
 			// add the save, saveClose, close buttons
 		$buttons = '<div class="feEditAdvanced-editControls" id="feEditAdvanced-editControls">';
@@ -552,9 +556,6 @@ class tx_feeditadvanced_editpanel {
 
 		$buttons .= '<button type="submit" name="TSFE_EDIT[close]" value="1" onclick="' . $onclick . '" class="feEditAdvanced-actionButton closeAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.closeDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('closeButton').'</span></button>';
 		$buttons .= '</div>';
-
-			// Buttons top
-		$panel .= $tceforms->intoTemplate(array('ITEM' => $toggle));
 
 		if (!$fieldList && $this->modTSconfig['formsOnPage.']['useListForFields']) {
 			if ($this->modTSconfig['formsOnPage.'][$table.'.']) {

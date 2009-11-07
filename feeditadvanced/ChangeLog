@@ -1,3 +1,7 @@
+2009-11-07  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug: Empty table rows and cells in editing form.
+
 2009-11-07  Benjamin Mack  <benni@typo3.org>
 
 	* Set the conflicts in the EM conf to feedit so the two extensions don't conflict when running
