@@ -326,7 +326,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 
 			// Final wrapping into the table:
 		$out = '<table border="0" cellpadding="0" cellspacing="0" class="typo3-TCEforms-palette"><tr><td class="palettePadding"></td>' .
-				implode('', $hRow) . ' </tr><tr><td class="palettePadding"> </td>' .
+				implode('', $hRow) . ' </tr><tr><td class="palettePadding"></td>' .
 				implode('', $iRow) . ' </tr></table>';
 
 		return $out;
@@ -398,7 +398,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		}
 		if (!$fieldTemplate) {
 			if (!strlen($fieldTemplate = $this->getTSFieldConf($elementConfig['fieldTemplate'], $elementConfig['fieldTemplate.']))) {
-				$fieldTemplate = '<tr class="class-main21 fieldHeader"><td nowrap="nowrap" class="class-main21">###FIELD_HELP_ICON###<b>###FIELD_NAME###</b>###FIELD_HELP_TEXT###</td></tr><tr class="class-main23 field"><td nowrap="nowrap" class="class-main23">###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
+				$fieldTemplate = '<tr class="class-main21 fieldHeader"><td nowrap="nowrap" class="class-main21">###FIELD_HELP_ICON###<b>###FIELD_NAME###</b>###FIELD_HELP_TEXT###</td></tr><tr class="class-main23 field"><td nowrap="nowrap" class="class-main23"><img name="req_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="10" height="10" alt="" /><img name="cm_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="7" height="10" alt="" />###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
 			}
 		}
 
