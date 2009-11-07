@@ -395,10 +395,12 @@ div.feEditAdvanced-contentWrapper .formsOnPage {
 	z-index: 400;
 }
 
-.feEditAdvanced-hiddenElement,
+.feEditAdvanced-hiddenElement .feEditAdvanced-contentWrapper,
 .hidden .formsOnPage {
-	opacity: 0.6;
+	opacity: 0.5;
 }
+
+
 
 .feEditAdvanced-label,
 input.feEditAdvanced-editButton,
