@@ -8,6 +8,7 @@
 	* Fixed bug: Empty table rows and cells in editing form.
 	* Fixed bug #4803: Required fields are not marked with the yellow exclamation mark.
 	* Fixed bug: Improved alignment and spacing of editing form.
+	* Added feature: Force preview module to be enabled so that hidden records are always shown.
 
 2009-11-07  Benjamin Mack  <benni@typo3.org>
 
