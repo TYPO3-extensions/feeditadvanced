@@ -18,10 +18,10 @@ $EM_CONF[$_EXTKEY] = array(
 	'author_email' => 'jeff@webempoweredchurch.org, dave@webempoweredchurch.org',
 	'shy' => '',
 	'dependencies' => '',
-	'conflicts' => '',
+	'conflicts' => 'feedit',
 	'priority' => '',
 	'module' => '',
-	'state' => 'alpha',
+	'state' => 'beta',
 	'internal' => '',
 	'uploadfolder' => 0,
 	'createDirs' => '',
@@ -29,13 +29,14 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 0,
 	'lockType' => 'system',
 	'author_company' => 'Web-Empowered Church',
-	'version' => '0.1.1',
+	'version' => '0.8.0',
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '4.3.0-0.0.0',
 			'php' => '5.2.0-0.0.0',
 		),
 		'conflicts' => array(
+			'feedit' => ''
 		),
 		'suggests' => array(
 		),

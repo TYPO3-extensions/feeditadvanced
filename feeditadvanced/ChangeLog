@@ -1,5 +1,6 @@
 2009-11-07  Benjamin Mack  <benni@typo3.org>
 
+	* Set the conflicts in the EM conf to feedit so the two extensions don't conflict when running
 	* Modified the hook definitions from typo3/sysext/feeditadvanced to EXT:feeditadvanced
 	* Fixed CSS and Layouting issues for the draggables and its area
 
