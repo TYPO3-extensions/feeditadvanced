@@ -236,14 +236,14 @@ class tx_feeditadvanced_menu {
 		$content = t3lib_parsehtml::substituteMarkerArray($this->template, $markers, '###|###');
 
 			// hook to add additional menu features, including a sidebar
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
 			$_params = array(
 				'menuOut' => &$content,	// deprecated, should use "content" now
 				'content' => &$content,
 				'isMenuOpen' => $menuOpen,
 				'pObj' => &$this
 			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'] as $_funcRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'] as $_funcRef) {
 				$content = t3lib_div::callUserFunction($_funcRef, $_params, $this);
 			}
 		}

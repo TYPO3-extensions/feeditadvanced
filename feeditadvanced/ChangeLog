@@ -1,5 +1,6 @@
 2009-11-07  Benjamin Mack  <benni@typo3.org>
 
+	* Modified the hook definitions from typo3/sysext/feeditadvanced to EXT:feeditadvanced
 	* Fixed CSS and Layouting issues for the draggables and its area
 
 2009-11-06  Jeff Segars  <jeff@webempoweredchurch.org>

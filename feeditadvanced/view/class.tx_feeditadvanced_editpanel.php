@@ -249,8 +249,8 @@ class tx_feeditadvanced_editpanel {
 
 				// hook to add any hidden fields
 			$hiddenFieldString = '';
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'])) {
-				foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/sysext/feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'] as $classRef) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'])) {
+				foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'] as $classRef) {
 					$hookObj= &t3lib_div::getUserObj($classRef);
 					if (method_exists($hookObj, 'addHiddenFields'))
 						$hiddenFieldString .= $hookObj->addHiddenFields($dataArr);
