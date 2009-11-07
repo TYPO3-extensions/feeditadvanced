@@ -481,6 +481,7 @@ class tx_feeditadvanced_editpanel {
 		$this->table=$table;
 		$this->init($conf);
 		$tceforms = t3lib_div::makeInstance('tx_feeditadvanced_tceforms');
+		$tceforms->initDefaultBEMode();
 		$tceforms->prependFormFieldNames = 'TSFE_EDIT[data]';
 		$tceforms->prependFormFieldNames_file = 'TSFE_EDIT_file';
 		$tceforms->doSaveFieldName = 'TSFE_EDIT[doSave]';
