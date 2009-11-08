@@ -849,6 +849,10 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 		// iframe actions only need the URL and don't trigger the AJAX call when triggering the action
 	requestType: 'ajax',
 	_isModalAction: true,
+	// the edit panel to work on
+	parent: null,
+	// cmd, the command that the action is done
+	cmd: null,
 
 	// init function, sets the "parent" which is the edit panel (I believe so at least)
 	// and the command from the subclass

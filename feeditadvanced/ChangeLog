@@ -1,5 +1,6 @@
 2009-11-08  Benjamin Mack  <benni@typo3.org>
 
+	* Added explicit variable declaration in JS file
 	* Fixed various bugs when handling hidden elements. They are now rendered at any time, but easily made visible through a new checkbox on top of the menubar
  	* Minor cleanups in a hook and for some CSS selectors
 
