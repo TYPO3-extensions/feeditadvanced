@@ -207,12 +207,12 @@ class tx_feeditadvanced_adminpanel {
 	 */
 	function getAdmPanelFields() {
 		$content = '
-		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_displayFieldIcons]" value="' . ($this->admPanelTSconfig['properties']['module.']['edit.']['forceDisplayFieldIcons'] ? 1 : 0) . '" />
-		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_displayIcons]" value="' . ($this->admPanelTSconfig['properties']['module.']['edit.']['forceDisplayIcons'] ? 1 : 0) . '" />
-		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_editFormsOnPage]" value="' . ($this->uc['TSFE_adminConfig']['forceFormsOnPage'] ? 1 : 0) . '" />
-		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_editNoPopup]" value="' . ($this->uc['TSFE_adminConfig']['edit_editNoPopup'] ? 1 : 0) . '" />
+		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_displayFieldIcons]" value="' . ($GLOBALS['BE_USER']->adminPanel->extGetFeAdminValue('edit', 'forceDisplayFieldIcons') ? 1 : 0) . '" />
+		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_displayIcons]" value="' . ($GLOBALS['BE_USER']->adminPanel->extGetFeAdminValue('edit', 'forceDisplayIcons') ? 1 : 0) . '" />
+		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_editFormsOnPage]" value="' . ($GLOBALS['BE_USER']->adminPanel->extGetFeAdminValue('edit', 'editFormsOnPage') ? 1 : 0) . '" />
+		<input type="hidden" name="TSFE_ADMIN_PANEL[edit_editNoPopup]" value="' . ($GLOBALS['BE_USER']->adminPanel->extGetFeAdminValue('edit', 'editNoPopup') ? 1 : 0) . '" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[preview_showHiddenPages]" value="1" />
-		<input type="hidden" name="TSFE_ADMIN_PANEL[preview_showHiddenRecords]" value="1" />
+		<input type="hidden" name="TSFE_ADMIN_PANEL[preview_showHiddenRecords]" value="' . ($GLOBALS['BE_USER']->adminPanel->extGetFeAdminValue('preview', 'showHiddenRecords') ? 1 : 0) . '" id="TSFE_ADMIN_PANEL-preview_showHiddenRecords" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[display_preview]" value="0" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[display_top]" value="1" />
 		<input type="hidden" name="TSFE_ADMIN_PANEL[menuOpen]" value="' . intval($this->menuOpen) . '" />
@@ -221,8 +221,8 @@ class tx_feeditadvanced_adminpanel {
 			// hook to add additional hidden fields
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'])) {
 			$_params = array(
-				'input' => &$input,
-				'pObj' => &$this
+				'content' => &$content,
+				'pObj'    => &$this
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'] as $_funcRef) {
 				$content .= t3lib_div::callUserFunction($_funcRef, $_params, $this);

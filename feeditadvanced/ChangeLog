@@ -1,3 +1,8 @@
+2009-11-08  Benjamin Mack  <benni@typo3.org>
+
+	* Fixed various bugs when handling hidden elements. They are now rendered at any time, but easily made visible through a new checkbox on top of the menubar
+ 	* Minor cleanups in a hook and for some CSS selectors
+
 2009-11-08  Oliver Hader  <oliver@typo3.org>
 
 	* Tagged release for TYPO3 4.3-beta3

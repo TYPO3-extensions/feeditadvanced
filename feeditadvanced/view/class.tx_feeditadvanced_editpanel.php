@@ -220,7 +220,7 @@ class tx_feeditadvanced_editpanel {
 				// @note	We don't currently support a drag&drop UI for pages, so make sure page edit panels are not flagged as draggable
 				if ($table != 'pages') {
 					$this->panelItems['drag'] 	= '<span class="feEditAdvanced-dragHandle" title="' . $GLOBALS['BE_USER']->extGetLL('dragTitle') . '"></span>';
-					$this->panelItems['draggable'] = ' draggable';
+					$this->panelItems['draggable'] = ' feEditAdvanced-draggable draggable';
 				}
 			}
 				// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case

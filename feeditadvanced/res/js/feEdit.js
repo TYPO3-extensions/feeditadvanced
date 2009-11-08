@@ -322,7 +322,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		this.getFormParameters();
 		this.setupEventListeners();
 
-		if (this.el.hasClass('draggable') && !this.isPagePanel) {
+		if (this.el.hasClass('feEditAdvanced-draggable') && !this.isPagePanel) {
 			this.sortable = true;
 			this._makeDraggable();
 		}
@@ -334,7 +334,6 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		if (this.isPagePanel) {
 			this.el.show();
 		}
-
 		this.updateUpDownButtons();
 	},
 
@@ -347,9 +346,13 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		this.disableHoverMenu();
 		this.el.addClass('feEditAdvanced-noBorder');
 	},
+	
+	elementIsHidden: function() {
+		return (this.el.hasClass('feEditAdvanced-hiddenElement') && !FrontendEditing.showHiddenContentElements);
+	},
 
 	addDropZone: function() {
-		if (this.sortable) {
+		if (this.sortable && !this.elementIsHidden()) {
 			this.dropZone = new TYPO3.FeEdit.DropZone(this);
 		}
 	},
@@ -627,11 +630,23 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 	
 	getPreviousContentElement: function() {
-		return this.el.prev('.feEditAdvanced-allWrapper');
+		var prevEl = this.el;
+		while (prevEl = prevEl.prev('.feEditAdvanced-allWrapper')) {
+			if (!prevEl.hasClass('feEditAdvanced-hiddenElement') || FrontendEditing.showHiddenContentElements) {
+				return prevEl;
+			}
+		}
+		return false;
 	},
 	
 	getNextContentElement: function() {
-		return this.el.next('.feEditAdvanced-allWrapper');
+		var nextEl = this.el;
+		while (nextEl = nextEl.next('.feEditAdvanced-allWrapper')) {
+			if (!nextEl.hasClass('feEditAdvanced-hiddenElement') || FrontendEditing.showHiddenContentElements) {
+				return nextEl;
+			}
+		}
+		return false;
 	},
 	
 	hideUpButton: function() {
@@ -1086,7 +1101,7 @@ TYPO3.FeEdit.UnhideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 TYPO3.FeEdit.UpAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	trigger: function() {
-		previousEditPanel = this.parent.el.prev();
+		var previousEditPanel = this.parent.getPreviousContentElement();
 		if (previousEditPanel) {
 			this.parent.el.insertBefore(previousEditPanel);
 			this.parent.updateUpDownButtons();
@@ -1113,7 +1128,7 @@ TYPO3.FeEdit.UpAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 TYPO3.FeEdit.DownAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	trigger: function() {
-		nextEditPanel = this.parent.el.next();
+		var nextEditPanel = this.parent.getNextContentElement();
 		if (nextEditPanel) {
 			this.parent.el.insertAfter(nextEditPanel);
 			this.parent.updateUpDownButtons();
@@ -1458,7 +1473,7 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 			// build a clipboard object that has values from content element
 		pasteValues = '<input type="hidden" name="TSFE_EDIT[cmd]" value="' + editPanelAction._getCmd() + '"><input type="hidden" name="TSFE_EDIT[record]" value="' + rec + '"><input type="hidden" name="TSFE_EDIT[pid]" value="' + editPanelAction.parent.pid + '"><input type="hidden" name="TSFE_EDIT[flexformPtr]" value="' + editPanelAction.parent.flexformPtr + '"><input type="hidden" name="TSFE_EDIT[uid]" value="' + thisUID + '">';
 		clearBtn = '<div class="clearBtn" id="clearBtn' + thisUID + '"> </div>';
-		pasteEl = '<div class="clipContainer" id="' + clipID + '"><div class="draggable clipObj"><form name="TSFE_EDIT_FORM_' + thisUID + '">' +
+		pasteEl = '<div class="clipContainer" id="' + clipID + '"><div class="feEditAdvanced-draggable clipObj"><form name="TSFE_EDIT_FORM_' + thisUID + '">' +
 					strVal + pasteValues +
 					'</form></div>' + clearBtn + '</div>';
 		newEl = clipboardObj.append(pasteEl);
@@ -1568,6 +1583,7 @@ var FrontendEditing = {
 	toolbar: null,
 	actionRunning: false,
 	editWindow: null,
+	showHiddenContentElements: true,
 	dropZones: [],	//stores all dropzones that are 
 
 	init: function() {
@@ -1591,6 +1607,17 @@ var FrontendEditing = {
 	
 	initializeMenuBar: function() {
 		this.toolbar = new TYPO3.FeEdit.Toolbar('feEditAdvanced-menuBar');
+		this.showHiddenContentElements = parseInt(Ext.get('TSFE_ADMIN_PANEL-preview_showHiddenRecords').getValue());
+
+		var cb = Ext.get('feEditAdvanced-showHiddenContent-input');
+		if (cb) {
+			cb.on('change', this.toggleHiddenContentElements, this);
+			if (this.showHiddenContentElements) {
+				cb.set({'checked': 'checked'});
+			} else {
+				this.toggleHiddenContentElements();
+			}
+		}
 	},
 
 		// Update page styling to account for the menu bar at the top. Currently, background-position is adjusted.
@@ -1604,7 +1631,7 @@ var FrontendEditing = {
 			body.setStyle('background-position', xPosition + ' ' + menuBarHeight + 'px');
 		} else if (yPosition.indexOf('px')) {
 			body.setStyle('background-position', xPosition + ' ' + (parseInt(yPosition.substr(0, yPosition.length-2)) + menuBarHeight) + 'px');
-	}
+		}
 
 		// If the firstWrapper is behind the menu, shift it down so that it and all edit panels are visible.
 		var menuBarBottom = Ext.get('feEditAdvanced-menuBar').getBottom();
@@ -1650,6 +1677,7 @@ var FrontendEditing = {
 	/**
 	 * checks if one of the CEs is too small, thus adds another class, so it is modifiable
 	 * via CSS
+	 * could later be used for some other functionalities that need to be done after certain things
 	 */
 	checkContentElements: function() {
 		this.editPanels.each(function(panel) {
@@ -1658,6 +1686,31 @@ var FrontendEditing = {
 			} else {
 				panel.el.removeClass('feEditAdvanced-contentWrapperSmall');
 			}
+			panel.updateUpDownButtons();
+		});
+	},
+
+	/** 
+	 * used when the checkbox is used
+	 */
+	toggleHiddenContentElements: function() {
+		var isChecked = Ext.get('feEditAdvanced-showHiddenContent-input').is(':checked');
+		var admPanelEl = Ext.get('TSFE_ADMIN_PANEL-preview_showHiddenRecords');
+		this.editPanels.each(function(panel) {
+			if (panel.el.hasClass('feEditAdvanced-hiddenElement')) {
+				panel.el.setStyle('display', (isChecked ? 'block' : 'none'));
+			}
+		});
+		this.showHiddenContentElements = isChecked;
+		
+		// save the new value in the backend (currently not needed as it's overriden by TSconfig anyway)
+		var newAdmPanelElValue = (admPanelEl.getValue() == '1' ? '0' : '1');
+		admPanelEl.set({'value': newAdmPanelElValue});
+		var frm = Ext.get('TSFE_ADMIN_PANEL_Form');
+		Ext.Ajax.request({
+			'url': frm.getAttribute('action'),
+			'form': frm,
+			'disableCaching': true
 		});
 	}
 	
