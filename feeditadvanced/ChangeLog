@@ -1,3 +1,7 @@
+2009-11-08  Oliver Hader  <oliver@typo3.org>
+
+	* Tagged release for TYPO3 4.3-beta3
+
 2009-11-07  Benjamin Mack  <benni@typo3.org>
 
 	* Fixed bug #3328: Block with editing icons should be shown without text when under 350px wide.
