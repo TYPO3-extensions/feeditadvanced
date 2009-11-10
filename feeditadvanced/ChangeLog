@@ -1,3 +1,7 @@
+2009-11-09  Benjamin Mack  <benni@typo3.org>
+
+	* Fixed #5284: Usage of XLLfile is deprecated (Thanks to Steffen Gebert)
+
 2009-11-08  Benjamin Mack  <benni@typo3.org>
 
 	* Added explicit variable declaration in JS file

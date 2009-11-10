@@ -12,8 +12,8 @@ $TYPO3_CONF_VARS['FE']['eID_include']['feeditadvanced'] = 'EXT:feeditadvanced/se
 
 	// Set Language Files
 	// @todo Dave: Is there a better way to do this? .php and .xml???
-$TYPO3_CONF_VARS['BE']['XLLfile']['EXT:lang/locallang_tsfe.php'] = t3lib_extMgm::extPath($_EXTKEY) . "locallang.xml";
-$TYPO3_CONF_VARS['BE']['XLLfile']['EXT:lang/locallang_tsfe.xml'] = t3lib_extMgm::extPath($_EXTKEY) . "locallang.xml";
+$TYPO3_CONF_VARS['SYS']['locallangXMLOverride']['EXT:lang/locallang_tsfe.php']['EXT:' . $_EXTKEY] = t3lib_extMgm::extPath($_EXTKEY) . "locallang.xml";
+$TYPO3_CONF_VARS['SYS']['locallangXMLOverride']['EXT:lang/locallang_tsfe.xml']['EXT:' . $_EXTKEY] = t3lib_extMgm::extPath($_EXTKEY) . "locallang.xml";
 
 	// Adds disable palettes functionality for Frontend forms
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsClass'][] = 'EXT:feeditadvanced/view/class.tx_feeditadvanced_getMainFields_preProcess.php:tx_feeditadvanced_getMainFields_preProcess';
