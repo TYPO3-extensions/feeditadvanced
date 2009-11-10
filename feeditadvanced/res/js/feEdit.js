@@ -923,6 +923,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 	// callback function to handle if the AJAX response was faulty
 	_handleFailureResponse: function(response, options) {
 		FrontendEditing.actionRunning = false;
+		// @todo Localize!
 		alert('AJAX error: ' + response.responseText);
 	},
 
@@ -965,6 +966,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 				}
 			}
 		} else {
+			// @todo Localize!
 			FrontendEditing.editWindow.displayStaticMessage('It looks like we encountered some problems. Please reload the page and try again or contact your administrator.');
 		}
 		
@@ -979,10 +981,12 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return "We shouldn't ever see this message.";
 	},
 
 	_getAlreadyProcessingMsg: function() {
+		// @todo Localize!
 		return 'Already processing an action, please wait.';
 	}
 });
@@ -995,6 +999,7 @@ TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	trigger: function(additionalParams, targetID) {
 		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
 		var url = this.getRequestUrl(additionalParams);
+		// @todo Localize!
 		FrontendEditing.editWindow.displayIframe('New Content Block', url);
 		if (targetID) {
 			FrontendEditing.editWindow.setTargetID(targetID);
@@ -1008,6 +1013,7 @@ TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return 'Loading editing form.';
 	}
 });
@@ -1018,6 +1024,7 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	trigger: function() {
 		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
 		var url = this.getRequestUrl();
+		// @todo Localize!
 		FrontendEditing.editWindow.displayIframe('Edit Content Block', url);
 	},
 
@@ -1028,6 +1035,7 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return 'Loading editing form.';
 	}
 });
@@ -1042,6 +1050,7 @@ TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	trigger: function() {
+		// @todo Localize!
 		if (confirm("Are you sure you want to delete this content?")) {
 			TYPO3.FeEdit.DeleteAction.superclass.trigger.apply(this);
 		}
@@ -1074,6 +1083,7 @@ TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return "Hiding content.";
 
 	},
@@ -1097,6 +1107,7 @@ TYPO3.FeEdit.UnhideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return "Unhiding content.";
 	},
 
@@ -1120,6 +1131,7 @@ TYPO3.FeEdit.UpAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return "Moving content.";
 	},
 
@@ -1147,6 +1159,7 @@ TYPO3.FeEdit.DownAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return "Moving content.";
 	},
 
@@ -1164,6 +1177,7 @@ TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return "Moving content.";
 	},
 
@@ -1195,6 +1209,7 @@ TYPO3.FeEdit.SaveAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return 'Saving content.';
 	},
 
@@ -1240,6 +1255,7 @@ TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return "Closing editing form";
 	},
 
@@ -1293,6 +1309,7 @@ TYPO3.FeEdit.SaveAndCloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return 'Saving content.';
 	},
 
@@ -1314,6 +1331,7 @@ TYPO3.FeEdit.CopyAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return 'Copying content';
 	},
 
@@ -1335,6 +1353,7 @@ TYPO3.FeEdit.CutAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return 'Cutting content.';
 	},
 
@@ -1356,6 +1375,7 @@ TYPO3.FeEdit.PasteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
+		// @todo Localize!
 		return 'Pasting content.';
 	},
 
@@ -1558,6 +1578,7 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 				Ext.DomHelper.insertAfter(Ext.get(this.targetID), json.content);
 				FrontendEditing.scanForEditPanels();
 			} else {
+				// @todo Localize!
 				alert("We got a new content element but we don't know where to put it.");
 			}
 		}
