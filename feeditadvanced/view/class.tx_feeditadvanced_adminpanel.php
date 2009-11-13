@@ -345,6 +345,8 @@ class tx_feeditadvanced_adminpanel {
 		$includes = array(
 			'ext-base.js'  => $this->getScriptTag('typo3/contrib/extjs/adapter/ext/ext-base.js'),
 			'ext-dd.js'    => $this->getScriptTag($extPath . 'res/js/ext-dd.js'),
+			'TYPO3Configuration' => $this->getConfigurationJavascript(),
+			'backend.js'   => $this->getScriptTag('typo3/js/backend.js'),
 
 				// load AJAX handling functions
 			'feedit.js'    => $this->getScriptTag($extPath . 'res/js/feEdit.js'),
@@ -398,6 +400,41 @@ class tx_feeditadvanced_adminpanel {
 	 */
 	protected function getLinkTag($href, $type = 'text/css', $rel = 'stylesheet', $media = 'screen') {
 		return '<link rel="' . $rel . '" type="' . $type . '" media="' . $media . '" href="' . $href . '" />';
+	}
+
+	/**
+	 * Generates general configuration Javascript, mimicing pieces of what is 
+	 * set for the backend in typo3/backend.php.
+	 *
+	 * @return	string
+	 */
+	protected function getConfigurationJavascript() {
+		$pathTYPO3 = TYPO3_mainDir;
+		$javascript = '
+			var TYPO3 = {};
+
+			Ext.BLANK_IMAGE_URL = "' .
+				// t3lib_div::locationHeaderUrl() will include '/typo3/' in the URL
+				htmlspecialchars(t3lib_div::locationHeaderUrl('gfx/clear.gif')) .
+			'";
+
+			TYPO3.configuration = ' . json_encode(array(
+				'siteUrl' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
+				'PATH_typo3' => $pathTYPO3,
+				'PATH_typo3_enc' => rawurlencode($pathTYPO3),
+				'TYPO3_mainDir' => TYPO3_mainDir,
+			)) . ';
+
+			/**
+			 * TypoSetup object.
+			 */
+			function typoSetup()	{	//
+				this.PATH_typo3 = TYPO3.configuration.PATH_typo3;
+				this.PATH_typo3_enc = TYPO3.configuration.PATH_typo3_enc;
+			}
+			var TS = new typoSetup();';
+
+		return '<script type="text/javascript">' . $javascript . '</script>';
 	}
 }
 
