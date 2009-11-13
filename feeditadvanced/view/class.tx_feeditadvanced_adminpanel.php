@@ -425,6 +425,12 @@ class tx_feeditadvanced_adminpanel {
 				'TYPO3_mainDir' => TYPO3_mainDir,
 			)) . ';
 
+			TYPO3.LLL = {
+				feeditadvanced : ' . json_encode(array(
+					'dropMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.dropMessage'),
+					'loadingMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.loadingMessage')
+				)) . '},
+
 			/**
 			 * TypoSetup object.
 			 */

@@ -703,8 +703,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			'tag': 'div',
 			'id':  elId,
 			'cls': this.baseCls,
-			// @todo Localize! See about extracting markup to a template somehow too.
-			'html': '<div class="' + this.baseCls + 'Text">Drop content here</div>'
+			'html': '<div class="' + this.baseCls + 'Text">' + TYPO3.LLL.feeditadvanced.dropContent + '</div>'
 		}, true);
 		this.el.setVisibilityMode(Ext.Element.DISPLAY);
 
@@ -1013,8 +1012,7 @@ TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
-		// @todo Localize!
-		return 'Loading editing form.';
+		return TYPO3.LLL.feeditadvanced.loadingMessage;
 	}
 });
 
@@ -1035,8 +1033,7 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	},
 
 	_getNotificationMessage: function() {
-		// @todo Localize!
-		return 'Loading editing form.';
+		return TYPO3.LLL.feeditadvanced.loadingMessage;
 	}
 });
 

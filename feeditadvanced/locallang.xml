@@ -42,6 +42,9 @@
 			<label index="pageNewButton">New Page</label>
 			<label index="pageDeleteButton">Delete Page</label>
 			<label index="pageHideButton">Hide Page</label>
+
+			<label index="js.dropMessage">Drop content here</label>
+			<label index="js.loadingMessage">Loading editing form</label>
 		</languageKey>
 	</data>
 </T3locallang>
