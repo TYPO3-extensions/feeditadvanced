@@ -29,7 +29,7 @@ t3lib_extMgm::addPageTSConfig('
 		showIcons = edit, new, copy, cut, hide, delete, draggable
 		showPageIcons = edit, new
 		skin {
-			#cssFile = typo3/sysext/feeditadvanced/res/feedit.css
+			#cssFile = typo3conf/ext/feeditadvanced/res/feedit.css
 			#templateFile = EXT:feeditadvanced/res/template/feedit.tmpl
 			
 			imageType = GIF

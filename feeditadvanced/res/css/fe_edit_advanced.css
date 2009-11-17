@@ -3,7 +3,7 @@
  */
 
 body { margin-top: 68px; }
-div#feEditAdvanced-bodyattach { behavior: url(typo3/sysext/feeditadvanced/res/css/csshover.htc); }
+div#feEditAdvanced-bodyattach { behavior: url(typo3conf/ext/feeditadvanced/res/css/csshover.htc); }
 div#feEditAdvanced-container img { border: 0; border-style: none; }
 div#typo3-previewInfo { display: none; }
 
