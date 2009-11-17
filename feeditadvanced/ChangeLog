@@ -2,6 +2,7 @@
 
 	* Added extension icon.
 	* Updated EM_CONF information in preparation for TER release.
+	* Fixed bug: Added missing XCLASS definitions.
 
 2009-11-13  Jeff Segars  <jeff@webempoweredchurch.org>
 

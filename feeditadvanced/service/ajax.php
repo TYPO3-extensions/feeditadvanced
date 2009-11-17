@@ -780,6 +780,10 @@ class tx_feeditadvanced_ajax {
 	// exit, if script is called directly (must be included via eID in index_ts.php)
 if (!defined ('PATH_typo3conf')) die ('Could not access this script directly!');
 
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/service/ajax.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/service/ajax.php']);
+}
+
 $feEditAjax = t3lib_div::makeInstance('tx_feeditadvanced_ajax');
 $feEditAjax->processAction();
 
