@@ -4,6 +4,7 @@
 	* Updated EM_CONF information in preparation for TER release.
 	* Fixed bug: Added missing XCLASS definitions.
 	* Updated CSS paths to reference a local extension rather than a system extension.
+	* Released version 1.0.0
 
 2009-11-13  Jeff Segars  <jeff@webempoweredchurch.org>
 
