@@ -1,3 +1,7 @@
+2009-11-17  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Added extension icon.
+
 2009-11-13  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #4804: Javascript error when clicking on an image thumbnail.
