@@ -1,5 +1,6 @@
 2009-11-18  Jeff Segars  <jeff@webempoweredchurch.org>
 	* Removed lockType=system in EM_CONF to allow local installation.
+	* Released version 1.0.1
 
 2009-11-17  Jeff Segars  <jeff@webempoweredchurch.org>
 
