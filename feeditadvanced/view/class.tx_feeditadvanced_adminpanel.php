@@ -429,18 +429,18 @@ class tx_feeditadvanced_adminpanel {
 				feeditadvanced : ' . json_encode(array(
 					'dropMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.dropMessage'),
 					'loadingMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.loadingMessage')
-				)) . '},
+				)) . '};
 
 			/**
 			 * TypoSetup object.
 			 */
-			function typoSetup()	{	//
+			function typoSetup() {
 				this.PATH_typo3 = TYPO3.configuration.PATH_typo3;
 				this.PATH_typo3_enc = TYPO3.configuration.PATH_typo3_enc;
 			}
 			var TS = new typoSetup();';
 
-		return '<script type="text/javascript">' . $javascript . '</script>';
+		return '<script type="text/javascript">' . chr(10) . $javascript . chr(10) . '</script>';
 	}
 }
 
