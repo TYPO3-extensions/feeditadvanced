@@ -4,6 +4,7 @@ Ext.ux.Lightbox = (function(){
 	var els = {},
 		urls = [],
 		activeUrl,
+		urlIsSet,
 		initialized = false,
 		selectors = [],
 		width = 400,
@@ -54,13 +55,13 @@ Ext.ux.Lightbox = (function(){
 				id: 'ux-lightbox-msg'
 			}, true);
 
-			var ids = ['wrapper', 'content', 'loading'];
+			var ids = ['wrapper', 'content', 'loading', 'header'];
 
 			Ext.each(ids, function(id){
 				els[id] = Ext.get('ux-lightbox-' + id);
 			});
 
-			Ext.each([els.overlay, els.lightbox, els.shim], function(el){
+			Ext.each([els.overlay, els.lightbox, els.shim, els.header, els.loading], function(el){
 				el.setVisibilityMode(Ext.Element.DISPLAY);
 				el.hide();
 			});
@@ -76,6 +77,8 @@ Ext.ux.Lightbox = (function(){
 			return [
 				'<div id="ux-lightbox">',
 					'<div id="ux-lightbox-wrapper">',
+						'<div id="ux-lightbox-header" style="display:none;">',
+						'</div>',
 						'<div id="ux-lightbox-content">',
 						'</div>',
 					'</div>',
@@ -113,7 +116,7 @@ Ext.ux.Lightbox = (function(){
 			}
 		},
 
-		openUrl: function(url, fWidth, fHeight) {
+		openUrl: function(options, fWidth, fHeight) {
 			els.shim.dom.src = '';
 			this.setViewSize();
 			els.overlay.fadeIn({
@@ -123,7 +126,7 @@ Ext.ux.Lightbox = (function(){
 					urls = [];
 
 					var index = 0;
-					urls.push([url.href, url.title]);
+					urls.push([options.href, options.title]);
 
 
 					// calculate top and left offset for the lightbox
@@ -137,10 +140,11 @@ Ext.ux.Lightbox = (function(){
 					}).show();
 					els.shim.setStyle({
 						width: (fWidth - 20) + 'px',
-						height: (fHeight - 20) + 'px',
+						height: (fHeight - 50) + 'px',
 						alpha:	'(opacity=100)'
 					});
 					this.setUrl(index, fWidth, fHeight);
+					els.header.update('<h3>' + options.title + '</h3>');
 
 					this.fireEvent('open', urls[index]);
 				},
@@ -189,14 +193,16 @@ Ext.ux.Lightbox = (function(){
 		},
 
 		setMessage: function(mText, fWidth, fHeight, showLoadingIndicator){
-			
 			els.msg.update('');
 			if (showLoadingIndicator) {
 				els.loading.show();
+			} else {
+				els.loading.hide();
 			}
 
 			els.shim.hide();
 			els.msg.hide();
+			els.header.hide();
 
 			els.msg.update(mText);
 			els.msg.show();
@@ -207,31 +213,41 @@ Ext.ux.Lightbox = (function(){
 		setUrl: function(index, fWidth, fHeight) {
 			activeUrl = index;
 			els.shim.dom.src = urls[activeUrl][0];
+			this.urlIsSet = true;
 			this.shimWidth = fWidth;
 			this.shimHeight = fHeight;
 		},
 		
 		shimLoaded : function() {
-			els.msg.hide();
-			els.loading.hide();
-			this.resizeBox(this.shimWidth, this.shimHeight);
-			els.shim.fadeIn();
+			// iframe load fires on element creation and actual load. Check variable to ensure that we're dealing with the second.
+			if (this.urlIsSet) {
+
+				response = window.frames['ux-lightbox-shim'].response;
+				if(response) {
+					if (response.error) {
+						this.setMessage(response.error, 200, 100, false);
+					} else {
+						this.close();
+					}
+				} else {
+					els.msg.hide();
+					els.loading.hide();
+					this.resizeBox(this.shimWidth, this.shimHeight);
+					els.shim.fadeIn();
+					els.header.fadeIn();
 				
-			els.shim.setStyle({
-				alpha:	'(opacity=100)'
-			});
+					els.shim.setStyle({
+						alpha:	'(opacity=100)'
+					});
 				
-			// @todo What's the best way to trigger the lightbox close?
-			if (window.frames['ux-lightbox-shim'].response) {
-				this.close();
-			}
-				
-			// @todo Do something here to hide the lightbox when we're in between page loads
-			forms = Ext.get(window.frames['ux-lightbox-shim'].document.forms);
-			if (forms) {
-				forms.on('submit', function(evt, el) {
-					//alert('submitted form.  we should hide now');
-				});
+					// @todo Do something here to hide the lightbox when we're in between page loads
+					forms = Ext.get(window.frames['ux-lightbox-shim'].document.forms);
+					if (forms) {
+						forms.on('submit', function(evt, el) {
+							//alert('submitted form.  we should hide now');
+						});
+					}
+				}
 			}
 		},
 		

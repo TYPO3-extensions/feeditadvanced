@@ -1023,7 +1023,7 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
 		var url = this.getRequestUrl();
 		// @todo Localize!
-		FrontendEditing.editWindow.displayIframe('Edit Content Block', url);
+		FrontendEditing.editWindow.displayIframe('Edit Content Element', url);
 	},
 
 	_process: function() {},
@@ -1201,7 +1201,7 @@ TYPO3.FeEdit.SaveAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		// @todo	Alert if the save was not successful.
 		if (FrontendEditing.editWindow) {
-			FrontendEditing.editWindow.displayEditingForm("Edit Content Block", json.content);
+			FrontendEditing.editWindow.displayEditingForm("Edit Content Element", json.content);
 		}
 	},
 
@@ -1547,11 +1547,11 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 	
 	displayLoadingMessage: function(message) {
-		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100, true)
+		Ext.ux.Lightbox.openMessage(message, 200, 120, true)
 	},
 	
 	displayStaticMessage: function(message) {
-		Ext.ux.Lightbox.openMessage('<h3>' + message + '</h3>', 200, 100, false)
+		Ext.ux.Lightbox.openMessage(message, 200, 100, false)
 	},
 
 	displayIframe: function(headerText, url) {
