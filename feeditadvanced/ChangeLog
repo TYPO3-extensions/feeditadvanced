@@ -2,6 +2,7 @@
 
 	* Fixed bug: Javascript contains many hardcoded strings.
 	* Added experimental TSConfig option for complete page reload on content change.
+	* Fixed bug: Top menu contains hardcoded strings.
 
 2009-11-19  Jeff Segars  <jeff@webempoweredchurch.org>
 

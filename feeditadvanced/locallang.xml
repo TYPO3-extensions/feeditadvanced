@@ -43,6 +43,12 @@
 			<label index="pageDeleteButton">Delete Page</label>
 			<label index="pageHideButton">Hide Page</label>
 
+			<label index="previewTitle">Preview</label>
+			<label index="previewTooltip">Preview this page</label>
+			<label index="closeTitle">Close</label>
+			<label index="closeTooltip">Close Frontend Editing</label>
+			<label index="clipboardTitle">Clipboard</label>
+
 			<label index="js.dropMessage">Drop content here</label>
 			<label index="js.loadingMessage">Loading editing form</label>
 			<label index="js.ajaxError">AJAX Error</label>

@@ -267,6 +267,7 @@ class tx_feeditadvanced_adminpanel {
 			$menuConfig = t3lib_div::trimExplode(',', ($tsMenuBar['config'] ? $tsMenuBar['config'] : 'action,type,clipboard,context'));
 			if (in_array('action', $menuConfig)) {
 				$tsActions = t3lib_div::trimExplode(',', $tsMenuBar['actionMenu'], true);
+				//@todo	Dead code so not yet localized.
 				if (in_array('page', $tsActions)) {
 					$this->menuBar->addItem('Actions', 'Page', 'fePageFunctions', '', 'Page functions', '');
 				}
@@ -293,12 +294,12 @@ class tx_feeditadvanced_adminpanel {
 			if (in_array('context', $menuConfig)) {
 				$tsContext = t3lib_div::trimExplode(',', $tsMenuBar['contextMenu']);
 				if (in_array('preview', $tsContext)) {
-					$this->menuBar->addItem('ContextActions', 'Preview', '', '', 'Preview this page', '', 'button disabled');
+					$this->menuBar->addItem('ContextActions', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:previewTitle'), '', '', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:previewTooltip'), '', 'button disabled');
 				}
-				$this->menuBar->addItem('ContextActions', 'Close', '', '', 'Close Frontend Editing', ' onclick="' . htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=0; document.TSFE_ADMIN_PANEL_Form.submit(); return false;') . '"');
+				$this->menuBar->addItem('ContextActions', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:closeTitle'), '', '', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:closeTooltip'), ' onclick="' . htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=0; document.TSFE_ADMIN_PANEL_Form.submit(); return false;') . '"');
 			}
 			if (in_array('clipboard', $menuConfig)) {
-				$this->menuBar->addItem('Clipboard', '', '', '', '', '', 'spacer');
+				$this->menuBar->addItem($GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:clipboardTitle'), '', '', '', '', '', 'spacer');
 			}
 			$content = $this->menuBar->build();
 		}
