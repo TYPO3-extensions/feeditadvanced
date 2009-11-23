@@ -428,7 +428,21 @@ class tx_feeditadvanced_adminpanel {
 			TYPO3.LLL = {
 				feeditadvanced : ' . json_encode(array(
 					'dropMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.dropMessage'),
-					'loadingMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.loadingMessage')
+					'loadingMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.loadingMessage'),
+					'ajaxError' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.ajaxError'),
+					'generalError' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.generalError'),
+					'alreadyProcessingAction' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.alreadyProcessingAction'),
+					'newContentElement' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.newContentElement'),
+					'editContentElement' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.editContentElement'),
+					'confirmDelete' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.confirmDelete'),
+					'hideNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.hideNotification'),
+					'unhideNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.unhideNotification'),
+					'moveNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.moveNotification'),
+					'saveNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.saveNotification'),
+					'closeNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.closeNotification'),
+					'copyNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.copyNotification'),
+					'cutNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.cutNotification'),
+					'pasteNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.pasteNotification')
 				)) . '};
 
 			/**
