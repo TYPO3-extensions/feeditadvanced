@@ -58,6 +58,13 @@ class tx_feeditadvanced_ajax {
 	protected $ajaxObj;
 
 	/**
+	 * The TSConfig properties for the current page.
+	 *
+	 * @var	array
+	 */
+	protected $modTSconfig;
+
+	/**
 	 * Constructor to initialize a frontend instance and a backend user.
 	 *
 	 * @return	void
@@ -121,6 +128,9 @@ class tx_feeditadvanced_ajax {
 				// Setup ajax object
 			require_once(PATH_typo3.'classes/class.typo3ajax.php');
 			$this->ajaxObj = t3lib_div::makeInstance('TYPO3AJAX', 'feeditadvanced');
+
+				// Get TSConfig options
+			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
 
 			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
 				// Map values from TCEForms submission to editing actions.
@@ -232,6 +242,8 @@ class tx_feeditadvanced_ajax {
 
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
+		} elseif ($this->modTSconfig['properties']['reloadPageOnContentUpdate']) {
+			$this->ajaxObj->addContent('url', $this->getPageURL($GLOBALS['TSFE']->id));
 		} else {
 			$this->renderContentElement($table, $uid);
 		}
@@ -263,6 +275,8 @@ class tx_feeditadvanced_ajax {
 
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
+		} elseif ($this->modTSconfig['properties']['reloadPageOnContentUpdate']) {
+			$this->ajaxObj->addContent('url', $this->getPageURL($GLOBALS['TSFE']->id));
 		} else {
 			$this->renderContentElement($table, $uid);
 		}
