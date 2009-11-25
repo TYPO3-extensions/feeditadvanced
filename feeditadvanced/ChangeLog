@@ -4,6 +4,7 @@
 	* Fixed bug: Minor Javascript validation errors in feEdit.js
 	* Added feature: Implement hook for use in TemplaVoila 1.4.0 and greater.
 	* Added feature: Show status lightbox while waiting for close or save and close to complete.
+	* Release of version 1.1.0
 
 2009-11-23  Jeff Segars  <jeff@webempoweredchurch.org>
 
