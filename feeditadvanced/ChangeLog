@@ -3,6 +3,7 @@
 	* Fixed bug: Dropzone label references incorrect locallang label.
 	* Fixed bug: Minor Javascript validation errors in feEdit.js
 	* Added feature: Implement hook for use in TemplaVoila 1.4.0 and greater.
+	* Added feature: Show status lightbox while waiting for close or save and close to complete.
 
 2009-11-23  Jeff Segars  <jeff@webempoweredchurch.org>
 

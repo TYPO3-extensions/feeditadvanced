@@ -65,6 +65,7 @@
 			<label index="js.copyNotification">Copying content</label>
 			<label index="js.cutNotification">Cutting content</label>
 			<label index="js.pasteNotification">Pasting content</label>
+			<label index="js.updatingContent">Updating content</label>
 		</languageKey>
 	</data>
 </T3locallang>

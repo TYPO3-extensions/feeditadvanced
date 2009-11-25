@@ -8,7 +8,8 @@ Ext.ux.Lightbox = (function(){
 		initialized = false,
 		selectors = [],
 		width = 400,
-		height = 300;
+		height = 300,
+		closeOnSubmit = false;
 
 	return {
 		overlayOpacity: 0.5,
@@ -239,18 +240,28 @@ Ext.ux.Lightbox = (function(){
 					els.shim.setStyle({
 						alpha:	'(opacity=100)'
 					});
-				
-					// @todo Do something here to hide the lightbox when we're in between page loads
-					forms = Ext.get(window.frames['ux-lightbox-shim'].document.forms);
-					if (forms) {
-						forms.on('submit', function(evt, el) {
-							//alert('submitted form.  we should hide now');
-						});
+
+					// @todo Move this code out of the lightbox and into feEdit.js
+					forms = window.frames['ux-lightbox-shim'].document.forms;
+					editForm = Ext.get(forms[0]);
+					if (editForm) {
+						editForm.on('submit', function(evt, el) {
+							this.displayContentUpdateMessage();
+						}, this);
 					}
 				}
 			}
 		},
-		
+		displayContentUpdateMessage: function() {
+			if (this.closeOnSubmit) {
+				this.setMessage(TYPO3.LLL.feeditadvanced.updatingContent, 200, 120, true);
+			}
+		},
+
+		setCloseOnSubmit: function(value) {
+			this.closeOnSubmit = value;
+		},
+
 		resizeBox: function(w,h) {
 			var wCur = els.wrapper.getWidth();
 			var hCur = els.wrapper.getHeight();

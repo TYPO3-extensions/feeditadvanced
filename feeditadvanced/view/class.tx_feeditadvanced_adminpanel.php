@@ -443,7 +443,8 @@ class tx_feeditadvanced_adminpanel {
 					'closeNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.closeNotification'),
 					'copyNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.copyNotification'),
 					'cutNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.cutNotification'),
-					'pasteNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.pasteNotification')
+					'pasteNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.pasteNotification'),
+					'updatingContent' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.updatingContent')
 				)) . '};
 
 			/**
