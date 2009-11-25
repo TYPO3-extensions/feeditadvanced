@@ -703,7 +703,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			'tag': 'div',
 			'id':  elId,
 			'cls': this.baseCls,
-			'html': '<div class="' + this.baseCls + 'Text">' + TYPO3.LLL.feeditadvanced.dropContent + '</div>'
+			'html': '<div class="' + this.baseCls + 'Text">' + TYPO3.LLL.feeditadvanced.dropMessage + '</div>'
 		}, true);
 		this.el.setVisibilityMode(Ext.Element.DISPLAY);
 
