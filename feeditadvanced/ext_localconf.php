@@ -56,8 +56,20 @@ t3lib_extMgm::addUserTSConfig('
 
 	// Temporary home for TemplaVoila changes to make testing easier. Should eventually be rolled into TemplaVoila itself.
 if (t3lib_extMgm::isLoaded('templavoila')) {
-		// XCLASS for necessary code changes in tx_templavoila_pi1->renderElement.
-	$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/templavoila/pi1/class.tx_templavoila_pi1.php'] = t3lib_extMgm::extPath('feeditadvanced').'templavoila/class.ux_tx_templavoila_pi1.php';
+		// @todo Remove this code once TV 1.4 is released and required by feeditadvanced
+		// Save the extension key and include TemplaVoila's ext_emconf to get the version number.
+	$realExtKey = $_EXTKEY;
+	$_EXTKEY = 'templavoila';
+	include(t3lib_extMgm::extPath($_EXTKEY) . 'ext_emconf.php');
+	$version = $EM_CONF[$_EXTKEY]['version'];
+	if (t3lib_div::int_from_ver($version) < 1004000) {
+			// XCLASS for necessary code changes in tx_templavoila_pi1->renderElement in older versions of TV.
+		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/templavoila/pi1/class.tx_templavoila_pi1.php'] = t3lib_extMgm::extPath('feeditadvanced').'templavoila/class.ux_tx_templavoila_pi1.php';
+	} else {
+		$TYPO3_CONF_VARS['EXTCONF']['templavoila']['pi1']['renderElementClass'][] = 'EXT:feeditadvanced/templavoila/class.tx_templavoila_renderelement.php:tx_templavoila_renderelement';
+	}
+		// Restore the extension key
+	$_EXTKEY = $realExtKey;
 
 		// TemplaVoila frontend editing controller is the default when TemplaVoila is installed.
 	t3lib_extMgm::addPageTSConfig('TSFE.frontendEditingController = templavoila');
@@ -68,7 +80,6 @@ if (t3lib_extMgm::isLoaded('templavoila')) {
 		// Needs to be included to avoid errors when editing page properties.
 	include_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_handlestaticdatastructures.php');
 } else {
-
 	// add the wrap for each CE container area, so we can drop new CEs into empty areas
 t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
 #############################################
