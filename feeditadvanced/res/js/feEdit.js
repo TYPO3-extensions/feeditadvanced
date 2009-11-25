@@ -49,7 +49,7 @@ TYPO3.FeEdit.Toolbar = function(toolbarElementId) {
 		draggableElements.each(function(draggableElement) {
 			this.widgets.push(new TYPO3.FeEdit.ToolbarWidget(draggableElement));
 		}, this);
-	}
+	};
 };
 
 
@@ -429,7 +429,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			var el = Ext.get(this.getEl());
 			el.show();
 			FrontendEditing.deactivateDropZones();
-		}
+		};
 		Ext.dd.Registry.register(this.dd);
 	},
 
@@ -903,7 +903,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 				requestParams += '&' + this.parent.params;
 			}
 		
-			pid = this.parent.pid
+			pid = this.parent.pid;
 			pidRequestParam = '&pid=' + pid;
 		} else {
 			// @todo	Grab the PID from some global location.
@@ -956,7 +956,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 				}
 
 				if (json.header) {
-					FrontendEditing.JSHandler.evaluate(json.header)
+					FrontendEditing.JSHandler.evaluate(json.header);
 				}
 
 				if (json.newContent) {
@@ -1528,15 +1528,15 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 	
 	displayLoadingMessage: function(message) {
-		Ext.ux.Lightbox.openMessage(message, 200, 120, true)
+		Ext.ux.Lightbox.openMessage(message, 200, 120, true);
 	},
 	
 	displayStaticMessage: function(message) {
-		Ext.ux.Lightbox.openMessage(message, 200, 100, false)
+		Ext.ux.Lightbox.openMessage(message, 200, 100, false);
 	},
 
 	displayIframe: function(headerText, url) {
-		Ext.ux.Lightbox.openUrl({'href': url, 'title': headerText}, 600, 400)
+		Ext.ux.Lightbox.openUrl({'href': url, 'title': headerText}, 600, 400);
 	},
 
 	close: function() {
