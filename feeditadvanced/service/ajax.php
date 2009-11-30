@@ -711,6 +711,8 @@ class tx_feeditadvanced_ajax {
 			global $TSFE, $TT;
 			require_once(PATH_tslib . 'class.tslib_pagegen.php');
 			include(PATH_tslib . 'pagegen.php');
+		} else {
+			$GLOBALS['TSFE']->newCObj();
 		}
 
 		if(intval($uid)) {
