@@ -1,6 +1,7 @@
 2009-11-30  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug: TSFE->cObj is not always initialized.
+	* Fixed bug #5507: Problem with umlauts in Javascript locallang labels.
 
 2009-11-25  Jeff Segars  <jeff@webempoweredchurch.org>
 

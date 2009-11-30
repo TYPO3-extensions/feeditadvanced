@@ -411,6 +411,40 @@ class tx_feeditadvanced_adminpanel {
 	 */
 	protected function getConfigurationJavascript() {
 		$pathTYPO3 = TYPO3_mainDir;
+		$configuration = array(
+			'siteUrl' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
+			'PATH_typo3' => $pathTYPO3,
+			'PATH_typo3_enc' => rawurlencode($pathTYPO3),
+			'TYPO3_mainDir' => TYPO3_mainDir
+		);
+
+		$labels = array(
+			'dropMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.dropMessage'),
+			'loadingMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.loadingMessage'),
+			'ajaxError' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.ajaxError'),
+			'generalError' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.generalError'),
+			'alreadyProcessingAction' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.alreadyProcessingAction'),
+			'newContentElement' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.newContentElement'),
+			'editContentElement' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.editContentElement'),
+			'confirmDelete' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.confirmDelete'),
+			'hideNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.hideNotification'),
+			'unhideNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.unhideNotification'),
+			'moveNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.moveNotification'),
+			'saveNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.saveNotification'),
+			'closeNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.closeNotification'),
+			'copyNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.copyNotification'),
+			'cutNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.cutNotification'),
+			'pasteNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.pasteNotification'),
+			'updatingContent' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.updatingContent')
+		);
+
+			// Convert labels/settings back to UTF-8 since json_encode() only works with UTF-8:
+		if ($GLOBALS['LANG']->charSet !== 'utf-8') {
+			$GLOBALS['LANG']->csConvObj->convArray($configuration, $GLOBALS['LANG']->charSet, 'utf-8');
+			$GLOBALS['LANG']->csConvObj->convArray($labels, $GLOBALS['LANG']->charSet, 'utf-8');
+		}
+
+
 		$javascript = '
 			var TYPO3 = {};
 
@@ -419,34 +453,11 @@ class tx_feeditadvanced_adminpanel {
 				htmlspecialchars(t3lib_div::locationHeaderUrl('gfx/clear.gif')) .
 			'";
 
-			TYPO3.configuration = ' . json_encode(array(
-				'siteUrl' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
-				'PATH_typo3' => $pathTYPO3,
-				'PATH_typo3_enc' => rawurlencode($pathTYPO3),
-				'TYPO3_mainDir' => TYPO3_mainDir,
-			)) . ';
-
+			TYPO3.configuration = ' . json_encode($configuration) . ';
 			TYPO3.LLL = {
-				feeditadvanced : ' . json_encode(array(
-					'dropMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.dropMessage'),
-					'loadingMessage' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.loadingMessage'),
-					'ajaxError' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.ajaxError'),
-					'generalError' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.generalError'),
-					'alreadyProcessingAction' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.alreadyProcessingAction'),
-					'newContentElement' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.newContentElement'),
-					'editContentElement' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.editContentElement'),
-					'confirmDelete' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.confirmDelete'),
-					'hideNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.hideNotification'),
-					'unhideNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.unhideNotification'),
-					'moveNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.moveNotification'),
-					'saveNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.saveNotification'),
-					'closeNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.closeNotification'),
-					'copyNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.copyNotification'),
-					'cutNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.cutNotification'),
-					'pasteNotification' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.pasteNotification'),
-					'updatingContent' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.updatingContent')
-				)) . '};
-
+				feeditadvanced : ' . json_encode($labels) . '
+			};
+			
 			/**
 			 * TypoSetup object.
 			 */
