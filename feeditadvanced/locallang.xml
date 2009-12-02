@@ -55,7 +55,9 @@
 			<label index="js.generalError">It looks like we encountered some problems. Please reload the page and try again or contact your administrator.</label>
 			<label index="js.alreadyProcessingAction">Already processing an action, please wait.</label>
 			<label index="js.newContentElement">New Content Element</label>
+			<label index="js.newPage">New Page</label>
 			<label index="js.editContentElement">Edit Content Element</label>
+			<label index="js.editPageProperties">Edit Page Properties</label>
 			<label index="js.confirmDelete">Are you sure you want to delete this content?</label>
 			<label index="js.hideNotification">Hiding content</label>
 			<label index="js.unhideNotification">Unhiding content</label>

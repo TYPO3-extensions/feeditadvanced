@@ -676,6 +676,11 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		} else {
 			this.showDownButton();
 		}
+	},
+	
+	getTableName: function() {
+		recordInfo =  this.record.split(':');
+		return recordInfo[0];
 	}
 });
 
@@ -993,8 +998,13 @@ TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 	trigger: function(additionalParams, targetID) {
 		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
+		if (this.parent && this.parent.getTableName() == 'pages') {
+			label = TYPO3.LLL.feeditadvanced.newPage;
+		} else {
+			label = TYPO3.LLL.feeditadvanced.newContentElement;
+		}
 		var url = this.getRequestUrl(additionalParams);
-		FrontendEditing.editWindow.displayIframe(TYPO3.LLL.feeditadvanced.newContentElement, url);
+		FrontendEditing.editWindow.displayIframe(label, url);
 		if (targetID) {
 			FrontendEditing.editWindow.setTargetID(targetID);
 		}
@@ -1016,8 +1026,13 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 	trigger: function() {
 		TYPO3.FeEdit.EditAction.superclass.trigger.apply(this, arguments);
+		if (this.parent && this.parent.getTableName() == 'pages') {
+			label = TYPO3.LLL.feeditadvanced.editPageProperties;
+		} else {
+			label = TYPO3.LLL.feeditadvanced.editContentElement;
+		}
 		var url = this.getRequestUrl();
-		FrontendEditing.editWindow.displayIframe(TYPO3.LLL.feeditadvanced.editContentElement, url);
+		FrontendEditing.editWindow.displayIframe(label, url);
 	},
 
 	_process: function() {},
@@ -1034,8 +1049,7 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		recordInfo =  this.parent.record.split(':');
-		if (recordInfo[0] != 'pages') {
+		if (this.parent && this.parent.getTableName() != 'pages') {
 			this.parent.removeContent();
 		}
 	},
@@ -1060,8 +1074,7 @@ TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		recordInfo =  this.parent.record.split(':');
-		if (recordInfo[0] != 'pages') {		
+		if (this.parent && this.parent.getTableName() != 'pages') {
 			this.parent.el.addClass('feEditAdvanced-hiddenElement');
 			Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('block');
 			Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('none');
@@ -1082,8 +1095,7 @@ TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 TYPO3.FeEdit.UnhideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
-		recordInfo =  this.parent.record.split(':');
-		if (recordInfo[0] != 'pages') {		
+		if (this.parent && this.parent.getTableName() != 'pages') {
 			this.parent.el.removeClass('feEditAdvanced-hiddenElement');
 			Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('none');
 			Ext.get(this.parent.el.select('input.hideAction').first()).setDisplayed('block');
@@ -1188,7 +1200,12 @@ TYPO3.FeEdit.SaveAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		// @todo	Alert if the save was not successful.
 		if (FrontendEditing.editWindow) {
-			FrontendEditing.editWindow.displayEditingForm("Edit Content Element", json.content);
+			if (this.parent && this.parent.getTableName() == 'pages') {
+				label = TYPO3.LLL.feeditadvanced.editPage;
+			} else {
+				label = TYPO3.LLL.feeditadvanced.editContentElement;
+			}
+			FrontendEditing.editWindow.displayEditingForm(label, json.content);
 		}
 	},
 

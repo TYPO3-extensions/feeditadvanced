@@ -1,3 +1,7 @@
+2009-12-02  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #5508: Editing page has wrong header.
+
 2009-11-30  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug: TSFE->cObj is not always initialized.
