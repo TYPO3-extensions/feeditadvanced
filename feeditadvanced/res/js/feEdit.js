@@ -1642,9 +1642,15 @@ var FrontendEditing = {
 		// Update page styling to account for the menu bar at the top. Currently, background-position is adjusted.
 	updatePageStyling: function() {
 		var body = Ext.getBody();
-		backgroundPosition = body.getStyle('background-position').split(' ');
-		xPosition = backgroundPosition[0];
-		yPosition = backgroundPosition[1];
+		backgroundPosition = body.getStyle('background-position');
+		if (backgroundPosition) {
+			backgroundPosition = backgroundPosition.split(' ');
+			xPosition = backgroundPosition[0];
+			yPosition = backgroundPosition[1];
+		} else {
+			xPosition = 0;
+			yPosition = 0;
+		}
 		var menuBarHeight = Ext.get('feEditAdvanced-menuBar').getHeight();
 		if (yPosition == '0' || yPosition == '0px' || yPosition == '0pt' || yPosition == '0%') {
 			body.setStyle('background-position', xPosition + ' ' + menuBarHeight + 'px');
