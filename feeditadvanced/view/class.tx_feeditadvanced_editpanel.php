@@ -491,6 +491,11 @@ class tx_feeditadvanced_editpanel {
 			// add include files
 		$incFiles = $this->addFormIncludes($tceforms);
 
+			// Handle records in a workspace
+		if ($versionedRecord = t3lib_BEfunc::getWorkspaceVersionOfRecord($GLOBALS['BE_USER']->workspace, $table, $dataArr['uid'], 'uid')) {
+			$dataArr['uid'] = $versionedRecord['uid'];
+		}
+
 		$imagePathForFormsOnPage = $this->imagePath ? $this->imagePath . "/forms/" :  $tceforms->backPath . 'gfx/';
 		$trData = t3lib_div::makeInstance('t3lib_transferData');
 		$trData->addRawData = TRUE;
