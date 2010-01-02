@@ -252,7 +252,7 @@ class tx_feeditadvanced_adminpanel {
 			}
 		}
 
-		if (!$content) {
+		if (!$content && !$this->modTSconfig['properties']['menuBar.']['disable']) {
 			$this->menuBar = t3lib_div::makeInstance('tx_feeditadvanced_menu');
 
 				// add sections for menu
