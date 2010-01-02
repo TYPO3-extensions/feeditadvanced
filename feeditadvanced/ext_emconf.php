@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Advanced Frontend Editing',
-	'description' => '',
+	'description' => 'This extension is the next generation for editing basic content directly through the frontend. It has all the bells an whistles like AJAX and Drag&Drop. TemplaVoila support included.',
 	'category' => 'fe',
 	'author' => 'Frontend Editing Team',
 	'author_email' => 'jeff@webempoweredchurch.org',

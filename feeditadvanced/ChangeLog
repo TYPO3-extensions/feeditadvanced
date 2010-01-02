@@ -1,5 +1,6 @@
 2010-01-02  Benjamin Mack  <benni@typo3.org>
 
+	* Updated description for the TER / ext_emconf.php
 	* New Feature #5607: Option to disable menubar completely through FeEdit.menuBar.disable = 1 (thanks to Jochen Rieger)
 
 2009-12-11  Jeff Segars  <jeff@webempoweredchurch.org>
