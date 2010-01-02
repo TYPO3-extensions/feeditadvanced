@@ -36,7 +36,7 @@ t3lib_extMgm::addPageTSConfig('
 			imageType = GIF
 		}
 		menuBar {
-			disable = 1
+			disable = 0
 			config = action, type, clipboard, context
 			typeMenu = text, header, image, html
 			contextMenu = close
