@@ -732,7 +732,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			var previousContentElement = dropZoneEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
 					// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
-					// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
+					// so TCEmain needs a "moveAfter" with the correct colPos and the page (needs to be negative)
 				var contentElementContainerId = dropZoneEl.prev('.feEditAdvanced-firstWrapper').id;
 				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
 				var colPos = contentElementContainerId.substr(35, 1);
@@ -758,16 +758,18 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			var previousContentElement = linkedDragEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
 					// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
-					// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
+					// so TCEmain needs a "moveAfter" with the correct colPos and the page (needs to be negative)
 				var contentElementContainerId = linkedDragEl.prev('.feEditAdvanced-firstWrapper').id;
 				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
 				var colPos = contentElementContainerId.substr(35, 1);
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
+					// "-" and the page ID tells TCEmain to move it to the first position
 				var moveAfter = '-' + pageId;
-				// @TODO: moving for a specific colPos does not work, probably needs an 
-				// additional call "doUpdate" or "doSave" with the UID of the sourceEditPanel and the colPos
+					// also if the item was dragged to a different colPos, this needs to be updated in the DB as well
+				moveAfter += '&TSFE_EDIT[colPos]=' + colPos;
+
 			} else {
-				// just a basic: move one after the other
+				// just a basic: move one after the other, the colPos will be adapted automatically
 				var destinationEditPanel = FrontendEditing.editPanels.get(previousContentElement.id);
 				var recordFields = destinationEditPanel.record.split(':');
 				var moveAfter = recordFields[1];
@@ -1405,7 +1407,7 @@ Ext.override(TYPO3.FeEdit.EditPanel, {
 	},
 
 	moveAfter: function(afterUID) {
-		extraParam = 'TSFE_EDIT[moveAfter]='+afterUID;
+		extraParam = 'TSFE_EDIT[moveAfter]=' + afterUID;
 		action = new TYPO3.FeEdit.MoveAfterAction(this);
 		action.trigger(extraParam);
 	},

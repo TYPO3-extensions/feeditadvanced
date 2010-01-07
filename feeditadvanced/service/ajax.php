@@ -371,6 +371,17 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function moveAfterItem($table, $uid) {
 		$this->ajaxObj->addContent('moveAfterUID', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['moveAfter']);
+		
+		// if the item was moved to another column (colPos), then it needs to be saved to the DB as well.
+		if ($table == 'tt_content' && isset($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['colPos'])) {
+			$colPos = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['colPos'];
+			$data = array();
+			$data[$table][$uid]['colPos'] = $colPos;
+			$tce = t3lib_div::makeInstance('t3lib_TCEmain');
+			$tce->start($data, array());
+			$tce->process_datamap();
+			$this->ajaxObj->addContent('colPos', $colPos);
+		}
 	}
 	
 	/**
