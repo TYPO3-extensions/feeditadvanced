@@ -390,6 +390,11 @@ class tx_feeditadvanced_editpanel {
 						}
 					}
 				}
+
+				if (isset($this->panelItems['drag'])) {
+					$editpanelItems .= $this->addAction('drag');
+				}
+
 				// no allow order was specifid, thus all items are rendered
 			} else {
 				foreach ($panelItems as $key => $panelItem) {
@@ -408,7 +413,7 @@ class tx_feeditadvanced_editpanel {
 				$markerArray['###CWRAPPER_EXTRA###'] .= $this->panelItems['clickContentToEdit'];
 			}
 		}
-		if (isset($this->panelItems['draggable'])) {
+		if (isset($this->panelItems['drag'])) {
 			$markerArray['###ALLWRAPPER_CLASS###'] .= $this->panelItems['draggable'];
 		}
 

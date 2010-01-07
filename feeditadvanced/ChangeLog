@@ -1,5 +1,6 @@
 2010-01-07  Benjamin Mack  <benni@typo3.org>
 
+	* Followup to #5606: if an order for the editpanel icons was selected, then the drag handle was left out
 	* Fixed #5606: FeEdit.showIcons has "nearly" no effect (Thanks to Jochen Rieger)
 
 2010-01-02  Benjamin Mack  <benni@typo3.org>
