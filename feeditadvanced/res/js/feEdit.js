@@ -821,13 +821,6 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 	onHover: function(dragSource, evt, data) {
 		var dragEl = Ext.get(dragSource.getDragEl());
 		this.el.addClass('feEditAdvanced-dropzoneActive');
-
-			// used for moving editpanels around
-			// If we're hovering over a dropzone,
-			// make the dropzone large enough to accomodate the element
-		if (dragEl.hasClass('feEditAdvanced-allWrapper')) {
-			this.el.setStyle('height', dragEl.getHeight() + 'px');
-		}
 	},
 	
 	onHoverOut: function(source, evt, data) {
