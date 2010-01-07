@@ -1,6 +1,10 @@
+2010-01-07  Benjamin Mack  <benni@typo3.org>
+
+	* Fixed #5606: FeEdit.showIcons has "nearly" no effect (Thanks to Jochen Rieger)
+
 2010-01-02  Benjamin Mack  <benni@typo3.org>
 
-	* #3331 - CSS: Minor fix when the page has a fixed with for its input fields (Thanks to Thomas Allmer)
+	* Fixed #3331 - CSS: Minor fix when the page has a fixed with for its input fields (Thanks to Thomas Allmer)
 	* Updated description for the TER / ext_emconf.php
 	* New Feature #5607: Option to disable menubar completely through FeEdit.menuBar.disable = 1 (thanks to Jochen Rieger)
 

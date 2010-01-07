@@ -390,10 +390,11 @@ class tx_feeditadvanced_editpanel {
 						}
 					}
 				}
-			}
-			
-			foreach ($panelItems as $key => $panelItem) {
-				$editpanelItems .= $this->addAction($key);
+				// no allow order was specifid, thus all items are rendered
+			} else {
+				foreach ($panelItems as $key => $panelItem) {
+					$editpanelItems .= $this->addAction($key);
+				}
 			}
 		}
 		
