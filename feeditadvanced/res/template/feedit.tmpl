@@ -65,7 +65,8 @@
 	<div class="feEditAdvanced-contentWrapper###CWRAPPER_CLASS###" ###CWRAPPER_EXTRA###>
 				
 		<!-- ###EDITFORM### start -->
-		<form name="###EDITFORM_NAME###" id="###EDITFORM_NAME###" action="###EDITFORM_URL###" method="post" enctype="###FORM_ENCTYPE###" onsubmit="###FORM_ONSUBMIT###">
+		<form accept-charset="UTF-8" name="###EDITFORM_NAME###" id="###EDITFORM_NAME###" action="###EDITFORM_URL###" method="post" enctype="###FORM_ENCTYPE###" onsubmit="###FORM_ONSUBMIT###">
+			<input type="hidden" name="cod_hack" value="&#153;">
 			###EDITFORM_HIDDENFIELDS###
 			###EDITFORM_CONTENT###
 		</form>
