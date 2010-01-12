@@ -750,7 +750,9 @@ class tx_feeditadvanced_ajax {
 
 			// Set a simplified template file for use in the AJAX response.  No title, meta tags, etc.
 			// @todo Should we account for footer data too?
-		$GLOBALS['TSFE']->getPageRenderer()->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
+		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
+		$pageRenderer->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
+		$pageRenderer->setCharSet($GLOBALS['TSFE']->metaCharset);
 		$header = $this->renderHeaderData();
 		$content = $cObjOutput;
 
