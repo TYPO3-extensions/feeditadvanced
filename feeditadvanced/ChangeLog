@@ -2,6 +2,7 @@
 
 	* Fixed bug #5844: Javascript calendar doesn’t work.
 	* Fixed bug #4916: German umlauts are not saved correctly.
+	* Release of version 1.2.0
 
 2010-01-07  Benjamin Mack  <benni@typo3.org>
 
