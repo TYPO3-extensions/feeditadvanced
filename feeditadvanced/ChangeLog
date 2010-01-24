@@ -1,3 +1,7 @@
+2010-01-24  Benjamin Mack  <benni@typo3.org>
+
+	* Added a missing comment header to a function
+
 2010-01-12  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #5844: Javascript calendar doesn’t work.

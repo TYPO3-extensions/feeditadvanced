@@ -433,7 +433,14 @@ class tx_feeditadvanced_editpanel {
 
 		return $markerArray;
 	}
-	
+
+
+	/**
+	 * adds an action to an editpanel
+	 *
+	 * @param	$key	the name of the action to add
+	 * @return	string	the HTML content of the action to add to the edit panel
+	 */
 	protected function addAction($key) {
 		switch ($key) {
 			case 'hide':
