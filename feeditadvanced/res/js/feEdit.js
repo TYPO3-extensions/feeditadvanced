@@ -579,6 +579,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 	
 	// @todo Is this beter suited as an action?
+	// used when getting content back from the iframe editing
 	pushContentUpdate: function(json) {
 		if (json.content) {
 			var content = json.content;
@@ -592,6 +593,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		table = 'tt_content';
 
 		if ((table + ':' + json.uid) == id) {
+			// overwrite the content of this ID
 			this.replaceContent(json.content);
 			// @todo Pull this re-registration into a standalone method.
 			this.el = Ext.get(id);
@@ -600,9 +602,8 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			this.setupEventListeners();
 		} else {
 			// Insert the HTML and register the new edit panel
-			Ext.DomHelper.insertAfter(this.el, json.content, true);
-			nextEditPanel = this.getNextContentElement();
-			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
+			Ext.DomHelper.insertHtml('afterEnd', this.el.dom, json.content);
+			FrontendEditing.scanForEditPanels();
 		}
 
 		/**
@@ -619,7 +620,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 
 	replaceContent: function(newContent) {
 		elId = this.el.id;
-		Ext.DomHelper.insertAfter(this.el, newContent, true);
+		Ext.DomHelper.insertHtml('afterEnd', this.el.dom, newContent);
 		this.el.remove();
 		this.el = Ext.get(elId);
 	},
@@ -1043,7 +1044,6 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
-		FrontendEditing.editWindow.close();
 		if (this.parent && this.parent.getTableName() != 'pages') {
 			this.parent.removeContent();
 		}
@@ -1068,7 +1068,6 @@ TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
-		FrontendEditing.editWindow.close();
 		if (this.parent && this.parent.getTableName() != 'pages') {
 			this.parent.el.addClass('feEditAdvanced-hiddenElement');
 			Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('block');
@@ -1089,7 +1088,6 @@ TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 
 TYPO3.FeEdit.UnhideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
-		FrontendEditing.editWindow.close();
 		if (this.parent && this.parent.getTableName() != 'pages') {
 			this.parent.el.removeClass('feEditAdvanced-hiddenElement');
 			Ext.get(this.parent.el.select('input.unhideAction').first()).setDisplayed('none');
@@ -1235,7 +1233,6 @@ TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		if (json.uid) {
 			ep = FrontendEditing.editPanels.get([table + ':' + json.uid]);
 			ep.replaceContent(json.content);
-			FrontendEditing.scanForEditPanels();
 		} else {
 			this.parent.replaceContent(json.content);
 			this.parent.setupEventListeners();
@@ -1247,6 +1244,7 @@ TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 			nextEditPanel = this.parent.getNextContentElement();
 			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
+		FrontendEditing.scanForEditPanels();
 	},
 
 	_getNotificationMessage: function() {

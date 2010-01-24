@@ -1,5 +1,6 @@
 2010-01-24  Benjamin Mack  <benni@typo3.org>
 
+	* Fixed #4875: Hiding an element displays it twice on the site
 	* Added a missing comment header to a function
 
 2010-01-12  Jeff Segars  <jeff@webempoweredchurch.org>
