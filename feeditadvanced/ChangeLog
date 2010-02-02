@@ -1,3 +1,7 @@
+2010-02-02  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Followup to bug #4787: If edit window is larger than the browser window, reduce the size to fit.
+
 2010-02-01  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #4787: Editing window is too small.

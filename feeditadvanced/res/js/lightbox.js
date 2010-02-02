@@ -135,16 +135,34 @@ Ext.ux.Lightbox = (function(){
 
 					var lightboxTop = pageScroll.top + (Ext.lib.Dom.getViewportHeight() / 10);
 					var lightboxLeft = pageScroll.left;
+
+					maxHeight = Ext.lib.Dom.getViewportHeight() * .80;
+					maxWidth = Ext.lib.Dom.getViewportWidth() * .80;
+
+					if (fHeight > maxHeight) {
+						shimHeight = maxHeight;
+					} else {
+						shimHeight = fHeight;
+					}
+					// 30 pixels accounts for the content header above the edit window.
+					shimHeight -= 30;
+
+					if (fWidth > maxWidth) {
+						shimWidth = maxWidth;
+					} else {
+						shimWidth = fWidth;
+					}
+
 					els.lightbox.setStyle({
 						top: lightboxTop + 'px',
 						left: lightboxLeft + 'px'
 					}).show();
 					els.shim.setStyle({
-						width: fWidth + 'px',
-						height: (fHeight - 30) + 'px',
+						width: shimWidth + 'px',
+						height: shimHeight + 'px',
 						alpha:	'(opacity=100)'
 					});
-					this.setUrl(index, fWidth, fHeight);
+					this.setUrl(index, shimWidth, shimHeight);
 					els.header.update('<h3>' + options.title + '</h3>');
 
 					this.fireEvent('open', urls[index]);
@@ -211,12 +229,12 @@ Ext.ux.Lightbox = (function(){
 			this.resizeBox(fWidth, fHeight);
 		},
 
-		setUrl: function(index, fWidth, fHeight) {
+		setUrl: function(index, shimWidth, shimHeight) {
 			activeUrl = index;
 			els.shim.dom.src = urls[activeUrl][0];
 			this.urlIsSet = true;
-			this.shimWidth = fWidth;
-			this.shimHeight = fHeight;
+			this.shimWidth = shimWidth;
+			this.shimHeight = shimHeight;
 		},
 		
 		shimLoaded : function() {
@@ -233,7 +251,10 @@ Ext.ux.Lightbox = (function(){
 				} else {
 					els.msg.hide();
 					els.loading.hide();
-					this.resizeBox(this.shimWidth, this.shimHeight);
+					// For some reason, ExtJS's Fx.shift() comes up 20 pixels short when resizing the lighbox.  This corrects for it.
+					shiftFxCorrection = 20;
+					// 30 pixels accounts for the content header at the top of the edit window.
+					this.resizeBox(this.shimWidth + shiftFxCorrection, this.shimHeight + 30 + shiftFxCorrection);
 					els.shim.fadeIn();
 					els.header.fadeIn();
 				
@@ -244,7 +265,8 @@ Ext.ux.Lightbox = (function(){
 					// @todo	Should this code live in feEdit.js?
 					wrapper = window.frames['ux-lightbox-shim'].document.getElementsByClassName('formsOnPageWrapper')[0];
 					if (Ext.get(wrapper)) {
-						Ext.get(wrapper).setHeight(this.shimHeight - 75);
+						// 75 pixels accounts for the height of the bottoms at the bottom of the edit window.
+						Ext.get(wrapper).setHeight(this.shimHeight - 45);
 					}
 
 					// @todo Move this code out of the lightbox and into feEdit.js

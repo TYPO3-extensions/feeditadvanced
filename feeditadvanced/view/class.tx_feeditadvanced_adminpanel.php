@@ -421,8 +421,8 @@ class tx_feeditadvanced_adminpanel {
 		);
 
 		$editWindowConfiguration = array(
-			'height' => $this->modTSconfig['properties']['editWindow.']['height'],
-			'width' => $this->modTSconfig['properties']['editWindow.']['width']
+			'height' => (int) $this->modTSconfig['properties']['editWindow.']['height'],
+			'width' => (int) $this->modTSconfig['properties']['editWindow.']['width']
 		);
 
 		$labels = array(
