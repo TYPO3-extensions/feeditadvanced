@@ -41,6 +41,10 @@ t3lib_extMgm::addPageTSConfig('
 			typeMenu = text, header, image, html
 			contextMenu = close
 		}
+		editWindow {
+			height = 600
+			width = 800
+		}
 	}
 ');
 

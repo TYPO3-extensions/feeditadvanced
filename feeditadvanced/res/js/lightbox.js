@@ -140,8 +140,8 @@ Ext.ux.Lightbox = (function(){
 						left: lightboxLeft + 'px'
 					}).show();
 					els.shim.setStyle({
-						width: (fWidth - 20) + 'px',
-						height: (fHeight - 50) + 'px',
+						width: fWidth + 'px',
+						height: (fHeight - 30) + 'px',
 						alpha:	'(opacity=100)'
 					});
 					this.setUrl(index, fWidth, fHeight);
@@ -240,6 +240,12 @@ Ext.ux.Lightbox = (function(){
 					els.shim.setStyle({
 						alpha:	'(opacity=100)'
 					});
+
+					// @todo	Should this code live in feEdit.js?
+					wrapper = window.frames['ux-lightbox-shim'].document.getElementsByClassName('formsOnPageWrapper')[0];
+					if (Ext.get(wrapper)) {
+						Ext.get(wrapper).setHeight(this.shimHeight - 75);
+					}
 
 					// @todo Move this code out of the lightbox and into feEdit.js
 					forms = window.frames['ux-lightbox-shim'].document.forms;

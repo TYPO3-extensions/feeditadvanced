@@ -3,7 +3,6 @@ body {
 	background-color: black;
 }
 .formsOnPageWrapper {
-	height: 305px;
 	overflow: auto;
 	background-color: white;
 }

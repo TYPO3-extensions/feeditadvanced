@@ -411,11 +411,18 @@ class tx_feeditadvanced_adminpanel {
 	 */
 	protected function getConfigurationJavascript() {
 		$pathTYPO3 = TYPO3_mainDir;
+
+		// General TYPO3 configuration. Mirrors data available in backend context.
 		$configuration = array(
 			'siteUrl' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
 			'PATH_typo3' => $pathTYPO3,
 			'PATH_typo3_enc' => rawurlencode($pathTYPO3),
 			'TYPO3_mainDir' => TYPO3_mainDir
+		);
+
+		$editWindowConfiguration = array(
+			'height' => $this->modTSconfig['properties']['editWindow.']['height'],
+			'width' => $this->modTSconfig['properties']['editWindow.']['width']
 		);
 
 		$labels = array(
@@ -443,6 +450,7 @@ class tx_feeditadvanced_adminpanel {
 			// Convert labels/settings back to UTF-8 since json_encode() only works with UTF-8:
 		if ($GLOBALS['LANG']->charSet !== 'utf-8') {
 			$GLOBALS['LANG']->csConvObj->convArray($configuration, $GLOBALS['LANG']->charSet, 'utf-8');
+			$GLOBALS['LANG']->csConvObj->convArray($editWindowConfiguration, $GLOBALS['LANG']->charSet, 'utf-8');
 			$GLOBALS['LANG']->csConvObj->convArray($labels, $GLOBALS['LANG']->charSet, 'utf-8');
 		}
 
@@ -459,7 +467,9 @@ class tx_feeditadvanced_adminpanel {
 			TYPO3.LLL = {
 				feeditadvanced : ' . json_encode($labels) . '
 			};
-			
+			TYPO3.configuration.feeditadvanced = {
+				editWindow : ' . json_encode($editWindowConfiguration) . '
+			};
 			/**
 			 * TypoSetup object.
 			 */
