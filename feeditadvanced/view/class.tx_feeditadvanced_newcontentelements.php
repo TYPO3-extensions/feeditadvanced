@@ -151,20 +151,7 @@ class tx_feeditadvanced_newcontentelements {
 	 * @return	array		Returns the content of wizardArray() function...
 	 */
 	function getWizardItems()	{
-		$identifier = md5($this->id . $this->sys_language);
-
-		// look up in cache
-		$data = t3lib_BEfunc::getHash($identifier);
-
-		if (!$data) {
-			$array = $this->wizardArray();
-				// store content in cache
-			t3lib_BEfunc::storeHash($identifier, serialize($array), 'feeditNewCE');
-		} else {
-			$array = unserialize($data);
-		}
-
-		return $array;
+		return $this->wizardArray();
 	}
 
 	/**
@@ -174,7 +161,6 @@ class tx_feeditadvanced_newcontentelements {
 	 * @return	array
 	 */
 	function wizardArray()	{
-
 		if (is_array($this->config)) {
 			$wizards = $this->config['wizardItems.'];
 		}
