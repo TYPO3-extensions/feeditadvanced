@@ -123,8 +123,6 @@ class tx_feeditadvanced_editpanel {
 		$GLOBALS['TSFE']->displayEditIcons = true;
 			// otherwise forms not on page
 		$GLOBALS['BE_USER']->uc['TSFE_adminConfig']['edit_editFormsOnPage'] = true;
-			// otherwise do not see hidden records
-		$GLOBALS['TSFE']->showHiddenRecords = true;
 	}
 
 	/**

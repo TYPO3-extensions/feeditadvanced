@@ -18,6 +18,9 @@ $TYPO3_CONF_VARS['SYS']['locallangXMLOverride']['EXT:lang/locallang_tsfe.xml']['
 	// Adds disable palettes functionality for Frontend forms
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsClass'][] = 'EXT:feeditadvanced/view/class.tx_feeditadvanced_getMainFields_preProcess.php:tx_feeditadvanced_getMainFields_preProcess';
 
+	// Register the controller for feeditadvanced.
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tsfebeuserauth.php']['frontendEditingController']['feeditadvanced'] = 'EXT:feeditadvanced/controller/class.tx_feeditadvanced_frontendedit.php:tx_feeditadvanced_frontendedit';
+
 	// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
 t3lib_extMgm::addPageTSConfig('
 	FeEdit {
@@ -51,8 +54,6 @@ t3lib_extMgm::addPageTSConfig('
 	// Settings needed to be forced for showing hidden records to work
 t3lib_extMgm::addUserTSConfig('
 	admPanel {
-			display_preview = 0
-			override.preview = 1
 			override.edit.displayIcons = 1
 			override.preview.showHiddenRecords = 1
 			override.preview.showHiddenPages = 1
@@ -85,6 +86,7 @@ if (t3lib_extMgm::isLoaded('templavoila')) {
 		// Needs to be included to avoid errors when editing page properties.
 	include_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_handlestaticdatastructures.php');
 } else {
+	t3lib_extMgm::addPageTSConfig('TSFE.frontendEditingController = feeditadvanced');
 	// add the wrap for each CE container area, so we can drop new CEs into empty areas
 t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
 #############################################

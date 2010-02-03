@@ -1,6 +1,7 @@
 2010-02-03  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #6324: Content element toolbar is incorrect due to caching.
+	* Fixed bug #6637: Setting admPanel.override.preview by default causes login and content errors.
 
 2010-02-02  Jeff Segars  <jeff@webempoweredchurch.org>
 

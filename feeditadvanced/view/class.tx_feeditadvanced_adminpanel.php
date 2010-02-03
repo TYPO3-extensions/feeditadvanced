@@ -99,19 +99,12 @@ class tx_feeditadvanced_adminpanel {
 	public static function showMenuBar($params,&$parent) {
 		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->beUserLogin) {
 			$adminPanel = t3lib_div::makeInstance('tx_feeditadvanced_adminpanel');
-			$adminPanel->init();
 			$feEditContent = $adminPanel->display();
 			$parent->content = str_replace('</body>', $feEditContent . '</body>', $parent->content);
 		}
 	}
 	
-	
-	/**
-	 * Initialize the adminPanel. Handle actions here.
-	 *
-	 * @return	void
-	 */
-	public function init() {
+	public function __construct() {
 			// set up general configuration
 		if (!count($this->admPanelTSconfig)) {
 			$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
@@ -125,12 +118,6 @@ class tx_feeditadvanced_adminpanel {
 			return;
 		}
 
-			// loading template
-		$templateFile = $this->modTSconfig['properties']['skin.']['templateFile'];
-		$templateFile = ($templateFile ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl');
-		$templateFile = $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
-		$this->template = $GLOBALS['TSFE']->tmpl->fileContent($templateFile);
-		
 			// check if the menu is already opened
 		if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) {
 			$this->menuOpen = true;
@@ -174,11 +161,16 @@ class tx_feeditadvanced_adminpanel {
 	 * @return	string
 	 */
 	public function display() {
-		$this->init();
 		if ($this->disabled) {
 			return;
 		}
-		
+
+			// loading template
+		$templateFile = $this->modTSconfig['properties']['skin.']['templateFile'];
+		$templateFile = ($templateFile ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl');
+		$templateFile = $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
+		$this->template = $GLOBALS['TSFE']->tmpl->fileContent($templateFile);
+
 		$markers = array(
 			// have a form for adminPanel processing and saving of vars
 			'HIDDEN_FORM' => '<form id="TSFE_ADMIN_PANEL_Form" name="TSFE_ADMIN_PANEL_Form" action="' . htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')) . '" method="post">' . $this->getAdmPanelFields() . '</form>',
@@ -198,6 +190,14 @@ class tx_feeditadvanced_adminpanel {
 		return t3lib_parsehtml::substituteMarkerArray($content, $markers, '###|###');
 	}
 
+	/**
+	 * Checks if the top menu is currently open.
+	 *
+	 * @return	boolean
+	 */
+	public function isMenuOpen() {
+		return $this->menuOpen;
+	}
 
 	/**
 	 * Add all the form fields that need to be saved when doing admin panel actions
