@@ -615,6 +615,10 @@ class tx_feeditadvanced_ajax {
 			// initialize the backend user
 		$this->initializeBackendUser();
 
+			// allow hidden pages and records to be edited.
+		$TSFE->showHiddenPage = 1;
+		$TSFE->showHiddenRecords = 1;
+		
 		$TT = new t3lib_timeTrack;
 		$TT->start();
 
