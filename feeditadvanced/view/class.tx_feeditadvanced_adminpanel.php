@@ -105,26 +105,28 @@ class tx_feeditadvanced_adminpanel {
 	}
 	
 	public function __construct() {
-			// set up general configuration
-		if (!count($this->admPanelTSconfig)) {
-			$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
-			$this->modTSconfig      = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
-			$GLOBALS['TSFE']->determineId();
-		}
+		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->beUserLogin) {
+				// set up general configuration
+			if (!count($this->admPanelTSconfig)) {
+				$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
+				$this->modTSconfig      = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
+				$GLOBALS['TSFE']->determineId();
+			}
 
-			// check if frontend editing is enabled
-		if ($this->modTSconfig['properties']['disable'] || (!$GLOBALS['BE_USER']->frontendEdit instanceOf t3lib_FrontendEdit)) {
-			$this->disabled = true;
-			return;
-		}
+				// check if frontend editing is enabled
+			if ($this->modTSconfig['properties']['disable'] || (!$GLOBALS['BE_USER']->frontendEdit instanceOf t3lib_FrontendEdit)) {
+				$this->disabled = true;
+				return;
+			}
 
-			// check if the menu is already opened
-		if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) {
-			$this->menuOpen = true;
-		}
+				// check if the menu is already opened
+			if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) {
+				$this->menuOpen = true;
+			}
 
-			// run through the actions
-		$this->actionHandler();
+				// run through the actions
+			$this->actionHandler();
+		}
 	}
 
 	/**
