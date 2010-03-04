@@ -2,6 +2,7 @@
 
 	* Fixed bug: When top menu is closed, z-index setting still covers HTML elements at the top of the page.
 	* Followup to bug #4787: Call parseInt() on edit window size settings to ensure we have a valid integer.
+	* Fixed bug: Edit window status message disappears before page reload is complete.
 
 2010-02-04  Jeff Segars  <jeff@webempoweredchurch.org>
 

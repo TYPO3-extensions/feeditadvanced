@@ -196,7 +196,7 @@ Ext.ux.Lightbox = (function(){
 					this.fireEvent('open', mText);
 				},
 				scope: this
-			});		
+			});
 		},
 
 		setViewSize: function(){
@@ -322,11 +322,14 @@ Ext.ux.Lightbox = (function(){
 		},
 
 		close: function(){
-			els.lightbox.hide();
-			els.overlay.fadeOut({
-				duration: this.overlayDuration
-			});
-			els.shim.hide();
+			response = window.frames['ux-lightbox-shim'].response;
+			if(!response.url) {
+				els.lightbox.hide();
+				els.overlay.fadeOut({
+					duration: this.overlayDuration
+				});
+				els.shim.hide();
+			}
 			this.fireEvent('close', this);
 		},
 
