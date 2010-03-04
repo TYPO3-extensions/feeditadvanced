@@ -1546,8 +1546,8 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 	},
 
 	displayIframe: function(headerText, url) {
-		height = TYPO3.configuration.feeditadvanced.editWindow.height ? TYPO3.configuration.feeditadvanced.editWindow.height : 600;
-		width = TYPO3.configuration.feeditadvanced.editWindow.width ? TYPO3.configuration.feeditadvanced.editWindow.width : 800;
+		height = TYPO3.configuration.feeditadvanced.editWindow.height ? parseInt(TYPO3.configuration.feeditadvanced.editWindow.height) : 600;
+		width = TYPO3.configuration.feeditadvanced.editWindow.width ? parseInt(TYPO3.configuration.feeditadvanced.editWindow.width) : 800;
 
 		Ext.ux.Lightbox.openUrl({'href': url, 'title': headerText}, width, height);
 	},
