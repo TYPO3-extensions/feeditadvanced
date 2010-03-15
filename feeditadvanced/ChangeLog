@@ -1,3 +1,7 @@
+2010-03-14  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Release of version 1.3.0
+
 2010-03-04  Jeff Segars  <jeff@webempwoeredchurch.org>
 
 	* Fixed bug: When top menu is closed, z-index setting still covers HTML elements at the top of the page.
