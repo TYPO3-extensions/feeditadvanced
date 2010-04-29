@@ -1,6 +1,7 @@
 2010-04-29  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug: When top menu is closed, edit button still has 100% width and covers HTML elements at the top of the page.
+	* Fixed bug #6988: Wrapper HTML for non-TV pages should only appear when a backend user is logged in.
 
 2010-03-14  Jeff Segars  <jeff@webempoweredchurch.org>
 

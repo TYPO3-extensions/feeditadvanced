@@ -93,6 +93,7 @@ t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
 ## TypoScript added by extension "FE Editing Advanced"
 #############################################
 
+[globalVar = BE_USER|user|uid > 0]
 styles.content.get.stdWrap {
 	prepend = TEXT
 	prepend.value = 0
@@ -108,6 +109,8 @@ styles.content.getBorder.stdWrap < styles.content.get.stdWrap
 styles.content.getBorder.stdWrap.prepend.value = 3
 styles.content.getNews.stdWrap  < styles.content.get.stdWrap
 styles.content.getNews.stdWrap.prepend.value = news
+
+[global]
 ', 43); // add this code AFTER the "css_styled_content" code (43) (because CSC empties styles > and would delete our changes)
 
 }
