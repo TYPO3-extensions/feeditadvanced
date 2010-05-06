@@ -1,3 +1,7 @@
+2010-05-06  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #5317: Buttons are too small when translated labels are long (thanks to Lorenz Ulrich)
+
 2010-04-29  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug: When top menu is closed, edit button still has 100% width and covers HTML elements at the top of the page.
