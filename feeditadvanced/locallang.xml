@@ -2,6 +2,8 @@
 <T3locallang>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="statusEditingOn">Editing On</label>
+			<label index="statusEditingOff">Editing Off</label>
 			<label index="closeEditMode">close edit</label>
 			<label index="openEditMode">Edit Page</label>
 			<label index="toggle_advanced">Advanced</label>

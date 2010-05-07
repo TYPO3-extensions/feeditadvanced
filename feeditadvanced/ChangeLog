@@ -1,3 +1,7 @@
+2010-05-07  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Added feature #6509: Add a BE Logout button to menu bar.
+
 2010-05-06  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #5317: Buttons are too small when translated labels are long (thanks to Lorenz Ulrich)

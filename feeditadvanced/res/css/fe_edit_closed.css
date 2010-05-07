@@ -21,11 +21,16 @@ div#feEditAdvanced-menuBar a.feEditAdvanced-smallButton {
 }
 
 div#feEditAdvanced-menuBar  .feEditAdvanced-smallButton span.feEditAdvanced-smallButtonText {
-	padding: 4px 5px 0px 7px;
+	padding: 0 5px 4px 7px;
 	color: #c6c6c6;
 	height: 16px;
 	display: block;
 	background: url(../icons/menubar/button_small_left.png) no-repeat;
+}
+
+div#feEditAdvanced-menuBar  .feEditAdvanced-smallButton span.feEditAdvanced-smallButtonText img {
+	margin-right: 3px;
+	vertical-align: middle;
 }
 
 div#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover { color: #fff; }

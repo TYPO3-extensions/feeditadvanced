@@ -166,6 +166,10 @@ img.feEditAdvanced-buttonImage {
 	margin: 4px 0 0;
 }
 
+div#feEditAdvanced-contextToolbar img.feEditAdvanced-buttonImage {
+	margin: 11px 3px 0 6px;
+}
+
 div.x-dd-drag-proxy a.feEditAdvanced-contentTypeItem,
 div#feEditAdvanced-menuBar a.feEditAdvanced-contentTypeItem {
 	background: none;
