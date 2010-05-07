@@ -74,14 +74,14 @@ class tx_feeditadvanced_editpanel {
 	 * @var		boolean
 	 */
 	protected $disabled = false;
-	
+
 	/**
 	 * Indicates if mod was disabled
 	 *
 	 * @var		boolean
 	 */
 	protected $areIncludesAdded = false;
-	
+
 	/**
 	 * Initializes the edit panel.
 	 *
@@ -115,7 +115,7 @@ class tx_feeditadvanced_editpanel {
 		if (!$templateFile) {
 			$templateFile = t3lib_extMgm::siteRelPath('feeditadvanced') . "res/template/feedit.tmpl";
 		}
-		
+
 		$this->template = $this->cObj->fileResource($templateFile);
 		$this->templateAction = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_ACTION_'.strtoupper($this->table). '###') != '' ? $code : $this->cObj->getSubpart($this->template, '###EDITPANEL_ACTION###') );
 
@@ -148,7 +148,7 @@ class tx_feeditadvanced_editpanel {
 		}
 		list($table,$uid) = explode(':', $currentRecord);
 		$this->table = $table;
-		
+
 		$this->init($conf);
 		if ($this->disabled) {
 			return;
@@ -181,7 +181,7 @@ class tx_feeditadvanced_editpanel {
 			$theCmd = '';
 		}
 
-		
+
 			// @todo button order? $allowOrder?
 		$btnOrder = $this->modTSconfig['properties']['showIcons'] ? $this->modTSconfig['properties']['showIcons'] : $conf['allow'];
 		$allowOrder = t3lib_div::trimExplode(',', $btnOrder, 1);
@@ -189,17 +189,17 @@ class tx_feeditadvanced_editpanel {
 			// generate the panel items, unless this is a new or edit command
 		if (($theCmd != 'edit') && ($theCmd != 'new')) {
 			$panel = '';
-			
+
 			if (!$content) {
 				$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-emptyContentElement';
 			}
-			
+
 			if (isset($allow['toolbar'])) {
 				$allow['move'] = TRUE;
 				$allow['new'] = TRUE;
 				$allow['edit'] = TRUE;
 			}
-			
+
 			if (isset($allow['edit'])) {
 				if ($content) {
 					$markerArray['###CWRAPPER_CLASS###'] .= ' feEditAdvanced-editButton editAction';
@@ -207,7 +207,7 @@ class tx_feeditadvanced_editpanel {
 						$this->panelItems['clickContentToEdit'] = 'value="' . $GLOBALS['BE_USER']->extGetLL('editIcon') . '" title="' . $GLOBALS['BE_USER']->extGetLL('editTitle') . '" ';
 					}
 				}
-				
+
 				$this->panelItems['edit'] = $this->editIconLinkWrap('edit', 'editIcon', 'editTitle');
 			}
 			$sortField = $GLOBALS['TCA'][$table]['ctrl']['sortby'];
@@ -264,6 +264,11 @@ class tx_feeditadvanced_editpanel {
 			$hiddenFieldString .= '	<input type="hidden" name="TSFE_EDIT[cmd]" class="feEditAdvanced-tsfeedit-input-cmd" value="" />
 			<input type="hidden" name="TSFE_EDIT[record]" class="feEditAdvanced-tsfeedit-input-record" value="' . $currentRecord . '" />
 			<input type="hidden" name="TSFE_EDIT[pid]" class="feEditAdvanced-tsfeedit-input-pid" value="' . $GLOBALS['TSFE']->id . '" />';
+
+			if ($newUID > 0) {
+				$hiddenFieldString .= '<input type="hidden" name="TSFE_EDIT[newRecordInPid]" class="feEditAdvanced-tsfeedit-input-newrecordinpid" value="' . $newUID . '" />';
+			}
+
 			$markerArray['###FORM_HIDDENFIELDS###'] = $hiddenFieldString;
 		}
 
@@ -355,7 +360,7 @@ class tx_feeditadvanced_editpanel {
 			$whichOrder = is_array($allowOrder) ? $allowOrder : $this->panelItems;
 			foreach($whichOrder as $item => $value) {
 				$isThere = array_key_exists($value,$this->panelItems);
-				
+
 					// expand hide to hide + unhide
 				if ($isThere && ($value == 'hide') && isset($this->panelItems['hide'])) {
 					$editpanelItems .= $this->panelItems['hide'] . $this->panelItems['unhide'];
@@ -369,7 +374,7 @@ class tx_feeditadvanced_editpanel {
 			}
 		}
 		*/
-		
+
 		if (is_array($this->panelItems)) {
 			$allowed = array();
 			$panelItems = $this->panelItems;
@@ -400,8 +405,8 @@ class tx_feeditadvanced_editpanel {
 				}
 			}
 		}
-		
-		
+
+
 		if ($recordData['hidden']) {
 			$markerArray['###ALLWRAPPER_CLASS###'] .= ' feEditAdvanced-hiddenElement';
 		}
@@ -687,13 +692,13 @@ class tx_feeditadvanced_editpanel {
 	protected function addFormIncludes($tceforms=0) {
 		/** @var $pageRenderer t3lib_PageRenderer */
 		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
-		
+
 			// code for dynamic tabs
 		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/getDynTabMenuJScode.js');
-		
+
 			// forms on page CSS
 			// one time we will have $GLOBALS['TBE_STYLES'] available :)
-		$pageRenderer->addCssFile($GLOBALS['TBE_STYLES']['stylesheet'] ? $GLOBALS['TBE_STYLES']['stylesheet'] : 'typo3/stylesheet.css'); 
+		$pageRenderer->addCssFile($GLOBALS['TBE_STYLES']['stylesheet'] ? $GLOBALS['TBE_STYLES']['stylesheet'] : 'typo3/stylesheet.css');
 		$cssfile = $this->modTSconfig['properties']['skin.']['cssFormFile'];
 		$cssFormFile =  $cssfile ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_formsOnPage.css';
 		$pageRenderer->addCssFile($cssFormFile);

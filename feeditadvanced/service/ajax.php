@@ -748,7 +748,9 @@ class tx_feeditadvanced_ajax {
 			if ($uid == 'NEW') {
 				$conf['newRecordFromTable'] = $table;
 			}
-			
+			if (isset($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newRecordInPid'])) {
+				$conf['newRecordInPid'] = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newRecordInPid'];
+			}
 			$cObjOutput = $cObj->editPanel('', $conf, $table . ':' . $uid, $this->contentElementRow);
 		}
 
