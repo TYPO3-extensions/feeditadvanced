@@ -1,3 +1,7 @@
+div#feEditAdvanced-container img {
+	border: none;
+}
+
 div#feEditAdvanced-menuBar {
 	position: fixed;
 	top: 0;
@@ -18,6 +22,7 @@ div#feEditAdvanced-menuBar a.feEditAdvanced-smallButton {
 	height: 20px;
 	font-size: 10px;
 	float: right;
+	text-decoration: none;
 }
 
 div#feEditAdvanced-menuBar  .feEditAdvanced-smallButton span.feEditAdvanced-smallButtonText {
