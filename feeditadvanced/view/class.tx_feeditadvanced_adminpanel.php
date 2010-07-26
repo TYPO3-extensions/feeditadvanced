@@ -26,9 +26,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_menu.php');
-require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_newcontentelements.php');
-
 /**
  * Top menu bar for advanced frontend editing.
  *

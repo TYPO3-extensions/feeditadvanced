@@ -25,8 +25,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_adminpanel.php');
-
 /**
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
  * @package TYPO3

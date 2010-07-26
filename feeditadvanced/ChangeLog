@@ -1,6 +1,7 @@
 2010-07-26  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #8095: tx_feeditadvanced_editpanel adds stylesheet non-existent in TYPO3 4.4
+	* Added feature #9046: Make use of autoloader
 
 2010-07-26  Oliver Hader  <oliver@typo3.org>
 

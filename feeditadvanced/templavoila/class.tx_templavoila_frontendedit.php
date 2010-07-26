@@ -23,7 +23,6 @@
 ***************************************************************/
 
 
-require_once(t3lib_extMgm::extPath('feeditadvanced') . 'controller/class.tx_feeditadvanced_frontendedit.php');
 require_once(t3lib_extMgm::extPath('templavoila') . 'class.tx_templavoila_api.php');
 
 class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {

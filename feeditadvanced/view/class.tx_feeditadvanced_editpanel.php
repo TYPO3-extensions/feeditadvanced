@@ -26,8 +26,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extMgm::extPath('feeditadvanced') . 'view/class.tx_feeditadvanced_tceforms.php');
-
 /**
  * Edit panel for advanced frontend editing.
  *

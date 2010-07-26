@@ -43,8 +43,6 @@
  * @subpackage t3lib
  */
 
-require_once (PATH_t3lib . 'class.t3lib_tceforms_fe.php');
-
 /*************************** class starts *************************************/
 
 class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
