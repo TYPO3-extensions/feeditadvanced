@@ -1518,8 +1518,8 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 			Ext.get(editPanelId).removeClass('doCut');
 		}
 
-		//@TODO check to see if anything on clipboard...if empty, then hide
-		//this.showClipboard(false);
+		// @TODO check to see if anything on clipboard...if empty, then hide
+		// this.showClipboard(false);
 
 	}
 
