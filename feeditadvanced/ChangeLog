@@ -1,3 +1,7 @@
+2010-07-26  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #8095: tx_feeditadvanced_editpanel adds stylesheet non-existent in TYPO3 4.4
+
 2010-07-26  Oliver Hader  <oliver@typo3.org>
 
 	* Fixed bug #8982: Internet Explorer JavaScript issues (thanks to Johannes Feustel)

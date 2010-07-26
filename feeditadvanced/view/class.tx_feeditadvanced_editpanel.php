@@ -698,7 +698,9 @@ class tx_feeditadvanced_editpanel {
 
 			// forms on page CSS
 			// one time we will have $GLOBALS['TBE_STYLES'] available :)
-		$pageRenderer->addCssFile($GLOBALS['TBE_STYLES']['stylesheet'] ? $GLOBALS['TBE_STYLES']['stylesheet'] : 'typo3/stylesheet.css');
+		if(t3lib_div::int_from_ver(TYPO3_version) < 4004000) {
+			$pageRenderer->addCssFile($GLOBALS['TBE_STYLES']['stylesheet'] ? $GLOBALS['TBE_STYLES']['stylesheet'] : 'typo3/stylesheet.css');
+		}
 		$cssfile = $this->modTSconfig['properties']['skin.']['cssFormFile'];
 		$cssFormFile =  $cssfile ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_formsOnPage.css';
 		$pageRenderer->addCssFile($cssFormFile);
