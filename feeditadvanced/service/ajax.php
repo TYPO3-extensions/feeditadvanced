@@ -614,6 +614,10 @@ class tx_feeditadvanced_ajax {
 			// Include the TCA
 		$TSFE->includeTCA();
 
+			// Load the sprite manager for frontend-editing
+		$spriteManager = t3lib_div::makeInstance('t3lib_SpriteManager', TRUE);
+		$spriteManager->loadCacheFile();
+
 			// Get the page
 		$TSFE->fetch_the_id();
 		$TSFE->getPageAndRootline();
