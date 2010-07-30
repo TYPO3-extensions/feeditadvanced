@@ -1,6 +1,10 @@
+2010-07-30  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Followup to bug #8072: Only load Sprite Manager for TYPO3 4.4 and up.
+
 2010-07-29  Jeff Segars  <jeff@webempoweredchurch.org>
 
-	* Fixed bug #8072: Sprite Manager is not initialized for editing forms
+	* Fixed bug #8072: Sprite Manager is not initialized for editing forms.
 
 2010-07-26  Jeff Segars  <jeff@webempoweredchurch.org>
 
