@@ -4,7 +4,7 @@ body {
 }
 .formsOnPageWrapper {
 	overflow: auto;
-	background-color: white;
+	background-color: #ECECEC;
 }
 
 table.formsOnPage {
@@ -141,6 +141,10 @@ table.typo3-TCEforms select.formField {
 
 .formsOnPage .palettePadding {
 	padding-left: 4px;
+}
+
+.formsOnPage td.class-main23 table {
+	margin-left: 12px;
 }
 
 .formsOnPage #typo3-tree td img,
@@ -344,10 +348,19 @@ div.typo3-dyntabmenu-divs-foldout div.disabled_over {
  *			to figure out where we really want to add this.
  */
 
-div.typo3-dyntabmenu-tabs {
+table.typo3-tceforms div.typo3-dyntabmenu-tabs {
 	background: url(../icons/forms/tab_background.png) repeat-x !important;
 	height: 33px !important;
 	margin-top: 0 !important;
+	padding-top: 0;
+}
+
+table.typo3-tceforms div.typo3-dyntabmenu-divs .wrapperTable {
+	border: 0;
+}
+
+table.typo3-tceforms div.typo3-dyntabmenu-tabs td {
+	vertical-align: inherit;
 }
 
 table.typo3-dyntabmenu {

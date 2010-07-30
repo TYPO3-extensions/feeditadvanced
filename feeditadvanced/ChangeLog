@@ -1,6 +1,7 @@
 2010-07-30  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Followup to bug #8072: Only load Sprite Manager for TYPO3 4.4 and up.
+	* Fixed bug #9100: Fix editing form styling issues with TYPO3 4.4 CSS.
 
 2010-07-29  Jeff Segars  <jeff@webempoweredchurch.org>
 
