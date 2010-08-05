@@ -806,7 +806,30 @@ class tx_feeditadvanced_ajax {
 		$conf = array (
 			'parameter' => $id
 		);
-		return $cObj->typolink_URL($conf);
+		$url = $cObj->typolink_URL($conf);
+
+		if ($this->isRelativeUrl($url)) {
+			$url = t3lib_div::getIndpEnv(TYPO3_SITE_URL) . $url;
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Determines wether the URL is relative to the
+	 * current TYPO3 installation.
+	 *
+	 * @note Copied from tx_felogin_pi1 implementation.
+	 * @param string $url URL which needs to be checked
+	 * @return boolean Whether the URL is considered to be relative
+	 */
+	protected function isRelativeUrl($url) {
+		$parsedUrl = @parse_url($url);
+		if ($parsedUrl !== FALSE && !isset($parsedUrl['scheme']) && !isset($parsedUrl['host'])) {
+				// If the relative URL starts with a slash, we need to check if it's within the current site path
+			return (!t3lib_div::isFirstPartOfStr($parsedUrl['path'], '/') || t3lib_div::isFirstPartOfStr($parsedUrl['path'], t3lib_div::getIndpEnv('TYPO3_SITE_PATH')));
+		}
+		return FALSE;
 	}
 }
 
