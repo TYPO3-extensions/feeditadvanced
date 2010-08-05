@@ -170,6 +170,7 @@ class tx_feeditadvanced_menu {
 			// if the menu is not open, then just show "open edit" box
 		if (!$this->menuOpen) {
 				$markers['OPEN_EDIT_MODE'] = $this->getLL('statusEditingOff');
+				$markers['OPEN_EDIT_MODE_TOOLTIP'] = $this->getLL('openTooltip');
 		} else {
 				// otherwise, the menu is open
 

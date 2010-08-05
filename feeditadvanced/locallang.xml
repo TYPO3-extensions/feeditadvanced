@@ -49,6 +49,7 @@
 			<label index="previewTooltip">Preview this page</label>
 			<label index="closeTitle">Close</label>
 			<label index="closeTooltip">Close Frontend Editing</label>
+			<label index="openTooltip">Open Frontend Editing</label>
 			<label index="clipboardTitle">Clipboard</label>
 
 			<label index="js.dropMessage">Drop content here</label>

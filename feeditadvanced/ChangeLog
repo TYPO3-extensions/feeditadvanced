@@ -3,6 +3,7 @@
 	* Fixed bug #8898: Incorrect back path leads to missing elements on editing form
 	* Fixed bug #8890: Redirect after save and close does not work in IE
 	* Fixed bug #9169: Editing form header is influenced by page styling
+	* Followup to feature #6509: Improved CSS, labels, and added configuration option related to logout button
 
 2010-07-30  Jeff Segars  <jeff@webempoweredchurch.org>
 

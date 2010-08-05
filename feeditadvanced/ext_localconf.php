@@ -42,7 +42,7 @@ t3lib_extMgm::addPageTSConfig('
 			disable = 0
 			config = action, type, clipboard, context
 			typeMenu = text, header, image, html
-			contextMenu = close
+			contextMenu = close, logout
 		}
 		editWindow {
 			height = 600
