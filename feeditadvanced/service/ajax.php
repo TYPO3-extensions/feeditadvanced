@@ -581,6 +581,10 @@ class tx_feeditadvanced_ajax {
 	protected function initializeTSFE($pid, $feUserObj = '') {
 		global $TSFE, $TYPO3_CONF_VARS;
 
+			// Set the BACK_PATH for the sprite manager.
+			// FIXME should be removed when the sprite manager uses template->backBack instead of the global
+		$GLOBALS['BACK_PATH'] = TYPO3_mainDir;
+
 			// @todo 	jeff: don't include templavoila directly
 		if (t3lib_extMgm::isLoaded('templavoila')) {	
 			require_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_api.php');

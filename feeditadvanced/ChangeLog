@@ -1,3 +1,7 @@
+2010-08-05  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #8898: Incorrect back path leads to missing elements on editing form
+
 2010-07-30  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Followup to bug #8072: Only load Sprite Manager for TYPO3 4.4 and up.
