@@ -147,6 +147,14 @@ table.typo3-TCEforms select.formField {
 	margin-left: 12px;
 }
 
+.formsOnPage .typo3-TCEforms-flexForm {
+	padding: 12px;
+}
+
+.formsOnPage td.class-main23 table.t3-form-field-header-flexsection {
+	margin-left: 0;
+}
+
 .formsOnPage #typo3-tree td img,
 .formsOnPage #typo3-tree td a {
 	border-width: 0 !important;
