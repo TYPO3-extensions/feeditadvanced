@@ -757,6 +757,7 @@ class tx_feeditadvanced_ajax {
 		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		$pageRenderer->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
 		$pageRenderer->setCharSet($GLOBALS['TSFE']->metaCharset);
+		$pageRenderer->enableConcatenateFiles();
 		$header = $this->renderHeaderData();
 		$content = $cObjOutput;
 

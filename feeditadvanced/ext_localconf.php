@@ -21,6 +21,12 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsC
 	// Register the controller for feeditadvanced.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tsfebeuserauth.php']['frontendEditingController']['feeditadvanced'] = 'EXT:feeditadvanced/controller/class.tx_feeditadvanced_frontendedit.php:tx_feeditadvanced_frontendedit';
 
+	// Use pageRenderer hook to concatenate CSS files for the backend editing form.
+	// Should be removed when the pageRenderer handles frontend editing properly.
+if(t3lib_div::int_from_ver(TYPO3_version) >= 4004000) {
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['feeditadvanced'] = 'EXT:feeditadvanced/hooks/class.tx_feeditadvanced_pagerenderer.php:tx_feeditadvanced_pagerenderer->preProcessPageRenderer';
+}
+
 	// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
 t3lib_extMgm::addPageTSConfig('
 	FeEdit {
