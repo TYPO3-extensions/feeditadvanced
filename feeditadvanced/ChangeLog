@@ -1,7 +1,8 @@
 2010-08-09  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Followup to bug #9100: Fix overlap issues with Flexform sections.
-	* Fixed bug #9173: Use t3lib_compressor for CSS files
+	* Fixed bug #9173: Use t3lib_compressor for CSS files.
+	* Fixed bug #9178: RTE is not loaded.
 
 2010-08-05  Jeff Segars  <jeff@webempoweredchurch.org>
 
