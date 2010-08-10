@@ -1,3 +1,7 @@
+2010-08-10  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Followup to bug #9178: Force IE8 standards mode for quicker RTE loading.
+
 2010-08-09  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Followup to bug #9100: Fix overlap issues with Flexform sections.

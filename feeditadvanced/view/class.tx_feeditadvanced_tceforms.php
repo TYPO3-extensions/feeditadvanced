@@ -53,7 +53,16 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 			// Set the BACK_PATH for the sprite manager and then immediately unset for rtehtmlarea.
 			// FIXME should be removed when the sprite manager and RTE are on the same page with backPath vs. BACK_PATH usage.
 		$GLOBALS['BACK_PATH'] = TYPO3_mainDir;
+
+			// Call the rendering function and ignore the output. This serves to flush any header data set before the editing form.
+		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
+		$pageRenderer->render();
+
+			// Set IE8 Standards Mode
+		$pageRenderer->addMetaTag('<meta http-equiv="X-UA-Compatible" content="IE=8" />');
+
 		parent::__construct();
+		
 		$GLOBALS['BACK_PATH'] = '';
 	}
 

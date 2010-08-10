@@ -356,18 +356,18 @@ div.typo3-dyntabmenu-divs-foldout div.disabled_over {
  *			to figure out where we really want to add this.
  */
 
-table.typo3-tceforms div.typo3-dyntabmenu-tabs {
+table.typo3-TCEforms div.typo3-dyntabmenu-tabs {
 	background: url(../icons/forms/tab_background.png) repeat-x !important;
 	height: 33px !important;
 	margin-top: 0 !important;
 	padding-top: 0;
 }
 
-table.typo3-tceforms div.typo3-dyntabmenu-divs .wrapperTable {
+table.typo3-TCEforms div.typo3-dyntabmenu-divs .wrapperTable {
 	border: 0;
 }
 
-table.typo3-tceforms div.typo3-dyntabmenu-tabs td {
+table.typo3-TCEforms div.typo3-dyntabmenu-tabs td {
 	vertical-align: inherit;
 }
 
@@ -450,7 +450,7 @@ button#feEditAdvanced-closeButton {
 }
 
 .tab .tabTable .right {
-	background: url(../icons/forms/tab_right.png) no-repeat!important;
+	background: url(../icons/forms/tab_right.png) no-repeat !important;
 	width: 5px !important;
 }
 
@@ -469,7 +469,7 @@ button#feEditAdvanced-closeButton {
 }
 
 .tabact .tabTable .right {
-	background: url(../icons/forms/tab_right_active.png) !important;
+	background: url(../icons/forms/tab_right_active.png) no-repeat !important;
 	width: 5px !important;
 }
 
