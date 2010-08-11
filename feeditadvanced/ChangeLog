@@ -1,3 +1,7 @@
+2010-08-11  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #9258: Text on dark background is difficult to read with active hover menu.
+
 2010-08-10  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Followup to bug #9178: Force IE8 standards mode for quicker RTE loading.

@@ -347,9 +347,15 @@ div.feEditAdvanced-allWrapper {
 }
 
 div.feEditAdvanced-allWrapperHover {
-	background-color: #e0e0e0 !important;
+	background-image: url(../icons/hovermenu/content_background.png);
 	border: 1px solid #888;
 	margin: 1px;
+}
+
+/* Give IE6 a solid colored background since it can't handle PNG alpha transparency */
+* html div.feEditAdvanced-allWrapperHover {
+	background-image: none;
+	background-color: #e0e0e0 !important;
 }
 
 div.feEditAdvanced-clickContentToEdit {
