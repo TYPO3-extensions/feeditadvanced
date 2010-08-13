@@ -1,6 +1,7 @@
 2010-08-12  Jeff Segars  <jeff@webempoweredchurch.org>
 
-	* Fixed bug #5295: Remove hardcoded label for "Show Hidden Content Elements" (thanks to Christopher)
+	* Fixed bug #5295: Remove hardcoded label for "Show Hidden Content Elements" (thanks to Christopher).
+	* Fixed bug #8560: IE content type for new records is always text.
 
 2010-08-11  Jeff Segars  <jeff@webempoweredchurch.org>
 

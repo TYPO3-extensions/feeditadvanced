@@ -739,7 +739,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				var colPos = contentElementContainerId.substr(35, 1);
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
 				
-				var additionalParams = linkedDragEl.getAttribute('href') + '&defVals[tt_content][colPos]=' + colPos;
+				var additionalParams = linkedDragEl.getAttribute('href', 2) + '&defVals[tt_content][colPos]=' + colPos;
 				additionalParams += '&TSFE_EDIT[record]=tt_content:NEW';
 				additionalParams += '&TSFE_EDIT[pid]=' + pageId;
 				additionalParams += '&pid=' + pageId;
@@ -748,7 +748,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				action.trigger(additionalParams, contentElementContainerId);
 			} else {
 				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
-				editPanel.create(linkedDragEl.getAttribute('href'));
+				editPanel.create(linkedDragEl.getAttribute('href', 2));
 			}
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 			// Move a record
