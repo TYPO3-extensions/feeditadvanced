@@ -149,16 +149,20 @@ FrontendEditing.addFlexformPointers = function() {
 		pointerElement = Ext.get(pointerElement);
 		// will be something like pages:25:sDEF:lDEF:field_content:vDEF
 		var containerName = pointerElement.getAttribute('title');
-
 		// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
 		var pointerArray = pointerElement.getValue().split(',');
 
-		// all elements in that container
-		var pointerElementArray = Ext.get(pointerElement.parent()).select('.feEditAdvanced-allWrapper');
-		if (pointerArray.length > 0 && pointerElementArray.getCount() > 0) {
+		// Find a container element. For outer mapping, its a sibling. For inner mapping, its a parent.
+		if (pointerElement.prev().hasClass('feEditAdvanced-allWrapper')) {
+			container = pointerElement.parent();
+		} else {
+			container = pointerElement.prev();
+		}
+		var elementsInContainer = Ext.get(container.select('.feEditAdvanced-allWrapper'));
+		if (pointerArray.length > 0 && elementsInContainer.getCount() > 0) {
 			Ext.each(pointerArray, function(pointerValue, counter) {
 				counter++;
-				firstElement = Ext.get(pointerElementArray.first());
+				firstElement = Ext.get(elementsInContainer.first());
 				if (firstElement) {
 					recordElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-record').first());
 					if (recordElement.getValue() == 'tt_content:' + pointerValue) {
@@ -187,7 +191,7 @@ FrontendEditing.addFlexformPointers = function() {
 							'value': containerName + ':' + counter
 						});
 							// and remove the element which is now not needed anymore
-						pointerElementArray.removeElement(firstElement);
+						elementsInContainer.removeElement(firstElement);
 					}
 				}
 			});

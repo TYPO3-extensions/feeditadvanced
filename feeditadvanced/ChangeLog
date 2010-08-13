@@ -1,6 +1,7 @@
 2010-08-13  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Followup to bug #8560: Use rel attribute instead of href for new content element widgets.
+	* Fixed bug #9282: TemplaVoila containers with outer mapping are not initialized properly.
 
 2010-08-12  Jeff Segars  <jeff@webempoweredchurch.org>
 
