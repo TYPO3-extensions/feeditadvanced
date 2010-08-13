@@ -1,3 +1,7 @@
+2010-08-13  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Reverted fix for bug #8560
+
 2010-08-12  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #5295: Remove hardcoded label for "Show Hidden Content Elements" (thanks to Christopher).

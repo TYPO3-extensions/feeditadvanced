@@ -13,7 +13,7 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 				// the ID looks like this: feEditAdvanced-firstWrapper-pages-13
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
 				var destinationPointer = Ext.get(contentElementContainerId).next('input.feEditAdvanced-flexformPointers').getAttribute('title') + ':0';
-				var additionalParams = linkedDragEl.getAttribute('href', 2);
+				var additionalParams = linkedDragEl.getAttribute('href');
 
 				additionalParams += '&TSFE_EDIT[record]=tt_content:NEW';
 				additionalParams += '&TSFE_EDIT[pid]=' + pageId;
@@ -26,7 +26,7 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 				action.trigger(additionalParams, contentElementContainerId);
 			} else {
 				var editPanel = FrontendEditing.editPanels.get(previousContentElement.id);
-				editPanel.create(linkedDragEl.getAttribute('href', 2));
+				editPanel.create(linkedDragEl.getAttribute('href'));
 			}
 
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
