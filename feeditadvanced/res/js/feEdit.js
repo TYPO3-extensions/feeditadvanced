@@ -710,7 +710,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 			'id':  elId,
 			'cls': this.baseCls,
 			'html': '<div class="' + this.baseCls + 'Text">' + TYPO3.LLL.feeditadvanced.dropMessage + '</div>'
-		}, true);
+		}, true).fadeIn();
 		this.el.setVisibilityMode(Ext.Element.DISPLAY);
 
 		// create the drop zone
@@ -822,6 +822,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 	onHover: function(dragSource, evt, data) {
 		var dragEl = Ext.get(dragSource.getDragEl());
 		this.el.addClass('feEditAdvanced-dropzoneActive');
+		this.el.frame('e0e0e0');
 	},
 	
 	onHoverOut: function(source, evt, data) {
@@ -831,7 +832,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 	remove: function() {
 		this.dz.unreg();
 		if (this.el) {
-			this.el.remove();
+			this.el.fadeOut({remove: true});
 		}
 		this.dz = this.el = null;
 	}
