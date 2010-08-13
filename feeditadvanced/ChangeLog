@@ -4,6 +4,7 @@
 	* Fixed bug #9282: TemplaVoila containers with outer mapping are not initialized properly.
 	* Fixed bug #5842: feeditadvanced does not work with tidy enabled.
 	* Fixed bug #4731: Add visual effects for dropzones.
+	* Fixed bug #9299: Use delete rather than unlink in TemplaVoila.
 
 2010-08-12  Jeff Segars  <jeff@webempoweredchurch.org>
 
