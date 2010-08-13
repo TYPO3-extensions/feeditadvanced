@@ -333,6 +333,7 @@ class tx_feeditadvanced_adminpanel {
  					'',
  					$this->cssPrefix . '-contentTypeItem ' . $this->cssPrefix . '-draggable draggable',
  					$this->cssPrefix . '-buttonLabel',
+					'',
  					substr($ce['params'], 1)
  				);
 			}

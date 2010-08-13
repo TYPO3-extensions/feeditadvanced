@@ -293,10 +293,11 @@ class tx_feeditadvanced_menu {
 	 * @param	$onClick	additional Javascript (note: needs the onclick="" as well in the parameter)
 	 * @param	$btnClass	the additional class for the whole button
 	 * @param	$labelClass	the additional class for the label (is inside a <span> tag)
-	 * @param	$hrefParameters	the additional parameters added to the href="" attribute of the link, not used but sent to the server when adding this element to the page.
+	 * @param	$hrefParams	the additional parameters added to the href="" attribute of the link, not used but sent to the server when adding this element to the page.
+	 * @param	$rel	The rel attribute.
 	 * @return	void
 	 */
-	public function addItem($section, $name, $action, $image, $title = '', $onClick = '', $btnClass = '', $labelClass = '', $hrefParams = '') {
+	public function addItem($section, $name, $action, $image, $title = '', $onClick = '', $btnClass = '', $labelClass = '', $hrefParams = '', $rel = '') {
 
 		$ATagParams = array();
 		$ATagParams[] = 'href="' . (strlen($hrefParams) ? $hrefParams : '#') . '"';
@@ -311,10 +312,12 @@ class tx_feeditadvanced_menu {
 		if (strlen($onClick)) {
 			$ATagParams[] = $onClick;
 		}
+		if (strlen($rel)) {
+			$ATagParams[] = 'rel="' . $rel . '"';
+		}
 		if (strlen($image)) {
 			$imageTag = '<img src="' . $this->imagePath . $image . '" class="' . $this->cssPrefix . '-buttonImage" alt="" />';
 		}
-
 		$label = '<span class="' . $this->cssPrefix . '-buttonText' . (strlen($labelClass) ? ' ' . $labelClass : '') . '">' . $name . '</span>';
 
 		$this->itemList[$section][] = '<a ' . implode(' ', $ATagParams) . '>' . $imageTag . $label . '</a>';
