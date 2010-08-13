@@ -296,6 +296,7 @@ class tx_feeditadvanced_editpanel {
 				}
 				$markerArray['###EDITPANEL_'.strtoupper($act).'_BUTTONTEXT###'] = $GLOBALS['BE_USER']->extGetLL('page'.ucfirst($act).'Button');
 			}
+			$markerArray['###EDITPANEL_SHOW_HIDDEN_TEXT###'] = $GLOBALS['BE_USER']->extGetLL('pageShowHidden');
 		}
 			// load in template for edit panel
 			// if special template for table is present, use it, else use default

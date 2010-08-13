@@ -67,6 +67,10 @@ div#feEditAdvanced-menuBar .feEditAdvanced-firstRow .feEditAdvanced-button span.
 
 div#feEditAdvanced-menuBar  #feEditAdvanced-showHiddenContent label {
 	color: #c6c6c6;
+	display: inline;
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
 }
 
 
@@ -118,7 +122,12 @@ div#feEditAdvanced-menuBar div#feEditAdvanced-contextToolbar a.feEditAdvanced-bu
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar { float: left; width: 80%; }
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div.feEditAdvanced-allWrapper { display: block; }
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar a.feEditAdvanced-button { float: left; display: block; }
-div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div#feEditAdvanced-showHiddenContent { float: left; padding: 4px 0 2px 10px;  color: #fff; }
+div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div#feEditAdvanced-showHiddenContent {
+	float: left;
+	padding: 10px 0 2px 10px;
+	color: #ddd;
+	font-size: 12px;
+}
 
 /* ---------------------- Top Menu: List of Content Element Types ---------------------------- */
 div#feEditAdvanced-contentTypeToolbar {

@@ -44,6 +44,7 @@
 			<label index="pageNewButton">New Page</label>
 			<label index="pageDeleteButton">Delete Page</label>
 			<label index="pageHideButton">Hide Page</label>
+			<label index="pageShowHidden">Show Hidden Content Elements</label>
 
 			<label index="previewTitle">Preview</label>
 			<label index="previewTooltip">Preview this page</label>
