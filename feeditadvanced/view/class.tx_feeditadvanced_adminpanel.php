@@ -329,7 +329,7 @@ class tx_feeditadvanced_adminpanel {
  					$ce['title'],
  					'',
  					TYPO3_mainDir . $ce['icon'],
- 					$ce['description'] . ' - Drag widgets onto the page',
+ 					$ce['description'] . ' - ' . $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:dragWidgets'),
  					'',
  					$this->cssPrefix . '-contentTypeItem ' . $this->cssPrefix . '-draggable draggable',
  					$this->cssPrefix . '-buttonLabel',

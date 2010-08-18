@@ -1,6 +1,7 @@
 2010-08-18  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #9527: Flexform sections cannot be deleted.
+	* Fixed bug #9334: Hardcoded label "Drag widgets onto the page" (thanks to Christopher)
 
 2010-08-13  Jeff Segars  <jeff@webempoweredchurch.org>
 

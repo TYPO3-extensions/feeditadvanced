@@ -52,6 +52,7 @@
 			<label index="closeTooltip">Close Frontend Editing</label>
 			<label index="openTooltip">Open Frontend Editing</label>
 			<label index="clipboardTitle">Clipboard</label>
+			<label index="dragWidgets">Drag widgets onto the page.</label>
 
 			<label index="js.dropMessage">Drop content here</label>
 			<label index="js.loadingMessage">Loading editing form</label>
