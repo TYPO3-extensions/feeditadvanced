@@ -54,3 +54,4 @@ class tx_feeditadvanced_pagerenderer {
 	
 }
 
+?>
