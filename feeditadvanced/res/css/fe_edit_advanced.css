@@ -70,7 +70,7 @@ div#feEditAdvanced-menuBar  #feEditAdvanced-showHiddenContent label {
 	display: inline;
 	font-weight: normal;
 	margin: 0;
-	padding: 0;
+	padding: 0px 0px 5px 0px;
 }
 
 
@@ -124,9 +124,12 @@ div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div.feEditAdvanced
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar a.feEditAdvanced-button { float: left; display: block; }
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div#feEditAdvanced-showHiddenContent {
 	float: left;
-	padding: 10px 0 2px 10px;
+	padding: 7px 0px 2px 10px;
 	color: #ddd;
 	font-size: 12px;
+}
+div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div#feEditAdvanced-showHiddenContent input#feEditAdvanced-showHiddenContent-input {
+	vertical-align: -2px;
 }
 
 /* ---------------------- Top Menu: List of Content Element Types ---------------------------- */
