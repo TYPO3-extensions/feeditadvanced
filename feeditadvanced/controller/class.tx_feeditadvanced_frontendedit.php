@@ -49,7 +49,7 @@ class tx_feeditadvanced_frontendedit extends t3lib_frontendedit {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.ux_t3lib_frontendedit.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.ux_t3lib_frontendedit.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/controller/class.tx_feeditadvanced_frontendedit.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/controller/class.tx_feeditadvanced_frontendedit.php']);
 }
 ?>
