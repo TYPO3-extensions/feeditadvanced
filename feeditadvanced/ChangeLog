@@ -1,5 +1,6 @@
 2010-11-15  Christopher  <chrissitopher@gmx.de>
 
+	* Fixed bug #9332: feeditadvanced is incompatible with TYPO3 4.4 and trunk (Ext.EventManager._unload is not a function).
 	* Followup to bug #9334: Fix wording of tooltips.
 
 2010-11-14  Christopher  <chrissitopher@gmx.de>

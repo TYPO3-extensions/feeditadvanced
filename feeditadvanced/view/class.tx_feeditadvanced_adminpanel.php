@@ -349,7 +349,7 @@ class tx_feeditadvanced_adminpanel {
 	protected function getIncludes() {
 		$extPath = t3lib_extMgm::siteRelPath('feeditadvanced');
 		$includes = array(
-			'ext-base.js'  => $this->getScriptTag('typo3/contrib/extjs/adapter/ext/ext-base.js'),
+			'ext-base.js'  => $this->getScriptTag($extPath . 'res/js/ext-base.js'),
 			'ext-dd.js'    => $this->getScriptTag($extPath . 'res/js/ext-dd.js'),
 			'TYPO3Configuration' => $this->getConfigurationJavascript(),
 			'backend.js'   => $this->getScriptTag('typo3/js/backend.js'),
