@@ -14,7 +14,7 @@
 2010-08-18  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #9527: Flexform sections cannot be deleted.
-	* Fixed bug #9334: Hardcoded label "Drag widgets onto the page" (thanks to Christopher)
+	* Fixed bug #9334: Hardcoded label "Drag widgets onto the page" (thanks to Christopher).
 
 2010-08-13  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -46,10 +46,10 @@
 
 2010-08-05  Jeff Segars  <jeff@webempoweredchurch.org>
 
-	* Fixed bug #8898: Incorrect back path leads to missing elements on editing form
-	* Fixed bug #8890: Redirect after save and close does not work in IE
-	* Fixed bug #9169: Editing form header is influenced by page styling
-	* Followup to feature #6509: Improved CSS, labels, and added configuration option related to logout button
+	* Fixed bug #8898: Incorrect back path leads to missing elements on editing form.
+	* Fixed bug #8890: Redirect after save and close does not work in IE.
+	* Fixed bug #9169: Editing form header is influenced by page styling.
+	* Followup to feature #6509: Improved CSS, labels, and added configuration option related to logout button.
 
 2010-07-30  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -62,12 +62,12 @@
 
 2010-07-26  Jeff Segars  <jeff@webempoweredchurch.org>
 
-	* Fixed bug #8095: tx_feeditadvanced_editpanel adds stylesheet non-existent in TYPO3 4.4
-	* Added feature #9046: Make use of autoloader
+	* Fixed bug #8095: tx_feeditadvanced_editpanel adds stylesheet non-existent in TYPO3 4.4.
+	* Added feature #9046: Make use of autoloader.
 
 2010-07-26  Oliver Hader  <oliver@typo3.org>
 
-	* Fixed bug #8982: Internet Explorer JavaScript issues (thanks to Johannes Feustel)
+	* Fixed bug #8982: Internet Explorer JavaScript issues (thanks to Johannes Feustel).
 
 2010-05-10  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -80,7 +80,7 @@
 
 2010-05-06  Jeff Segars  <jeff@webempoweredchurch.org>
 
-	* Fixed bug #5317: Buttons are too small when translated labels are long (thanks to Lorenz Ulrich)
+	* Fixed bug #5317: Buttons are too small when translated labels are long (thanks to Lorenz Ulrich).
 
 2010-04-29  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -117,8 +117,8 @@
  
 2010-01-24  Benjamin Mack  <benni@typo3.org>
 
-	* Fixed #4875: Hiding an element displays it twice on the site
-	* Added a missing comment header to a function
+	* Fixed bug #4875: Hiding an element displays it twice on the site.
+	* Added a missing comment header to a function.
 
 2010-01-12  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -129,15 +129,15 @@
 2010-01-07  Benjamin Mack  <benni@typo3.org>
 
 	* Removed the effect that a dropzone adjusts its height when hovering.
-	* Fixed bug #3570: Drag&Drop between columns does not work when dropping on empty columns or as the very first element in another column (non-TV)
-	* Followup to #5606: if an order for the editpanel icons was selected, then the drag handle was left out
-	* Fixed #5606: FeEdit.showIcons has "nearly" no effect (Thanks to Jochen Rieger)
+	* Fixed bug #3570: Drag&Drop between columns does not work when dropping on empty columns or as the very first element in another column (non-TV).
+	* Followup to bug #5606: if an order for the editpanel icons was selected, then the drag handle was left out.
+	* Fixed bug #5606: FeEdit.showIcons has "nearly" no effect (Thanks to Jochen Rieger).
 
 2010-01-02  Benjamin Mack  <benni@typo3.org>
 
-	* Fixed #3331 - CSS: Minor fix when the page has a fixed with for its input fields (Thanks to Thomas Allmer)
-	* Updated description for the TER / ext_emconf.php
-	* New Feature #5607: Option to disable menubar completely through FeEdit.menuBar.disable = 1 (thanks to Jochen Rieger)
+	* Fixed bug #3331 - CSS: Minor fix when the page has a fixed with for its input fields (Thanks to Thomas Allmer).
+	* Updated description for the TER / ext_emconf.php.
+	* Added Feature #5607: Option to disable menubar completely through FeEdit.menuBar.disable = 1 (thanks to Jochen Rieger).
 
 2009-12-11  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -156,7 +156,7 @@
 2009-11-25  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug: Dropzone label references incorrect locallang label.
-	* Fixed bug: Minor Javascript validation errors in feEdit.js
+	* Fixed bug: Minor Javascript validation errors in feEdit.js.
 	* Added feature: Implement hook for use in TemplaVoila 1.4.0 and greater.
 	* Added feature: Show status lightbox while waiting for close or save and close to complete.
 	* Release of version 1.1.0
@@ -196,13 +196,13 @@
 
 2009-11-09  Benjamin Mack  <benni@typo3.org>
 
-	* Fixed #5284: Usage of XLLfile is deprecated (Thanks to Steffen Gebert)
+	* Fixed #5284: Usage of XLLfile is deprecated (Thanks to Steffen Gebert).
 
 2009-11-08  Benjamin Mack  <benni@typo3.org>
 
-	* Added explicit variable declaration in JS file
-	* Fixed various bugs when handling hidden elements. They are now rendered at any time, but easily made visible through a new checkbox on top of the menubar
- 	* Minor cleanups in a hook and for some CSS selectors
+	* Added explicit variable declaration in JS file.
+	* Fixed various bugs when handling hidden elements. They are now rendered at any time, but easily made visible through a new checkbox on top of the menubar.
+ 	* Minor cleanups in a hook and for some CSS selectors.
 
 2009-11-08  Oliver Hader  <oliver@typo3.org>
 
@@ -211,7 +211,7 @@
 2009-11-07  Benjamin Mack  <benni@typo3.org>
 
 	* Fixed bug #3328: Block with editing icons should be shown without text when under 350px wide.
-	* Fixed bug #5029: Layout problems with small columns and dark background
+	* Fixed bug #5029: Layout problems with small columns and dark background.
 
 2009-11-07  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -223,9 +223,9 @@
 
 2009-11-07  Benjamin Mack  <benni@typo3.org>
 
-	* Set the conflicts in the EM conf to feedit so the two extensions don't conflict when running
-	* Modified the hook definitions from typo3/sysext/feeditadvanced to EXT:feeditadvanced
-	* Fixed CSS and Layouting issues for the draggables and its area
+	* Set the conflicts in the EM conf to feedit so the two extensions don't conflict when running.
+	* Modified the hook definitions from typo3/sysext/feeditadvanced to EXT:feeditadvanced.
+	* Fixed CSS and Layouting issues for the draggables and its area.
 
 2009-11-06  Jeff Segars  <jeff@webempoweredchurch.org>
 
@@ -249,7 +249,7 @@
 
 2009-10-29  Jeff Segars  <jeff@webempoweredchurch.org>
 
-	* Fixed bug #4989: Flexform layout problems
+	* Fixed bug #4989: Flexform layout problems.
 
 2009-10-28  Jeff Segars  <jeff@webempoweredchurch.org>
 
