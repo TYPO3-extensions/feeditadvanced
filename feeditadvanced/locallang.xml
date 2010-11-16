@@ -41,17 +41,24 @@
 			<label index="closeButton">Close</label>
 
 			<label index="pageEditButton">Page Properties</label>
+			<label index="pageEditTooltip">Edit page properties of the current page.</label>
 			<label index="pageNewButton">New Page</label>
+			<label index="pageNewTooltip">Create a new page.</label>
 			<label index="pageDeleteButton">Delete Page</label>
+			<label index="pageDeleteTooltip">Delete this page.</label>
 			<label index="pageHideButton">Hide Page</label>
+			<label index="pageHideTooltip">Set the visibility of this page to hidden.</label>
 			<label index="pageShowHidden">Show Hidden Content Elements</label>
+			<label index="pageShowHiddenTooltip">Toggle the display of hidden content elements on or off.</label>
 
 			<label index="previewTitle">Preview</label>
 			<label index="previewTooltip">Preview this page</label>
 			<label index="closeTitle">Close</label>
-			<label index="closeTooltip">Close Frontend Editing</label>
-			<label index="openTooltip">Open Frontend Editing</label>
+			<label index="closeTooltip">Close Frontend Editing.</label>
+			<label index="logoutTooltip">Logout from TYPO3 Backend.</label>
+			<label index="openTooltip">Open Frontend Editing.</label>
 			<label index="clipboardTitle">Clipboard</label>
+			<label index="clipboardTooltip">Use the clipboard to copy and paste content.</label>
 			<label index="dragWidgets">Drag widgets onto the page.</label>
 
 			<label index="js.dropMessage">Drop content here</label>

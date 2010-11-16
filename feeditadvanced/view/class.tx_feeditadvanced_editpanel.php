@@ -292,11 +292,13 @@ class tx_feeditadvanced_editpanel {
 			$pageActions = t3lib_div::trimExplode(',', $pageBtnOrder);
 			foreach ($allPageActions as $i=>$act) {
 				if (!in_array($act,$pageActions)) {
-					$subpartMarker['###EDITPANEL_ACTION_'.strtoupper($act).'###'] = '';
+					$subpartMarker['###EDITPANEL_ACTION_' . strtoupper($act) . '###'] = '';
 				}
-				$markerArray['###EDITPANEL_'.strtoupper($act).'_BUTTONTEXT###'] = $GLOBALS['BE_USER']->extGetLL('page'.ucfirst($act).'Button');
+				$markerArray['###EDITPANEL_' . strtoupper($act) . '_BUTTONTEXT###'] = $GLOBALS['BE_USER']->extGetLL('page' . ucfirst($act) . 'Button');
+				$markerArray['###EDITPANEL_' . strtoupper($act) . '_TOOLTIP###'] = $GLOBALS['BE_USER']->extGetLL('page' . ucfirst($act) . 'Tooltip');
 			}
 			$markerArray['###EDITPANEL_SHOW_HIDDEN_TEXT###'] = $GLOBALS['BE_USER']->extGetLL('pageShowHidden');
+			$markerArray['###EDITPANEL_SHOW_HIDDEN_TOOLTIP###'] = $GLOBALS['BE_USER']->extGetLL('pageShowHiddenTooltip');
 		}
 			// load in template for edit panel
 			// if special template for table is present, use it, else use default

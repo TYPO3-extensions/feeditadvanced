@@ -1,3 +1,7 @@
+2010-11-16  Christopher  <chrissitopher@gmx.de>
+
+	* Fixed bug #10785: Unify usage of tooltips in the first row of the menubar.
+
 2010-11-15  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #9304: Versioncheck for sprite manager is incorrect.
