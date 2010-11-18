@@ -4,6 +4,8 @@
 		<languageKey index="default" type="array">
 			<label index="statusEditingOn">Editing On</label>
 			<label index="statusEditingOff">Editing Off</label>
+			<label index="statusDeactivateEditing">Deactivate Editing</label>
+			<label index="statusActivateEditing">Activate Editing</label>
 			<label index="closeEditMode">close edit</label>
 			<label index="openEditMode">Edit Page</label>
 			<label index="toggle_advanced">Advanced</label>

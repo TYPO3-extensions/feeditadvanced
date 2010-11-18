@@ -1,3 +1,7 @@
+2010-11-18  Christopher  <chrissitopher@gmx.de>
+
+	* Fixed bug #9335: Buttons "Editing on" and "Editing off" need to be improved.
+
 2010-11-16  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #10785: Unify usage of tooltips in the first row of the menubar.

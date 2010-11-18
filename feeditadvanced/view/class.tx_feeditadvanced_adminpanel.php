@@ -299,7 +299,7 @@ class tx_feeditadvanced_adminpanel {
 					$this->menuBar->addItem('ContextActions', $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_common.xml:logout'), $action='', $image='', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:logoutTooltip'), $onClick='', $btnClass='', $labelClass='', '/typo3/logout.php?redirect=' . t3lib_div::getIndpEnv('TYPO3_REQUEST_URL'));
 				}
 				if (in_array('close', $tsContext)) {
-					$this->menuBar->addItem('ContextActions', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:statusEditingOn'), '', 'typo3conf/ext/feeditadvanced/res/icons/editing_on.gif', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:closeTooltip'), ' onclick="' . htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=0; document.TSFE_ADMIN_PANEL_Form.submit(); return false;') . '"');
+					$this->menuBar->addItem('ContextActions', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:statusDeactivateEditing'), '', $image='', $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:closeTooltip'), ' onclick="' . htmlspecialchars('document.TSFE_ADMIN_PANEL_Form.elements[\'TSFE_ADMIN_PANEL[menuOpen]\'].value=0; document.TSFE_ADMIN_PANEL_Form.submit(); return false;') . '"');
 				}
 			}
 			if (in_array('clipboard', $menuConfig)) {
