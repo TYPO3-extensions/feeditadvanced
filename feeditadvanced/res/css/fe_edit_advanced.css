@@ -53,6 +53,7 @@ div#feEditAdvanced-menuBar .feEditAdvanced-firstRow a.feEditAdvanced-button {
 
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
 
 div#feEditAdvanced-menuBar .feEditAdvanced-firstRow .feEditAdvanced-button span.feEditAdvanced-buttonText {
@@ -531,6 +532,7 @@ div.feEditAdvanced-contentWrapper form.typo3-editPanel {
 
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
 
 #feEditAdvanced-loading {
