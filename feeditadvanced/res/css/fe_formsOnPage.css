@@ -139,6 +139,10 @@ table.typo3-TCEforms select.formField {
 	padding-left: 12px;
 }
 
+.formsOnPage div.editorWrap div.htmlarea {
+	margin-left: 15px;
+}
+
 .formsOnPage .palettePadding {
 	padding-left: 4px;
 }

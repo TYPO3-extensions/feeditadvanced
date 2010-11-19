@@ -2,6 +2,7 @@
 
 	* Fixed bug #8423: Edit buttons are in front of lightbox images.
 	* Fixed bug #10814: Adjust CSS for IE9.
+	* Fixed bug #10880: RTE in lightbox needs margin-left.
 
 2010-11-18  Christopher  <chrissitopher@gmx.de>
 
