@@ -1,3 +1,7 @@
+2010-11-19  Christopher  <chrissitopher@gmx.de>
+
+	* Fixed bug #8423: Edit buttons are in front of lightbox images.
+
 2010-11-18  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #9335: Buttons "Editing on" and "Editing off" need to be improved (thanks to Daniel Felix).
