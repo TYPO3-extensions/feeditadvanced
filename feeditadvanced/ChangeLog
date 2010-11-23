@@ -1,3 +1,7 @@
+2010-11-23  Christopher  <chrissitopher@gmx.de>
+
+	* Fixed bug #11018: Logout Button redirect does not work when TYPO3 is installed in a subdirectory.
+
 2010-11-19  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #8423: Edit buttons are in front of lightbox images.
