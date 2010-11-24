@@ -229,7 +229,14 @@ class tx_feeditadvanced_editpanel {
 				if ($table=='pages') {
 					$this->panelItems['new'] = $this->editIconLinkWrap('newPage', 'newPageIcon', 'newPageTitle');
 				} else {
-					$this->panelItems['new'] = $this->editIconLinkWrap('newRecord',  'newRecordIcon', 'newRecordTitle');
+					if (substr_compare($currentRecord, ':NEW', '-4') === 0) {
+							// $currentRecord ends with ":NEW". => New content in top of column.
+						$title = 'newRecordInTopOfColumnTitle';
+					} else {
+							// New content after this element.
+						$title = 'newRecordTitle';
+					}
+					$this->panelItems['new'] = $this->editIconLinkWrap('newRecord',  'newRecordIcon', $title);
 				}
 			}
 				// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case

@@ -27,6 +27,7 @@
 			<label index="hideTitle">Hide this element</label>
 			<label index="newPageIcon">New Page</label>
 			<label index="newRecordIcon">New</label>
+			<label index="newRecordInTopOfColumnTitle">New content in top of this column</label>
 			<label index="newRecordTitle">New content after this element</label>
 			<label index="pasteIcon">Paste</label>
 			<label index="pasteTitle">Paste element after existing element</label>
