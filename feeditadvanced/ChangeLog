@@ -1,3 +1,7 @@
+2010-11-25  Christopher  <chrissitopher@gmx.de>
+
+	* Followup to bug #9335: Buttons "Editing on" and "Editing off" need to be improved.
+
 2010-11-24  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #9337: Help text for button "New" should be more flexible.
