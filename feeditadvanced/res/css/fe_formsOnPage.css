@@ -139,8 +139,12 @@ table.typo3-TCEforms select.formField {
 	padding-left: 12px;
 }
 
+.formsOnPage tr.palFieldHeader td {
+	padding-left: 16px;
+}
+
 .formsOnPage div.editorWrap div.htmlarea {
-	margin-left: 15px;
+	margin-left: 16px;
 }
 
 .formsOnPage .palettePadding {
@@ -148,7 +152,7 @@ table.typo3-TCEforms select.formField {
 }
 
 .formsOnPage td.class-main23 table {
-	margin-left: 12px;
+	margin-left: 16px;
 }
 
 .formsOnPage .typo3-TCEforms-flexForm {

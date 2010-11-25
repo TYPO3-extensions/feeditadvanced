@@ -1,6 +1,7 @@
 2010-11-24  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #9337: Help text for button "New" should be more flexible.
+	* Followup to bug #10880: RTE in lightbox needs margin-left.
 
 2010-11-23  Christopher  <chrissitopher@gmx.de>
 
