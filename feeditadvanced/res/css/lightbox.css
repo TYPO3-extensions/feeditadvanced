@@ -79,7 +79,9 @@
 	text-align: center;
 	line-height:1.3;
 	overflow: hidden;
-	width: 100%;
+	width: 172px;
+	margin-left: auto;
+	margin-right: auto;
 	color: white;
 	font-size: 14px;
 }

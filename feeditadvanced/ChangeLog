@@ -1,3 +1,7 @@
+2010-11-24  Christopher  <chrissitopher@gmx.de>
+
+	* Fixed bug #5584: Texts on black layer have changing line breaks when size changes.
+
 2010-11-25  Christopher  <chrissitopher@gmx.de>
 
 	* Followup to bug #9335: Buttons "Editing on" and "Editing off" need to be improved.
