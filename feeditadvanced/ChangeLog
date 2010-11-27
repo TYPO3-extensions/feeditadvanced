@@ -1,4 +1,8 @@
-2010-11-24  Christopher  <chrissitopher@gmx.de>
+2010-11-27  Christopher  <chrissitopher@gmx.de>
+
+	* Fixed bug #10784: feeditadvanced creates invalid html (part 1).
+
+2010-11-26  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #5584: Texts on black layer have changing line breaks when size changes.
 

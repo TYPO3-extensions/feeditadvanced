@@ -294,7 +294,7 @@ class tx_feeditadvanced_newcontentelements {
 							break;
 						} else {
 								// Add the parameter:
-							$wizardItems[$key]['params'].= '&defVals[tt_content]['.$fN.']='.rawurlencode($fV);
+							$wizardItems[$key]['params'].= '&amp;defVals[tt_content][' . $fN . ']=' . rawurlencode($fV);
 							$tmp = explode('_', $key);
 							$headersUsed[$tmp[0]] = $tmp[0];
 						}

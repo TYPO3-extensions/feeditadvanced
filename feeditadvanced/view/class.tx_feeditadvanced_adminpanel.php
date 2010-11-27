@@ -484,7 +484,9 @@ class tx_feeditadvanced_adminpanel {
 			}
 			var TS = new typoSetup();';
 
-		return '<script type="text/javascript">' . chr(10) . $javascript . chr(10) . '</script>';
+		$javascript = t3lib_div::wrapJS($javascript);
+
+		return $javascript;
 	}
 }
 
