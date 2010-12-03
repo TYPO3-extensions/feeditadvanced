@@ -1,6 +1,7 @@
 2010-12-03  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #11266: Fix formatting of CSS files. No code changes done.
+	* Fixed bug #11103: Update Whatever:hover (thanks to Peter Nederlof).
 
 2010-11-27  Christopher  <chrissitopher@gmx.de>
 

@@ -13,7 +13,7 @@ body {
 }
 
 div#feEditAdvanced-bodyattach {
-	behavior: url(typo3conf/ext/feeditadvanced/res/css/csshover.htc);
+	behavior: url(typo3conf/ext/feeditadvanced/res/css/csshover3-source.htc);
 }
 
 div#feEditAdvanced-container img {
