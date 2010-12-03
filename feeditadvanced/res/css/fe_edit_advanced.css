@@ -1,11 +1,29 @@
 /**
- * CSS for FrontEnd Editing Advanced (feeditadvanced)
+ * CSS for Advanced Frontend Editing (feeditadvanced)
+ *
+ * These styles are used when the menuBar is opened.
+ * Includes the styles for the drop zones, the hovermenu and the lightbox.
+ * For the lightbox also see lightbox.css.
+ *
+ * (Styles for the editing forms inside the lightbox are located in
+ * fe_formsOnPage.css)
  */
+body {
+	margin-top: 68px;
+}
 
-body { margin-top: 68px; }
-div#feEditAdvanced-bodyattach { behavior: url(typo3conf/ext/feeditadvanced/res/css/csshover.htc); }
-div#feEditAdvanced-container img { border: 0; border-style: none; }
-div#typo3-previewInfo { display: none; }
+div#feEditAdvanced-bodyattach {
+	behavior: url(typo3conf/ext/feeditadvanced/res/css/csshover.htc);
+}
+
+div#feEditAdvanced-container img {
+	border: 0;
+	border-style: none;
+}
+
+div#typo3-previewInfo {
+	display: none;
+}
 
 /* ---------------------- MENUBAR, generic buttons for that etc ---------------------------- */
 div#feEditAdvanced-menuBar {
@@ -21,7 +39,7 @@ div#feEditAdvanced-menuBar {
 	font-size: 90%;
 }
 
-div.feEditAdvanced-menuToolbar div.separatorBar, /* remove this line when checked, not namespaced */
+div.feEditAdvanced-menuToolbar div.separatorBar, /* DIV Tag not namespaced; remove this line when checked */
 div.feEditAdvanced-menuToolbar div.feEditAdvanced-separatorBar {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
@@ -30,7 +48,7 @@ div.feEditAdvanced-menuToolbar div.feEditAdvanced-separatorBar {
 	margin-right: 6px;
 }
 
-div.feEditAdvanced-menuToolbar div.spacer, /* remove this line when checked, not namespaced */
+div.feEditAdvanced-menuToolbar div.spacer, /* DIV Tag not namespaced; remove this line when checked */
 div.feEditAdvanced-menuToolbar div.feEditAdvanced-spacer {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
@@ -57,7 +75,6 @@ div#feEditAdvanced-menuBar .feEditAdvanced-firstRow a.feEditAdvanced-button {
 }
 
 div#feEditAdvanced-menuBar .feEditAdvanced-firstRow .feEditAdvanced-button span.feEditAdvanced-buttonText {
-
 	padding: 7px 5px 0px 7px;
 	color: #c6c6c6;
 	height: 21px;
@@ -74,25 +91,26 @@ div#feEditAdvanced-menuBar  #feEditAdvanced-showHiddenContent label {
 	padding: 0px 0px 5px 0px;
 }
 
-
 #feEditAdvanced-menuBar a.feEditAdvanced-button:hover,
 #feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover,
 div#feEditAdvanced-menuBar div.feEditAdvanced-smallButton:hover {
 	color: white;
 }
 
-div#feEditAdvanced-menuBar a.disabled, /* remove this line when checked, not namespaced */
+div#feEditAdvanced-menuBar a.disabled, /* A Tag not namespaced; remove this line when checked */
 div#feEditAdvanced-menuBar a.feEditAdvanced-disabled {
 	color: #888;
 	cursor: default;
 }
 
-div#feEditAdvanced-menuBar a.disabled:hover, /* remove this line when checked, not namespaced */
+div#feEditAdvanced-menuBar a.disabled:hover, /* A Tag not namespaced; remove this line when checked */
 div#feEditAdvanced-menuBar a.feEditAdvanced-disabled:hover {
 	background-color: #ddd;
 }
 
-div#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover { color: #fff; }
+div#feEditAdvanced-menuBar a.feEditAdvanced-smallButton:hover {
+	color: #fff;
+}
 
 div#feEditAdvanced-menuBar div.feEditAdvanced-firstRow,
 div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow {
@@ -102,33 +120,67 @@ div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow {
 	width: 100%;
 }
 
-div#feEditAdvanced-menuBar div.feEditAdvanced-firstRow { background: url(../icons/menubar/menu_back.png) repeat-x 0 0; }
-div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow { background: url(../icons/menubar/menu2_back.png) repeat-x 0 0; }
-div#feEditAdvanced-logo { float: right; padding: 0 15px; position: absolute; right: 0; top: 39px; }
+div#feEditAdvanced-menuBar div.feEditAdvanced-firstRow {
+	background: url(../icons/menubar/menu_back.png) repeat-x 0 0;
+}
 
+div#feEditAdvanced-menuBar div.feEditAdvanced-secondRow {
+	background: url(../icons/menubar/menu2_back.png) repeat-x 0 0;
+}
 
-div.feEditAdvanced-menuToolbar { margin: 1px; height: 32px; }
+div#feEditAdvanced-logo {
+	float: right;
+	padding: 0 15px;
+	position: absolute;
+	right: 0;
+	top: 39px;
+}
 
+div.feEditAdvanced-menuToolbar {
+	margin: 1px;
+	height: 32px;
+}
 
 /* ---------------------- Top Menu: Actions ---------------------------- */
-div#feEditAdvanced-actionToolbar { margin-right: 20px; }
-
+div#feEditAdvanced-actionToolbar {
+	margin-right: 20px;
+}
 
 /* ---------------------- Top Menu: Close Button on the right ---------------------------- */
-div#feEditAdvanced-contextToolbar { display: block; position: absolute; right: 0; top: 0; }
+div#feEditAdvanced-contextToolbar {
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
 
-div#feEditAdvanced-menuBar div#feEditAdvanced-contextToolbar a.feEditAdvanced-button { float: right; display: block; }
+div#feEditAdvanced-menuBar div#feEditAdvanced-contextToolbar a.feEditAdvanced-button {
+	float: right;
+	display: block;
+}
 
 /* ---------------------- Top Menu: Page edit buttons on the left ---------------------------- */
-div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar { float: left; width: 80%; }
-div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div.feEditAdvanced-allWrapper { display: block; }
-div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar a.feEditAdvanced-button { float: left; display: block; }
+div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar {
+	float: left;
+	width: 80%;
+}
+
+div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div.feEditAdvanced-allWrapper {
+	display: block;
+}
+
+div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar a.feEditAdvanced-button {
+	float: left;
+	display: block;
+}
+
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div#feEditAdvanced-showHiddenContent {
 	float: left;
 	padding: 7px 0px 2px 10px;
 	color: #ddd;
 	font-size: 12px;
 }
+
 div#feEditAdvanced-menuBar div#feEditAdvanced-pageEditToolbar div#feEditAdvanced-showHiddenContent input#feEditAdvanced-showHiddenContent-input {
 	vertical-align: -2px;
 }
@@ -152,6 +204,7 @@ div#feEditAdvanced-contentTypeToolbar-inner {
 	text-align: left;
 	z-index: 9200;
 }
+
 div#feEditAdvanced-contentTypeToolbar-scroller {
 	width: 2000px; /** needs to be an abnormal amount */
 }
@@ -171,7 +224,9 @@ div#feEditAdvanced-contentTypeToolbar-arrRight {
 	background: url(../icons/menubar/menu2_back.png) repeat-x 0 0;
 }
 
-div#feEditAdvanced-contentTypeToolbar-arrRight { float: right; }
+div#feEditAdvanced-contentTypeToolbar-arrRight {
+	float: right;
+}
 
 img.feEditAdvanced-buttonImage {
 	vertical-align: middle;
@@ -210,7 +265,6 @@ div#feEditAdvanced-menuBar .feEditAdvanced-contentTypeItem {
 	border-right: 1px dotted #afafaf;
 }
 
-
 .feEditAdvanced-contentTypeItem {
 	display: block; /*opera*/
 	display: inline-block; /*ie*/
@@ -222,11 +276,12 @@ div#feEditAdvanced-menuBar .feEditAdvanced-contentTypeItem {
 	height: 34px;
 }
 
-div.x-dd-drag-proxy { background: #e0e0e0; border: 1px dotted #999; }
-
+div.x-dd-drag-proxy {
+	background: #e0e0e0;
+	border: 1px dotted #999;
+}
 
 /* ---------------------- Top Menu: clipboard ---------------------------- */
-
 #feEditAdvanced-clipboardToolbar {
 	margin-right: 20px;
 	width: 180px;
@@ -245,10 +300,6 @@ div.x-dd-drag-proxy { background: #e0e0e0; border: 1px dotted #999; }
 	padding: 0 10px;
 	height: 34px;
 	border-right: 1px dotted #afafaf;
-}
-
-
-#feEditAdvanced-clipboardToolbar .clipObj {
 	background-color: #44a;
 }
 
@@ -319,23 +370,25 @@ div.x-dd-drag-proxy { background: #e0e0e0; border: 1px dotted #999; }
 
 dl.feEditAdvanced-menuUserlist {
 	font-size: 80%;
-	float:right;
+	float: right;
 	margin-top: 5px;
-	margin-right:160px;
-	width:auto;
-	overflow:hidden;
+	margin-right: 160px;
+	width: auto;
+	overflow: hidden;
 }
+
 dl.feEditAdvanced-menuUserlist dt {
-	display:inline;
-	float:left;
+	display: inline;
+	float: left;
 }
+
 dl.feEditAdvanced-menuUserlist dd {
-	display:inline;
-	float:left;
-	cursor:help;
-	margin:0px;
-	padding:0px;
-	padding-left:3px;
+	display: inline;
+	float: left;
+	cursor: help;
+	margin: 0px;
+	padding: 0px;
+	padding-left: 3px;
 }
 
 /* ---------------------- HOVERMENU ---------------------------- */
@@ -422,8 +475,6 @@ div.feEditAdvanced-contentWrapper .formsOnPage {
 	opacity: 0.5;
 }
 
-
-
 .feEditAdvanced-label,
 input.feEditAdvanced-editButton,
 .feEditAdvanced-dragHandle {
@@ -446,7 +497,9 @@ div.feEditAdvanced-contentWrapperSmall input.feEditAdvanced-editButton {
 	background-position: 0px 50%;
 }
 
-div.feEditAdvanced-contentWrapperSmall div.feEditAdvanced-editPanelDiv { min-width: 170px; }
+div.feEditAdvanced-contentWrapperSmall div.feEditAdvanced-editPanelDiv {
+	min-width: 170px;
+}
 
 .feEditAdvanced-label {
 	font-weight: bold;
@@ -498,8 +551,7 @@ input.feEditAdvanced-editButton.upAction {
 
 input.feEditAdvanced-editButton.downAction {
 	background: url(../icons/hovermenu/down.png) no-repeat 3px 50%;
- }
-
+}
 
 .feEditAdvanced-dragHandle {
 	float: right !important;
@@ -508,8 +560,13 @@ input.feEditAdvanced-editButton.downAction {
 	padding: 2px 3px 0 25px;
 }
 
-.doCut { background-color: #f8e0e0; }
-.doCopy { background-color: #d8f0d8; }
+.doCut {
+	background-color: #f8e0e0;
+}
+
+.doCopy {
+	background-color: #d8f0d8;
+}
 
 div.feEditAdvanced-contentWrapper form.typo3-editPanel {
 	float: right;
@@ -578,19 +635,22 @@ div.feEditAdvanced-contentWrapper form.typo3-editPanel {
 
 	-moz-opacity: 0.5;
 	opacity: .50;
-	filter: alpha(opacity=50);
+	filter: alpha(opacity = 50);
 }
 
 /*----------------- IE6 SPECIFIC STUFF ------------------*/
 * html #feEditAdvanced-menuBar {
 	position: absolute;
 }
+
 * html #feEditAdvanced-editWindow {
 	position: absolute;
 }
+
 * html #feEditAdvanced-contextToolbar {
 	position: absolute;
 }
+
 * html #feEditAdvanced-overlay {
 	position: absolute;
 }
