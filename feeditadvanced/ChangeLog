@@ -2,6 +2,7 @@
 
 	* Fixed bug #11266: Fix formatting of CSS files. No code changes done.
 	* Fixed bug #11103: Update Whatever:hover (thanks to Peter Nederlof).
+	* Followup to bug #10785: Unify usage of tooltips in the first row of the menubar.
 
 2010-11-27  Christopher  <chrissitopher@gmx.de>
 

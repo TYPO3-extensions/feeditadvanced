@@ -46,7 +46,7 @@
 			<label index="pageEditButton">Page Properties</label>
 			<label index="pageEditTooltip">Edit page properties of the current page.</label>
 			<label index="pageNewButton">New Page</label>
-			<label index="pageNewTooltip">Create a new page.</label>
+			<label index="pageNewTooltip">Create a new page as subpage to the current page.</label>
 			<label index="pageDeleteButton">Delete Page</label>
 			<label index="pageDeleteTooltip">Delete this page.</label>
 			<label index="pageHideButton">Hide Page</label>
