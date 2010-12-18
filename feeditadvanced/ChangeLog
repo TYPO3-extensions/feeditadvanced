@@ -1,3 +1,7 @@
+2010-12-18  Christopher  <chrissitopher@gmx.de>
+
+	* Fixed bug #5897: Write a manual for feeditadvanced.
+
 2010-12-03  Christopher  <chrissitopher@gmx.de>
 
 	* Fixed bug #11266: Fix formatting of CSS files. No code changes done.
