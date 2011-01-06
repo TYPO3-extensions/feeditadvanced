@@ -68,7 +68,7 @@ admPanel {
 The line hide = 0 hides the admin panel. If you want to use it, you can also set this to hide = 1. This should not influence the frontend editing menu. 
 Thanks for that hint to Mark Johnston and Walter Karlen! 
 
-Currently feeditadvanced only works in the live workspace – workspace support is still to be integrated in future versions. 
+When you want to use feeditadvanced with workspaces a problem might be that stage changes and the like cannot be done without logging in to the backend. The reason is that the extension "version" is not being loaded in the frontend. As a temporary solution, you can open typo3conf/localconf.php and modify $TYPO3_CONF_VARS['EXT']['extList_FE'] to include the version extension. 
 
 
 Configuration options
