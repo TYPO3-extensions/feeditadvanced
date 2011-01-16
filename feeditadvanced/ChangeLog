@@ -14,7 +14,7 @@
 
 2010-11-27  Christopher  <chrissitopher@gmx.de>
 
-	* Fixed bug #10784: feeditadvanced creates invalid html (part 1).
+	* Fixed bug #10784: feeditadvanced creates invalid html.
 
 2010-11-26  Christopher  <chrissitopher@gmx.de>
 
