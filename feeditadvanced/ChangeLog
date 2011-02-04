@@ -1,5 +1,9 @@
 2011-01-05  Christopher  <chrissitopher@gmx.de>
 
+	* Followup to bug #10784: feeditadvanced creates invalid html (thanks to Soren Malling)
+
+2011-01-05  Christopher  <chrissitopher@gmx.de>
+
 	* Fixed bug #11925: Update the manual.
 
 2010-12-18  Christopher  <chrissitopher@gmx.de>

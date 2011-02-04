@@ -59,14 +59,14 @@ class tx_feeditadvanced_newcontentelements {
 	var $config;					// config of the wizard
 
     var $menuItems;
-    
+
 	/**
 	 * Constructor, initializing internal variables.
 	 *
 	 * @return	void
 	 */
 	function init()	{
-		
+
 
 			// Setting class files to include:
 		if (is_array($TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']))	{
@@ -95,9 +95,9 @@ class tx_feeditadvanced_newcontentelements {
 	 */
 	function main()	{
 	    $this->init();
-        
+
 	    $wizardItems = $this->getWizardItems();
-    
+
 			// Hook for manipulating wizardItems, wrapper, onClickEvent etc.
 		if(is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook'] as $classData) {
@@ -111,7 +111,7 @@ class tx_feeditadvanced_newcontentelements {
 			}
 		}
 
-			
+
 			// Traverse items for the wizard.
 			// An item is either a header or an item rendered with a radio button and title/description and icon:
 		$cc = $key = 0;
@@ -130,14 +130,14 @@ class tx_feeditadvanced_newcontentelements {
 				$cc++;
 			}
 		}
-		
 
-       
-            
-     
+
+
+
+
 	}
 
-	
+
 	/***************************
 	 *
 	 * OTHER FUNCTIONS:
@@ -294,7 +294,7 @@ class tx_feeditadvanced_newcontentelements {
 							break;
 						} else {
 								// Add the parameter:
-							$wizardItems[$key]['params'].= '&amp;defVals[tt_content][' . $fN . ']=' . rawurlencode($fV);
+							$wizardItems[$key]['params'].= '&defVals[tt_content][' . $fN . ']=' . rawurlencode($fV);
 							$tmp = explode('_', $key);
 							$headersUsed[$tmp[0]] = $tmp[0];
 						}
