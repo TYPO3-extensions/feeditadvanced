@@ -1,3 +1,7 @@
+2011-02-15  Jeff Segars  <jeff@weempoweredchurch.org>
+
+	* Fixed bug #12864: Global variable in feEditTV.js causes naming collisions with IE.
+
 2011-02-04  Christopher  <chrissitopher@gmx.de>
 
 	* Followup to bug #10784: feeditadvanced creates invalid html (thanks to Soren Malling)

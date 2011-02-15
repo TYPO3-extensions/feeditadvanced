@@ -146,7 +146,8 @@ TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
  */
 FrontendEditing.addFlexformPointers = function() {
 	Ext.select('input.feEditAdvanced-flexformPointers').each(function(pointerElement) {
-		pointerElement = Ext.get(pointerElement);
+		var container;
+		var pointerElement = Ext.get(pointerElement);
 		// will be something like pages:25:sDEF:lDEF:field_content:vDEF
 		var containerName = pointerElement.getAttribute('title');
 		// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
