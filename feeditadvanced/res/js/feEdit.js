@@ -1645,7 +1645,7 @@ var FrontendEditing = {
 
 		var cb = Ext.get('feEditAdvanced-showHiddenContent-input');
 		if (cb) {
-			cb.on('change', this.toggleHiddenContentElements, this);
+			cb.on('click', this.toggleHiddenContentElements, this);
 			if (this.showHiddenContentElements) {
 				cb.set({'checked': 'checked'});
 			} else {

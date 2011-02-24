@@ -473,6 +473,7 @@ div.feEditAdvanced-contentWrapper .formsOnPage {
 .feEditAdvanced-hiddenElement .feEditAdvanced-contentWrapper,
 .hidden .formsOnPage {
 	opacity: 0.5;
+	-ms-filter: "alpha(opacity=50)";
 }
 
 .feEditAdvanced-label,
