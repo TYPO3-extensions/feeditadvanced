@@ -69,6 +69,13 @@ t3lib_extMgm::addUserTSConfig('
 	}
 ');
 
+t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
+#############################################
+## TypoScript added by extension "FE Editing Advanced"
+#############################################
+config.disablePreviewNotification = 1
+');
+
 	// Temporary home for TemplaVoila changes to make testing easier. Should eventually be rolled into TemplaVoila itself.
 if (t3lib_extMgm::isLoaded('templavoila')) {
 		// @todo Remove this code once TV 1.4 is released and required by feeditadvanced
