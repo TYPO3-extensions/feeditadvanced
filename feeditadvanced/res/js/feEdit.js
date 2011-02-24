@@ -416,7 +416,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			var dragEl = Ext.get(this.getDragEl());
 			var el = Ext.get(this.getEl());
 
-			dragEl.applyStyles({'z-index': 2000, 'width': el.getWidth() + 'px', 'backgroundColor': 'green'});
+			dragEl.applyStyles({'z-index': 2000, 'width': el.getWidth() + 'px'});
 
 			// Show drag proxy at the same point as mouse.
 			this.setDelta(el.getWidth() - 15, 0);

@@ -20401,8 +20401,6 @@ Ext.dd.StatusProxy.prototype = {
      * @param {Boolean} clearGhost True to also remove all content from the ghost, false to preserve it
      */
     reset : function(clearGhost){
-console.debug("resetting");
-console.debug(this);
         this.el.dom.className = "x-dd-drag-proxy " + this.dropNotAllowed;
         this.dropStatus = this.dropNotAllowed;
         if(clearGhost){
