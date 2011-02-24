@@ -96,7 +96,11 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 	};
 
 		// Returning false prevents the reset() method from removing classes added in startDrag()
-	this.dd.beforeDragOut = function() {
+		// notifyOut must be called to mimic what ExtJS does if beforeDragOut returns true
+	this.dd.beforeDragOut = function(target, e, id) {
+		if(target.isNotifyTarget){
+			target.notifyOut(this, e, this.dragData);
+		}
 		return false;
 	}
 
@@ -444,7 +448,11 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		};
 
 			// Returning false prevents the reset() method from removing classes added in startDrag()
-		this.dd.beforeDragOut = function() {
+			// notifyOut must be called to mimic what ExtJS does if beforeDragOut returns true
+		this.dd.beforeDragOut = function(target, e, id) {
+			if(target.isNotifyTarget){
+				target.notifyOut(this, e, this.dragData);
+			}
 			return false;
 		}
 

@@ -5,6 +5,7 @@
 	* Follow-up to #10787: Compatibility fixes for ExtJS 3.3.
 	* Fixed issues with "Show Hidden Content Elements" in IE.
 	* Follow-up to #10787: Remove debug code.
+	* Follow-up to #10787: Dropzones are not deactivated.
 
 2011-02-15  Jeff Segars  <jeff@weempoweredchurch.org>
 
