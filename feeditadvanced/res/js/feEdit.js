@@ -73,10 +73,13 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 	});
 
 	this.dd.startDrag = function(x, y) {
+		// Show drag proxy at the same point as mouse.
+		this.setDelta(0, 0);
+
 		var dragEl = Ext.get(this.getDragEl());
 		var el = Ext.get(this.getEl());
 
-		dragEl.applyStyles({'z-index': 20000 });
+		dragEl.applyStyles({'z-index': 20000, 'width': el.getWidth() + 'px' });
 		dragEl.update(el.dom.innerHTML);
 		dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
 		FrontendEditing.activateDropZones();
@@ -91,7 +94,12 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 	this.dd.afterInvalidDrop = function(evt, id) {
 		FrontendEditing.deactivateDropZones();
 	};
-	
+
+		// Returning false prevents the reset() method from removing classes added in startDrag()
+	this.dd.beforeDragOut = function() {
+		return false;
+	}
+
 	Ext.dd.Registry.register(this.dd);
 };
 
@@ -408,13 +416,17 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			var dragEl = Ext.get(this.getDragEl());
 			var el = Ext.get(this.getEl());
 
+			dragEl.applyStyles({'z-index': 2000, 'width': el.getWidth() + 'px', 'backgroundColor': 'green'});
+
+			// Show drag proxy at the same point as mouse.
+			this.setDelta(el.getWidth() - 15, 0);
+
 			FrontendEditing.activateDropZones();
 			el.setVisibilityMode(Ext.Element.DISPLAY);
 			el.hide();
 			el.next('.feEditAdvanced-dropzone').setVisibilityMode(Ext.Element.DISPLAY);
 			el.next('.feEditAdvanced-dropzone').hide();
 
-			dragEl.applyStyles({'z-index': 2000});
 			dragEl.update(el.dom.innerHTML);
 			dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
 		};
@@ -430,6 +442,13 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			el.show();
 			FrontendEditing.deactivateDropZones();
 		};
+
+			// Returning false prevents the reset() method from removing classes added in startDrag()
+		this.dd.beforeDragOut = function() {
+			return false;
+		}
+
+
 		Ext.dd.Registry.register(this.dd);
 	},
 
@@ -753,7 +772,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 			// Move a record
 			linkedDragEl.insertBefore(dropZoneEl);
-			linkedDragEl.highlight({duration: 1});
+			linkedDragEl.highlight('ffff9c', {duration: 1});
 
 			var sourceEditPanel = FrontendEditing.editPanels.get(linkedDragEl.id);
 			var previousContentElement = linkedDragEl.prev('.feEditAdvanced-allWrapper');
@@ -776,7 +795,6 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				var moveAfter = recordFields[1];
 			}
 			sourceEditPanel.moveAfter(moveAfter);
-
 		} else if (linkedDragEl.hasClass('clipObj')) {
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
 			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd').first().getValue();

@@ -32,7 +32,7 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 		} else if (linkedDragEl.hasClass('feEditAdvanced-allWrapper')) {
 			// Move a record
 			linkedDragEl.insertBefore(dropZoneEl);
-			linkedDragEl.highlight({duration: 1});
+			linkedDragEl.highlight('ffff9c', {duration: 1});
 
 			var sourceEditPanel = FrontendEditing.editPanels.get(linkedDragEl.id);
 			var previousContentElement = linkedDragEl.prev('.feEditAdvanced-allWrapper');
