@@ -2,7 +2,8 @@
 
 	* Patched ExtJS to set Ext.dd.DragDropMgr.useCache to false by default, avoiding positioning problems.
 	* Added TV-specific functionality to ensure that FlexForm pointers are updated when content is added or moved.
-
+	* Fixed issues with extra drop zones and incorrect locations.
+	
 2011-02-24  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #12770: Disable the preview notification box for TYPO3 4.5+.

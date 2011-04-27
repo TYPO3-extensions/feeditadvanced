@@ -425,11 +425,9 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			// Show drag proxy at the same point as mouse.
 			this.setDelta(el.getWidth() - 15, 0);
 
-			FrontendEditing.activateDropZones();
+			FrontendEditing.activateDropZones(FrontendEditing.editPanels.get(el.id));
 			el.setVisibilityMode(Ext.Element.DISPLAY);
 			el.hide();
-			el.next('.feEditAdvanced-dropzone').setVisibilityMode(Ext.Element.DISPLAY);
-			el.next('.feEditAdvanced-dropzone').hide();
 
 			dragEl.update(el.dom.innerHTML);
 			dragEl.addClass(el.dom.className + ' feeditadvanced-dd-proxy');
@@ -994,7 +992,9 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 		} else {
 			FrontendEditing.editWindow.displayStaticMessage(TYPO3.LLL.feeditadvanced.generalError);
 		}
-		
+
+			// Always scan for new edit panels to update after response.
+		FrontendEditing.scanForEditPanels();
 	},
 
 	_process: function() {
@@ -1271,7 +1271,6 @@ TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 			nextEditPanel = this.parent.getNextContentElement();
 			FrontendEditing.editPanels.add(nextEditPanel.id, new TYPO3.FeEdit.EditPanel(nextEditPanel));
 		}
-		FrontendEditing.scanForEditPanels();
 	},
 
 	_getNotificationMessage: function() {
@@ -1313,7 +1312,6 @@ TYPO3.FeEdit.SaveAndCloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		if (json.uid) {
 			ep = FrontendEditing.editPanels.get(table + ':' + json.uid);
 			ep.replaceContent(json.content);
-			FrontendEditing.scanForEditPanels();
 		} else {
 			this.parent.replaceContent(json.content);
 			this.parent.setupEventListeners();
@@ -1640,11 +1638,27 @@ var FrontendEditing = {
 	scanForEditPanels: function() {
 		// Create all the EditPanels and stick them in an array
 		Ext.each(Ext.query('div.feEditAdvanced-allWrapper'), function (el) {
-			if (el.id && !this.editPanels.get(el.id)) {
-				this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
+			if (el.id) {
+				if (!this.editPanels.get(el.id)) {
+					this.editPanels.add(el.id, new TYPO3.FeEdit.EditPanel(el));
+				} else {
+						panel = this.editPanels.get(el.id);
+						// @todo We need to do some kind of re-initialization here so that drop zones are correct.
+						if (panel.el.hasClass('feEditAdvanced-draggable') && !panel.isPagePanel) {
+							panel._makeDraggable();
+						}
+				}
 			}
 		}, this);
 		this.checkContentElements();
+
+		// @todo This requires TV! Move it to feEditTV.js
+		if (typeof FrontendEditing.updatePointerElements == 'function') {
+			FrontendEditing.updatePointerElements();
+		}
+		if (typeof FrontendEditing.addFlexformPointers == 'function') {
+			FrontendEditing.addFlexformPointers();
+		}
 	},
 	
 	initializeMenuBar: function() {
@@ -1691,11 +1705,22 @@ var FrontendEditing = {
 	},
 
 		// Enable drop indicators when a drag is started.
-	activateDropZones: function() {
+	activateDropZones: function(draggedPanel) {
 		FrontendEditing.editPanelsEnabled = false;
+		
+		var prevPanel;
+		if (draggedPanel) {
+			prevPanel = FrontendEditing.editPanels.get(draggedPanel.getPreviousContentElement().id);
+		}
+
 		FrontendEditing.editPanels.each(function(panel) {
 			panel.disable();
-			panel.addDropZone();
+				// Add a dropzone for all edit panels except for two
+				// 1) The panel being dragged
+				// 2) The panel before the one being dragged (prevPanel)
+			if (!draggedPanel || ((draggedPanel !== panel) && (prevPanel !== panel))) {
+				panel.addDropZone();
+			}
 		});
 
 		// go through each Content element container and add a dropZone
@@ -1761,7 +1786,6 @@ var FrontendEditing = {
 			'disableCaching': true
 		});
 	}
-	
 };
 
 
