@@ -18045,7 +18045,7 @@ Ext.dd.DragDropMgr = function() {
          * @type boolean
          * @static
          */
-        useCache: true,
+        useCache: false,
 
         /**
          * The number of pixels that the mouse needs to move after the

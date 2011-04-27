@@ -14,6 +14,8 @@ The Ext Core can be found in feeditadvanced/res/js/ext-base.js, the custom ext-d
  * src/widgets/Layer.js
  * pkgs/ext-dd-debug.js
 
+ * In the resulting file, Ext.dd.DragDropMgr.useCache is set to false by default to avoid positioning errors.
+
 The files are concatenated in that order (manually for now) and then minified (through http://refresh-sf.com/yui/).
 
 February 24, 2011
