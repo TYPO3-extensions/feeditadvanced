@@ -1,6 +1,7 @@
 2011-04-27  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Patched ExtJS to set Ext.dd.DragDropMgr.useCache to false by default, avoiding positioning problems.
+	* Added TV-specific functionality to ensure that FlexForm pointers are updated when content is added or moved.
 
 2011-02-24  Jeff Segars  <jeff@webempoweredchurch.org>
 

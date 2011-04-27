@@ -140,14 +140,45 @@ TYPO3.FeEdit.MoveAfterAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_isModalAction: false
 });
 
+/**
+ * Loops over flexform pointers (hidden input fields within each TV container) and updates the order and
+ * list of content elements within that containter.
+ */
+FrontendEditing.updatePointerElements = function() {
+	Ext.select('input.feEditAdvanced-flexformPointers').each(function(pointer) {
+		var container;
+		var pointerElement = Ext.get(pointer);
+
+		// Find a container element. For outer mapping, its a sibling. For inner mapping, its a parent.
+		if (pointerElement.prev().hasClass('feEditAdvanced-allWrapper')) {
+			container = pointerElement.parent();
+		} else {
+			container = pointerElement.prev();
+		}
+
+		var pointerArray = [];
+		var elementsInContainer = Ext.get(container.select('.feEditAdvanced-allWrapper'));
+	 	elementsInContainer.each(function(element, counter) {
+			var firstElement = element.first();
+			var recordElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-record').first());
+				// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
+			var recordInfo = recordElement.getValue().split(':');
+			pointerArray.push(recordInfo[1]);
+
+			elementsInContainer.removeElement(firstElement);
+		});
+		pointerElement.set({'value': pointerArray.toString()});
+	});
+};
+
 /* basically this functions goes through all "input class=flexformPointers" elements 
  * which are at the end of every container with CEs; and then 
  * TODO: THis function does not work if CEs are hidden but not shown
  */
 FrontendEditing.addFlexformPointers = function() {
-	Ext.select('input.feEditAdvanced-flexformPointers').each(function(pointerElement) {
+	Ext.select('input.feEditAdvanced-flexformPointers').each(function(pointer) {
 		var container;
-		var pointerElement = Ext.get(pointerElement);
+		var pointerElement = Ext.get(pointer);
 		// will be something like pages:25:sDEF:lDEF:field_content:vDEF
 		var containerName = pointerElement.getAttribute('title');
 		// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
@@ -167,30 +198,52 @@ FrontendEditing.addFlexformPointers = function() {
 				if (firstElement) {
 					recordElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-record').first());
 					if (recordElement.getValue() == 'tt_content:' + pointerValue) {
+
 							// flexformPointer element
-						Ext.DomHelper.insertAfter(recordElement, {
-							'tag':  'input',
-							'type': 'hidden',
-							'name': 'TSFE_EDIT[flexformPointer]',
-							'cls':  'feEditAdvanced-tsfeedit-input-flexformPointer',
-							'value': containerName + ':' + counter + '/tt_content:' + pointerValue
-						});
+						var flexformPointerElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-flexformPointer:first'));
+						if (flexformPointerElement.first()) {
+							flexformPointerElement.set({'value': containerName + ':' + counter + '/tt_content:' + pointerValue});
+						} else {
+							var options = {
+								'tag':  'input',
+								'type': 'hidden',
+								'name': 'TSFE_EDIT[flexformPointer]',
+								'cls':  'feEditAdvanced-tsfeedit-input-flexformPointer',
+								'value': containerName + ':' + counter + '/tt_content:' + pointerValue
+							};
+							Ext.DomHelper.insertAfter(recordElement, options);
+						}
+
 							// sourcePointer element
-						Ext.DomHelper.insertAfter(recordElement, {
-							'tag':  'input',
-							'type': 'hidden',
-							'name': 'TSFE_EDIT[sourcePointer]',
-							'cls':  'feEditAdvanced-tsfeedit-input-sourcePointer',
-							'value': containerName + ':' + counter
-						});
+						var sourcePointerElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-sourcePointer:first'));
+						if (sourcePointerElement.first()) {
+							sourcePointerElement.set({'value': containerName + ':' + counter});
+						} else {
+							options = {
+								'tag':  'input',
+								'type': 'hidden',
+								'name': 'TSFE_EDIT[sourcePointer]',
+								'cls':  'feEditAdvanced-tsfeedit-input-sourcePointer',
+								'value': containerName + ':' + counter
+							};
+							Ext.DomHelper.insertAfter(recordElement, options);
+						}
+
 							// destinationPointer element
-						Ext.DomHelper.insertAfter(recordElement, {
-							'tag':  'input',
-							'type': 'hidden',
-							'name': 'TSFE_EDIT[destinationPointer]',
-							'cls':  'feEditAdvanced-tsfeedit-input-destinationPointer',
-							'value': containerName + ':' + counter
-						});
+						var destinationPointerElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-destinationPointer:first'));
+						if (destinationPointerElement.first()) {
+							destinationPointerElement.set({'value': containerName + ':' + counter});
+						} else {
+							options = {
+								'tag':  'input',
+								'type': 'hidden',
+								'name': 'TSFE_EDIT[destinationPointer]',
+								'cls':  'feEditAdvanced-tsfeedit-input-destinationPointer',
+								'value': containerName + ':' + counter
+							};
+							Ext.DomHelper.insertAfter(recordElement, options);
+						}
+
 							// and remove the element which is now not needed anymore
 						elementsInContainer.removeElement(firstElement);
 					}
@@ -199,7 +252,3 @@ FrontendEditing.addFlexformPointers = function() {
 		}
 	});
 };
-
-Ext.onReady(function() {
-	FrontendEditing.addFlexformPointers();
-});
