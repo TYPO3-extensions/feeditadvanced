@@ -1,3 +1,7 @@
+2011-05-02  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Updated formatting for manual and made a few small tweaks to the content.
+
 2011-04-27  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Patched ExtJS to set Ext.dd.DragDropMgr.useCache to false by default, avoiding positioning problems.
