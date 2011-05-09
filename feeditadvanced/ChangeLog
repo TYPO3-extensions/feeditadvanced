@@ -1,3 +1,7 @@
+2011-05-09  Jeff Segars  <jeff@webempoweredchurch.org>
+
+	* Fixed bug #13586: Missing icons on editing form.
+
 2011-05-02  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Updated formatting for manual and made a few small tweaks to the content.

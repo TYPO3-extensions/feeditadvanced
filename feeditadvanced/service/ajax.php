@@ -690,6 +690,8 @@ class tx_feeditadvanced_ajax {
 			$GLOBALS['LANG'] = t3lib_div::makeInstance('language');
 			$GLOBALS['LANG']->init($GLOBALS['BE_USER']->uc['lang']);
 		//}
+
+		define('PATH_typo3_mod', '../');
 	}
 
 	/**
