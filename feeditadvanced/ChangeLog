@@ -1,3 +1,7 @@
+2011-05-11  Benjamin Mack  <benni@typo3.org>
+
+	* Fixed bug #26769: Classic Editing: Content is not returned if adminPanel is disabled but user is admin
+
 2011-05-09  Jeff Segars  <jeff@webempoweredchurch.org>
 
 	* Fixed bug #13586: Missing icons on editing form.

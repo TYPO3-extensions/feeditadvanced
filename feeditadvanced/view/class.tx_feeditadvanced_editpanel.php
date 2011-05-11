@@ -148,8 +148,10 @@ class tx_feeditadvanced_editpanel {
 		$this->table = $table;
 
 		$this->init($conf);
+
+		// if the panel is disabled, just return the content
 		if ($this->disabled) {
-			return;
+			return $content;
 		}
 
 			// Special content is about to be shown, so the cache must be disabled.
