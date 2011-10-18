@@ -31,7 +31,7 @@ if(t3lib_div::int_from_ver(TYPO3_version) >= 4004000) {
 }
 
 	// Ensure backpaths for new content element wizard are processed with absRefPrefix
-$GLOBALS['TYPO3_CONF_VARS']['FE']['additionalAbsRefPrefixDirectories'] .= ',typo3/../typo3conf/ext/';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['additionalAbsRefPrefixDirectories'] .= 'typo3/../typo3conf,typo3/js';
 
 	// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
 t3lib_extMgm::addPageTSConfig('
