@@ -46,7 +46,9 @@ class tx_feeditadvanced_tcemain_processdatamap {
 	 */
 	public function processDatamap_preProcessFieldArray($fieldArray, $table, $id, $tce) {
 		$temp = t3lib_div::_GP('_ACTION_FLEX_FORMTSFE_EDIT');
-		$_POST['_ACTION_FLEX_FORMdata'] = $temp['data'];
+		if(empty($_POST['_ACTION_FLEX_FORMdata']) && !empty($temp)) {
+			$_POST['_ACTION_FLEX_FORMdata'] = $temp['data'];
+		}
 	}
 }
 
