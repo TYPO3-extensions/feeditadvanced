@@ -63,7 +63,7 @@ class tx_feeditadvanced_adminpanel {
 	 * @var		tx_feeditadvanced_menu object
 	 */
 	protected $menuBar = NULL;
-	
+
 	/**
 	 * Indicates if mod was disabled
 	 *
@@ -85,22 +85,22 @@ class tx_feeditadvanced_adminpanel {
 	protected $cssPrefix = 'feEditAdvanced';
 
 
-	
+
 	/**
-	 * Static method for displaying the top menu bar, this is where TYPO3 hooks in. 
+	 * Static method for displaying the top menu bar, this is where TYPO3 hooks in.
 	 *
 	 * @note edited the method to work with better than temporarily solution.
 	 *
 	 * @return void
 	 */
-	public static function showMenuBar($params,&$parent) {
+	public static function showMenuBar($params, &$parent) {
 		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->beUserLogin) {
 			$adminPanel = t3lib_div::makeInstance('tx_feeditadvanced_adminpanel');
-			$feEditContent = $adminPanel->display();
+			$feEditContent = self::processAbsRefPrefix($parent, $adminPanel->display());
 			$parent->content = str_replace('</body>', $feEditContent . '</body>', $parent->content);
 		}
 	}
-	
+
 	public function __construct() {
 		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->beUserLogin) {
 				// set up general configuration
@@ -177,7 +177,7 @@ class tx_feeditadvanced_adminpanel {
 			'CSSPREFIX'   => $this->cssPrefix
 		);
 
-			// @todo	This code runs after content has been created, 
+			// @todo	This code runs after content has been created,
 			// thus we cannot insert data into the head using the page renderer.  Are there any other options?
 		if ($this->menuOpen) {
 			$markers['INCLUDES'] = $this->getIncludes();
@@ -239,7 +239,7 @@ class tx_feeditadvanced_adminpanel {
 	function buildMenu() {
 		$content = '';
 
-			// Allow to hook in the buildMenu process here, 
+			// Allow to hook in the buildMenu process here,
 			// this way you can exchange the menu building completely
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'])) {
 			$_params = array(
@@ -289,7 +289,7 @@ class tx_feeditadvanced_adminpanel {
 
 			// render new content element icons
 			$this->renderNewContentElementIcons($menuConfig, $tsMenuBar);
-			
+
 			if (in_array('context', $menuConfig)) {
 				$tsContext = t3lib_div::trimExplode(',', $tsMenuBar['contextMenu']);
 				if (in_array('preview', $tsContext)) {
@@ -409,7 +409,7 @@ class tx_feeditadvanced_adminpanel {
 	}
 
 	/**
-	 * Generates general configuration Javascript, mimicing pieces of what is 
+	 * Generates general configuration Javascript, mimicing pieces of what is
 	 * set for the backend in typo3/backend.php.
 	 *
 	 * @return	string
@@ -459,6 +459,12 @@ class tx_feeditadvanced_adminpanel {
 			$GLOBALS['LANG']->csConvObj->convArray($labels, $GLOBALS['LANG']->charSet, 'utf-8');
 		}
 
+		if ($GLOBALS['TSFE']->absRefPrefix) {
+			$ajaxRequestUrl = $GLOBALS['TSFE']->absRefPrefix . 'index.php';
+		} else {
+			$ajaxRequestUrl = 'index.php';
+		}
+
 
 		$javascript = '
 			var TYPO3 = {};
@@ -473,7 +479,8 @@ class tx_feeditadvanced_adminpanel {
 				feeditadvanced : ' . json_encode($labels) . '
 			};
 			TYPO3.configuration.feeditadvanced = {
-				editWindow : ' . json_encode($editWindowConfiguration) . '
+				editWindow : ' . json_encode($editWindowConfiguration) . ',
+				ajaxRequestUrl : "' . $ajaxRequestUrl . '"
 			};
 			/**
 			 * TypoSetup object.
@@ -487,6 +494,25 @@ class tx_feeditadvanced_adminpanel {
 		$javascript = t3lib_div::wrapJS($javascript);
 
 		return $javascript;
+	}
+
+	/**
+	 * Performs absRefPrefix replacement on the specified content.
+	 *
+	 * @param tslib_fe $TSFE
+	 * @param string $content
+	 * @return string
+	 */
+	protected function processAbsRefPrefix($TSFE, $content) {
+		$originalContent = $TSFE->content;
+		$TSFE->content  = $content;
+
+		$TSFE->setAbsRefPrefix();
+
+		$content = $TSFE->content;
+		$TSFE->content = $originalContent;
+
+		return $content;
 	}
 }
 

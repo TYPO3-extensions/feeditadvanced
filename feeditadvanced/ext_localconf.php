@@ -30,12 +30,15 @@ if(t3lib_div::int_from_ver(TYPO3_version) >= 4004000) {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['feeditadvanced'] = 'EXT:feeditadvanced/hooks/class.tx_feeditadvanced_pagerenderer.php:tx_feeditadvanced_pagerenderer->preProcessPageRenderer';
 }
 
+	// Ensure backpaths for new content element wizard are processed with absRefPrefix
+$GLOBALS['TYPO3_CONF_VARS']['FE']['additionalAbsRefPrefixDirectories'] .= ',typo3/../typo3conf/ext/';
+
 	// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
 t3lib_extMgm::addPageTSConfig('
 	FeEdit {
 		#possible disable complete with set FeEdit.disable=1
 		disable = 0
-		
+
 		useAjax = 1
 		clickContentToEdit = 0
 		reloadPageOnContentUpdate = 0
@@ -44,7 +47,7 @@ t3lib_extMgm::addPageTSConfig('
 		skin {
 			#cssFile = typo3conf/ext/feeditadvanced/res/css/fe_edit_advanced.css
 			#templateFile = EXT:feeditadvanced/res/template/feedit.tmpl
-			
+
 			imageType = GIF
 		}
 		menuBar {

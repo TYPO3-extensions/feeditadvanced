@@ -54,14 +54,14 @@ TYPO3.FeEdit.Toolbar = function(toolbarElementId) {
 
 
 
-/** 
+/**
  * Class for the toolbar item that is on top of the page
- * needs 
+ * needs
  */
 TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 	this.el = Ext.get(draggableEl);
 
-		// Override clicks on any elements that are also draggable. 
+		// Override clicks on any elements that are also draggable.
 		// This may eventually trigger an add in the main content area instead.
 	this.el.on('click', function(evt) {
 		evt.stopEvent();
@@ -85,7 +85,7 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 		FrontendEditing.activateDropZones();
 	};
 
-	// is called over and over again, until you leave or drop the 
+	// is called over and over again, until you leave or drop the
 		// id is the ID of the drop zone
 /*	this.dd.onDragOver = function(evt, id) {
 		console.log('Toolbarwidget is currently over ' + id);
@@ -111,7 +111,7 @@ TYPO3.FeEdit.ToolbarWidget = function(draggableEl) {
 	// Object for Javascript handling as part of an AJAX request.
 TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 	regexpScriptTags: '<script[^>]*>([\\S\\s]*?)<\/script>',
-	
+
 	constructor: function() {
 		this.loadedElements = new Ext.util.MixedCollection();
 		this.unloadedElements = [];
@@ -126,7 +126,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 				this.loadedElements.add(src, 1);
 			}
 		}, this);
-		
+
 		Ext.select('head link[type="text/css"]').each(function(css) {
 			css = Ext.get(css);
 			if (src = css.getAttribute('href')) {
@@ -140,14 +140,14 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 		(textContent.match(matchScript) || []).map(function(scriptTag) {
 			this.addJavascript(scriptTag);
 		}.bind(this));
-		
-		
+
+
 		linkFragment = "<link[^<>]*href=\"([\\S\\s]*?)\\S*>";
 		var matchLink = new RegExp(linkFragment, 'img');
 		(textContent.match(matchLink) || []).map(function(linkTag) {
 			this.addCSS(linkTag);
 		}.bind(this));
-		
+
 		this.processQueue();
 	},
 
@@ -178,7 +178,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 			this.loadedElements.add(src, 1);
 		}
 	},
-	
+
 	addInlineCSS: function(cssContent) {
 		var styleElement = this.createStyleElement();
 		styleElement.set({'type': 'text/css'});
@@ -189,10 +189,10 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 			var tt1 = document.createTextNode(def);
 			styleElement.appendChild(cssContent);
 		}
-		
+
 		this.addElementToQueue(styleElement);
 	},
-	
+
 	addExternalCSS: function(src) {
 		var linkElement = this.createLinkElement();
 		linkElement.set({'href': src});
@@ -211,7 +211,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 			this.addInlineJavascript(inlineJS);
 		}
 	},
-	
+
 	addCSS: function(linkTag) {
 		var hrefFragment = 'href=(?:\"|\')([\\S\\s]*?)(?:\"|\')(?:\\S\\s)*?\>';
 		var hrefFragment = 'href=(?:\"|\')([\\S\\s]*?)(?:\"|\')';
@@ -233,7 +233,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 		this.addCallBacksToElementWhenLoaded(scriptElement);
 		return scriptElement;
 	},
-	
+
 	createStyleElement: function() {
 		var styleID = new Date().getTime() + '_onDemandLoadedStyle';
 		var styleElement = Ext.DomHelper.createDom({
@@ -244,7 +244,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 		this.addCallBacksToElementWhenLoaded(styleElement);
 		return styleElement;
 	},
-	
+
 	createLinkElement: function() {
 		var styleID = new Date().getTime() + '_onDemandLoadedStyle';
 		var linkElement = Ext.DomHelper.createDom({
@@ -256,7 +256,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 		this.addCallBacksToElementWhenLoaded(linkElement);
 		return linkElement;
 	},
-	
+
 	// class that is used internally to apply certain "onstatechange" and "onload" events when the element is loaded
 	// so that the process queue is run
 	addCallBacksToElementWhenLoaded: function(element) {
@@ -271,7 +271,7 @@ TYPO3.FeEdit.AJAXJavascriptHandler = Ext.extend(TYPO3.FeEdit.Base, {
 		}, this);
 		return element;
 	},
-	
+
 	addElementToHead: function(element) {
 		Ext.DomQuery.select('head').first().appendChild(element);
 	},
@@ -318,7 +318,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	pid: null,
 	record: null,
 	isPagePanel: false,	// whether this panel edits the page (thus it's in the menupanel), or a content panel
-	
+
 	sortable: false,
 	hoverMenuEnabled: false,
 	alwaysVisible: false,
@@ -338,11 +338,11 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			this.sortable = true;
 			this._makeDraggable();
 		}
-		
+
 		if (this.el.hasClass('alwaysVisible') || this.isPagePanel) {
 			this.alwaysVisible = true;
 		}
-		
+
 		if (this.isPagePanel) {
 			this.el.show();
 		}
@@ -358,7 +358,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		this.disableHoverMenu();
 		this.el.addClass('feEditAdvanced-noBorder');
 	},
-	
+
 	elementIsHidden: function() {
 		return (this.el.hasClass('feEditAdvanced-hiddenElement') && !FrontendEditing.showHiddenContentElements);
 	},
@@ -408,7 +408,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			,maintainOffset: true
 //			,dropAllowed: 'feEditAdvanced-dropzone'
 		});
-		
+
 		// find the handle and give the handle an ID
 		var dragHandle = Ext.get(this.el.select('.feEditAdvanced-dragHandle').first());
 		var dragHandleId = Ext.id(dragHandle, 'feEditAdvanced-dragHandle-');
@@ -461,7 +461,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	_handleButtonClick: function(evt) {
 		var targetEl = evt.getTarget();
 		targetEl = Ext.get(targetEl);
-		if (targetEl && 
+		if (targetEl &&
 		    !targetEl.hasClass('feEditAdvanced-editButton') &&
 		    targetEl.id != 'feEditAdvanced-closeButton') {
 			targetEl = Ext.get(targetEl.up('.feEditAdvanced-editButton'));
@@ -494,7 +494,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 				this.copy();
 			}
 		}
-		
+
 		evt.stopEvent();
 		return false;
 	},
@@ -579,7 +579,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			// Show and hide the menu based on mouseovers
 		this.el.on('mouseover', this.showMenu, this);
 		this.el.on('mouseout',  this.hideMenu, this);
-		
+
 		var editPanelToolbar = this.el.first();
 
 			// Set up event handlers for the hover menu buttons
@@ -602,7 +602,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			this.menuEl.show();
 		}
 	},
-	
+
 	// @todo Is this beter suited as an action?
 	// used when getting content back from the iframe editing
 	pushContentUpdate: function(json) {
@@ -613,7 +613,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		id = this.el.id;
 
 		// @todo	This is where we'd normally call this._process for an action.
-		
+
 		// @todo	Get the table from the json response.
 		table = 'tt_content';
 
@@ -636,7 +636,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		if (json.content) {
 			FrontendEditing.JSHandler.evaluate(content);
 		}
-		
+
 		if (json.header) {
 			FrontendEditing.JSHandler.evaluate(json.header)
 		}
@@ -649,12 +649,12 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		this.el.remove();
 		this.el = Ext.get(elId);
 	},
-	
+
 	removeContent: function() {
 		this.el.remove();
 		this.el = null;
 	},
-	
+
 	getPreviousContentElement: function() {
 		var prevEl = this.el;
 		while (prevEl = prevEl.prev('.feEditAdvanced-allWrapper')) {
@@ -664,7 +664,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		}
 		return false;
 	},
-	
+
 	getNextContentElement: function() {
 		var nextEl = this.el;
 		while (nextEl = nextEl.next('.feEditAdvanced-allWrapper')) {
@@ -674,7 +674,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 		}
 		return false;
 	},
-	
+
 	hideUpButton: function() {
 		Ext.get(this.el.select('input.upAction')).hide();
 	},
@@ -690,7 +690,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 	showDownButton: function() {
 		Ext.get(this.el.select('input.downAction')).show();
 	},
-	
+
 	updateUpDownButtons: function() {
 		if (!this.getPreviousContentElement()) {
 			this.hideUpButton();
@@ -703,7 +703,7 @@ TYPO3.FeEdit.EditPanel = Ext.extend(TYPO3.FeEdit.Base, {
 			this.showDownButton();
 		}
 	},
-	
+
 	getTableName: function() {
 		recordInfo =  this.record.split(':');
 		return recordInfo[0];
@@ -763,7 +763,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
 				var colPos = contentElementContainerId.substr(35, 1);
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
-				
+
 				var additionalParams = linkedDragEl.getAttribute('rel') + '&defVals[tt_content][colPos]=' + colPos;
 				additionalParams += '&TSFE_EDIT[record]=tt_content:NEW';
 				additionalParams += '&TSFE_EDIT[pid]=' + pageId;
@@ -842,17 +842,17 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 		}
 		FrontendEditing.deactivateDropZones();
 	},
-	
+
 	onHover: function(dragSource, evt, data) {
 		var dragEl = Ext.get(dragSource.getDragEl());
 		this.el.addClass('feEditAdvanced-dropzoneActive');
 		this.el.frame('e0e0e0');
 	},
-	
+
 	onHoverOut: function(source, evt, data) {
 		this.el.removeClass('feEditAdvanced-dropzoneActive');
 	},
-	
+
 	remove: function() {
 		this.dz.unreg();
 		if (this.el) {
@@ -869,7 +869,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
  * default action that every action inherits from
  */
 TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
-	ajaxRequestUrl: 'index.php',
+	ajaxRequestUrl: TYPO3.configuration.feeditadvanced.ajaxRequestUrl,
 		// there are "ajax" actions and "iframe" actions
 		// iframe actions only need the URL and don't trigger the AJAX call when triggering the action
 	requestType: 'ajax',
@@ -894,7 +894,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 		if (!FrontendEditing.editWindow) {
 			FrontendEditing.editWindow = new TYPO3.FeEdit.EditWindow(this.parent);
 		}
-		
+
 		// if the "isModelAction" flag is set, then there is a notification message
 		if (this._isModalAction) {
 			FrontendEditing.editWindow.displayLoadingMessage(this._getNotificationMessage());
@@ -914,7 +914,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 			});
 		}
 	},
-	
+
 	// function to return a full URL (good for the iframe variant)
 	getRequestUrl: function(additionalParams) {
 		return this.ajaxRequestUrl + (this.ajaxRequestUrl.indexOf('?') == -1 ? '?' : '&') + this._getAjaxRequestParameters(additionalParams);
@@ -928,7 +928,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 			if (this.parent.params) {
 				requestParams += '&' + this.parent.params;
 			}
-		
+
 			pid = this.parent.pid;
 			pidRequestParam = '&pid=' + pid;
 		} else {
@@ -951,7 +951,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 		alert(TYPO3.LLL.feeditadvanced.ajaxError + ': ' + response.responseText);
 	},
 
-	// callback function to extract the JSON response from the server 
+	// callback function to extract the JSON response from the server
 	_handleSuccessResponse: function(response, options) {
 		FrontendEditing.actionRunning = false;
 		if (response.getResponseHeader('X-JSON')) {
@@ -972,7 +972,7 @@ TYPO3.FeEdit.EditPanelAction = Ext.extend(TYPO3.FeEdit.Base, {
 					newContent = json.newContent;
 					json.newContent = newContent.stripScripts();
 				}
-				
+
 				id = this.parent.el.id;
 				this._process(json);
 				this.parent.el = Ext.get(id);
@@ -1089,7 +1089,7 @@ TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_getNotificationMessage: function() {
 		return "Deleting content.";
 	},
-	
+
 	_isModalAction: false
 });
 
@@ -1109,7 +1109,7 @@ TYPO3.FeEdit.HideAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_getNotificationMessage: function() {
 		return TYPO3.LLL.feeditadvanced.hideNotification;
 	},
-	
+
 	_isModalAction: false
 });
 
@@ -1144,7 +1144,7 @@ TYPO3.FeEdit.UpAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 			TYPO3.FeEdit.UpAction.superclass.trigger.apply(this, arguments);
 		}
 	},
-	
+
 	_process: function(json) {
 		FrontendEditing.editPanelsEnabled = true;
 	},
@@ -1171,7 +1171,7 @@ TYPO3.FeEdit.DownAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 			TYPO3.FeEdit.DownAction.superclass.trigger.apply(this, arguments);
 		}
 	},
-	
+
 	_process: function(json) {
 		FrontendEditing.editPanelsEnabled = true;
 	},
@@ -1255,8 +1255,8 @@ TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		FrontendEditing.editWindow.close();
 		// @todo	Get the table from the json response.
-		table = 'tt_content'; 
-		
+		table = 'tt_content';
+
 		if (json.uid) {
 			ep = FrontendEditing.editPanels.get([table + ':' + json.uid]);
 			ep.replaceContent(json.content);
@@ -1264,7 +1264,7 @@ TYPO3.FeEdit.CloseAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 			this.parent.replaceContent(json.content);
 			this.parent.setupEventListeners();
 		}
-		
+
 		if (json.newUID) {
 				// Insert the HTML and register the new edit panel.
 			this.parent.el.insertAfter(json.newContent);
@@ -1467,7 +1467,7 @@ Ext.override(TYPO3.FeEdit.EditPanel, {
 	down: function(additionalParams) {
 		action = new TYPO3.FeEdit.DownAction(this);
 		action.trigger();
-	}	
+	}
 });
 
 
@@ -1554,18 +1554,18 @@ TYPO3.FeEdit.ClipboardObj = Ext.extend(TYPO3.FeEdit.Base, {
 TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 	editPanel: null,
 	targetID: null,
-	
+
 	constructor: function(editPanel) {
 		this.editPanel = editPanel;
 		if (!Ext.ux.Lightbox.hasListener('close')) {
 			Ext.ux.Lightbox.addListener('close', this.close, this);
 		}
 	},
-	
+
 	displayLoadingMessage: function(message) {
 		Ext.ux.Lightbox.openMessage(message, 200, 120, true);
 	},
-	
+
 	displayStaticMessage: function(message) {
 		Ext.ux.Lightbox.openMessage(message, 200, 100, false);
 	},
@@ -1624,7 +1624,7 @@ var FrontendEditing = {
 	actionRunning: false,
 	editWindow: null,
 	showHiddenContentElements: true,
-	dropZones: [],	//stores all dropzones that are 
+	dropZones: [],	//stores all dropzones that are
 
 	init: function() {
 		Ext.getBody().addClass('feEditAdvanced');
@@ -1660,7 +1660,7 @@ var FrontendEditing = {
 			FrontendEditing.addFlexformPointers();
 		}
 	},
-	
+
 	initializeMenuBar: function() {
 		this.toolbar = new TYPO3.FeEdit.Toolbar('feEditAdvanced-menuBar');
 		this.showHiddenContentElements = parseInt(Ext.get('TSFE_ADMIN_PANEL-preview_showHiddenRecords').getValue());
@@ -1707,7 +1707,7 @@ var FrontendEditing = {
 		// Enable drop indicators when a drag is started.
 	activateDropZones: function(draggedPanel) {
 		FrontendEditing.editPanelsEnabled = false;
-		
+
 		var prevPanel;
 		if (draggedPanel) {
 			prevPanel = FrontendEditing.editPanels.get(draggedPanel.getPreviousContentElement().id);
@@ -1729,7 +1729,7 @@ var FrontendEditing = {
 		});
 		Ext.getBody().setStyle('cursor', 'move');
 	},
-	
+
 		// Disable drop indicators when a drag is done
 	deactivateDropZones: function() {
 		FrontendEditing.editPanelsEnabled = true;
@@ -1746,7 +1746,7 @@ var FrontendEditing = {
 		this.dropZones = [];
 		this.checkContentElements();
 	},
-	
+
 	/**
 	 * checks if one of the CEs is too small, thus adds another class, so it is modifiable
 	 * via CSS
@@ -1763,7 +1763,7 @@ var FrontendEditing = {
 		});
 	},
 
-	/** 
+	/**
 	 * used when the checkbox is used
 	 */
 	toggleHiddenContentElements: function() {
@@ -1775,7 +1775,7 @@ var FrontendEditing = {
 			}
 		});
 		this.showHiddenContentElements = isChecked;
-		
+
 		// save the new value in the backend (currently not needed as it's overriden by TSconfig anyway)
 		var newAdmPanelElValue = (admPanelEl.getValue() == '1' ? '0' : '1');
 		admPanelEl.set({'value': newAdmPanelElValue});
@@ -1815,7 +1815,7 @@ TYPO3.FeEdit.ContentTypeToolbar = Ext.extend(TYPO3.FeEdit.Base, {
 
 
 		// move all draggables in the scrolling container
-		Ext.select('.feEditAdvanced-contentTypeItem', false, this.el.dom).each(function (el) { 
+		Ext.select('.feEditAdvanced-contentTypeItem', false, this.el.dom).each(function (el) {
 			el = Ext.get(el);
 			this.totalElementWidth += el.getWidth();
 			el.appendTo(this.innerEl.first());
@@ -1859,7 +1859,7 @@ TYPO3.FeEdit.ContentTypeToolbar = Ext.extend(TYPO3.FeEdit.Base, {
 		}, this);
 		this.toolbarWidth = availableWidth;
 		this.el.setWidth(this.toolbarWidth);
-		
+
 		// check if scrolling is needed
 		if (this.toolbarWidth <= this.totalElementWidth) {
 			this.innerEl.setWidth(this.toolbarWidth - 40);
@@ -1897,8 +1897,8 @@ TYPO3.FeEdit.ContentTypeToolbar = Ext.extend(TYPO3.FeEdit.Base, {
 });
 
 
-// Set the edit panels and menu bar on window load 
-Ext.onReady(function() { 
-	FrontendEditing.init();  
+// Set the edit panels and menu bar on window load
+Ext.onReady(function() {
+	FrontendEditing.init();
 	new TYPO3.FeEdit.ContentTypeToolbar();
 });
