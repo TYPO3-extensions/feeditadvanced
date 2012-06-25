@@ -1,3 +1,8 @@
+2012-06-25  Lorenz Ulrich <lorenz.ulrich@phz.ch>
+
+	* Fixed bug #10573: t3lib_TCEforms->helpText() is deprecated and will be removed in TYPO3 4.7 (Thanks Christopher)
+	* Raised version number to 1.6.0-dev
+
 2011-05-11  Benjamin Mack  <benni@typo3.org>
 
 	* Fixed bug #26769: Classic Editing: Content is not returned if adminPanel is disabled but user is admin

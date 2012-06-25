@@ -794,27 +794,39 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 						$out = $item;
 					} elseif ($PA['palette'])	{
 							// Array:
-						$out=array(
-							'NAME'=>$PA['label'],
-							'ID'=>$row['uid'],
-							'FIELD'=>$field,
-							'TABLE'=>$table,
-							'ITEM'=>$item,
-							'HELP_ICON' => $this->helpTextIcon($table,$field,1)
+						$out = array(
+							'NAME' => $PA['label'],
+							'ID' => $row['uid'],
+							'FIELD' => $field,
+							'TABLE' => $table,
+							'ITEM' => $item
 						);
+						if (!class_exists(t3lib_utility_VersionNumber)) {
+							// means we are on TYPO3 4.5 or lower and int_from_ver is not deprecated
+							if (t3lib_div::int_from_ver(TYPO3_version) < 4005000) {
+									// Array using CSH system of TYPO3 4.4 and older:
+								$out['HELP_ICON'] = $this->helpTextIcon($table, $field, 1);
+							}
+						}
 						$out = $this->addUserTemplateMarkers($out,$table,$field,$row,$PA);
 					} else {
 							// String:
-						$out=array(
-							'NAME'=>$PA['label'],
-							'ITEM'=>$item,
-							'TABLE'=>$table,
-							'ID'=>$row['uid'],
-							'HELP_ICON'=>$this->helpTextIcon($table,$field),
-							'HELP_TEXT'=>$this->helpText($table,$field),
-							'PAL_LINK_ICON'=>$thePalIcon,
-							'FIELD'=>$field
+						$out = array(
+							'NAME' => $PA['label'],
+							'ITEM' => $item,
+							'TABLE' => $table,
+							'ID' => $row['uid'],
+							'PAL_LINK_ICON' => $thePalIcon,
+							'FIELD' => $field
 						);
+						if (!class_exists(t3lib_utility_VersionNumber)) {
+							// means we are on TYPO3 4.5 or lower and int_from_ver is not deprecated
+							if (t3lib_div::int_from_ver(TYPO3_version) < 4005000) {
+									// String using CSH system of TYPO3 4.4 and older:
+								$out['HELP_ICON'] = $this->helpTextIcon($table, $field);
+								$out['HELP_TEXT'] = $this->helpText($table, $field);
+							}
+						}
 						$out = $this->addUserTemplateMarkers($out,$table,$field,$row,$PA);
 							// String:
 						$out=$this->intoTemplate($out,$altTemplate);
