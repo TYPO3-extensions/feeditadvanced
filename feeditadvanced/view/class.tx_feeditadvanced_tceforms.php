@@ -277,31 +277,68 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 	 * @param	array		The palette array to print
 	 * @return	string		HTML output
 	 *
-	 * @note	This is an update of an existing method. It looks like the main diferences are colors and help icons.
+	 * @note	This is an update of an existing method. It looks like the main differences are colors and help icons.
 	 */
 	function printPalette($paletteArray) {
 		global $BE_USER;
 
-			// @note Color scheme attributes are new.
-			// Init color/class attributes:
-		$ccAttr2 = $this->colorScheme[2] ? ' bgcolor="' . $this->colorScheme[2] . ' "' : '';
-		$ccAttr2.= $this->classScheme[2] ? ' class="' . $this->classScheme[2] . ' "' : '';
-		$ccAttr4 = $this->colorScheme[4] ? ' style="color:' . $this->colorScheme[4] . ' "' : '';
-		$ccAttr4.= $this->classScheme[4] ? ' class="' . $this->classScheme[4] . ' "' : '';
+		$fieldAttributes = $labelAttributes = '';
 
-			// Traverse palette fields and render them into table rows:
-		foreach ($paletteArray as $content)	{
-			$hRow[] = '<td' . $ccAttr2 . ' >&nbsp;</td><td nowrap="nowrap"' . $ccAttr2 . ' >' . '<span' . $ccAttr4 . ' >' . $content['NAME'] . '</span></td>';
-			
-			$iRow[] = '<td valign="top" class="space"> </td><td nowrap="nowrap" valign="top">' . $content['ITEM'] . ' </td>';
+			// Init color/class attributes:
+		if ($this->colorScheme[2]) {
+			$labelAttributes .= ' bgcolor="' . $this->colorScheme[2] . '"';
+		}
+		if ($this->classScheme[2]) {
+			$labelAttributes .= ' class="t3-form-palette-field-label ' . $this->classScheme[2] . '"';
+		} else {
+			$labelAttributes .= ' class="t3-form-palette-field-label"';
+		}
+		if ($this->colorScheme[4]) {
+			$fieldAttributes .= ' style="color: ' . $this->colorScheme[4] . '"';
+			}
+		if ($this->classScheme[4]) {
+			$fieldAttributes .= ' class="t3-form-palette-field ' . $this->classScheme[4] . '"';
 		}
 
-			// Final wrapping into the table:
-		$out = '<table border="0" cellpadding="0" cellspacing="0" class="typo3-TCEforms-palette"><tr><td class="palettePadding"></td>' .
-				implode('', $hRow) . ' </tr><tr><td class="palettePadding"></td>' .
-				implode('', $iRow) . ' </tr></table>';
+		$row = 0;
+		$hRow = $iRow = array();
+		$lastLineWasLinebreak = FALSE;
 
+			// Traverse palette fields and render them into containers:
+		foreach ($paletteArray as $content) {
+			if ($content['NAME'] === '--linebreak--') {
+				if (!$lastLineWasLinebreak) {
+					$row++;
+					$lastLineWasLinebreak = TRUE;
+				}
+			} else {
+				$lastLineWasLinebreak = FALSE;
+				$fieldIdentifierForJs = $content['TABLE'] . '_' . $content['ID'] . '_' . $content['FIELD'];
+				$iRow[$row][] = '<span class="t3-form-palette-field-container">' .
+								'<label' . $labelAttributes . '>' .
+								$content['NAME'] .
+								'</label>' .
+								'<span' . $fieldAttributes . '>' .
+									'<img name="cm_' . $fieldIdentifierForJs . '" src="clear.gif" class="t3-form-palette-icon-contentchanged" alt="" />' .
+									'<img name="req_' . $fieldIdentifierForJs . '" src="clear.gif" class="t3-form-palette-icon-required" alt="" />' .
+									$content['ITEM'] .
+								'</span>' .
+								'</span>';
+			}
+		}
+
+			// Final wrapping into the fieldset:
+		$out = '<fieldset class="t3-form-palette-fieldset">';
+		for ($i = 0; $i <= $row; $i++) {
+			if (isset($iRow[$i])) {
+				$out .= implode('', $iRow[$i]);
+				$out .= ($i < $row ? '<br />' : '');
+			}
+
+		}
+		$out .= '</fieldset>';
 		return $out;
+
 	}
 
 
@@ -362,7 +399,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		// if no hooks found user default settings for 'Forms on page' mode or use configurations in TypoScript templates
 
 			// layout for limited field list and full form
-		$elementConfig = $formsOnPageConf['formsOnPage.'][$CType . '.'][$listType . '.'];
+		$elementConfig = $formOnPageConf['formsOnPage.'][$CType . '.'][$listType . '.'];
 		if (!$totalWrap) {
 			if (!strlen($totalWrap = $this->getTSFieldConf($elementConfig['totalWrap'], $elementConfig['totalWrap.']))) {
 				$totalWrap ='<table id="formsOnPage" class="formsOnPage typo3-TCEforms" border="0" cellpadding="0" cellspacing="0">|</table>';
@@ -370,24 +407,24 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		}
 		if (!$fieldTemplate) {
 			if (!strlen($fieldTemplate = $this->getTSFieldConf($elementConfig['fieldTemplate'], $elementConfig['fieldTemplate.']))) {
-				$fieldTemplate = '<tr class="class-main21 fieldHeader"><td nowrap="nowrap" class="class-main21"><b>###FIELD_NAME###</b></td></tr><tr class="class-main23 field"><td nowrap="nowrap" class="class-main23"><img name="req_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="10" height="10" alt="" /><img name="cm_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="7" height="10" alt="" />###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
+				$fieldTemplate = '<tr class="class-main2 fieldHeader"><td nowrap="nowrap" class="formField-header"><b>###FIELD_NAME###</b></td></tr><tr class="class-main1 field"><td nowrap="nowrap" class="formField-field"><img name="req_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="10" height="10" alt="" /><img name="cm_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="7" height="10" alt="" />###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
 			}
 		}
 
 			// these works only for full form
 		if (!$sectionWrap) {
 			if (!strlen($sectionWrap = $this->getTSFieldConf($elementConfig['sectionWrap'], $elementConfig['sectionWrap.']))) {
-				$sectionWrap = '<tr class="spaceBefore"><td colspan="2" class="spaceBefore">&nbsp;</td></tr><tr><td colspan="2"><table ###TABLE_ATTRIBS###>###CONTENT###</table></td></tr>';
+				$sectionWrap = '<tr><td colspan="2"><table ###TABLE_ATTRIBS###>###CONTENT###</table></td></tr>';
 			}
 		}
 		if (!$palFieldTemplateHeader) {
 			if (!strlen($palFieldTemplateHeader = $this->getTSFieldConf($elementConfig['palFieldTemplateHeader'], $elementConfig['palFieldTemplateHeader.']))) {
-				$palFieldTemplateHeader = '<tr class="class-main23 palFieldHeader"><td nowrap="nowrap" class="class-main23"><b>###FIELD_HEADER###</b></td></tr>';
+				$palFieldTemplateHeader = '<tr class="class-main2 palFieldHeader"><td nowrap="nowrap" class="palette-header"><b>###FIELD_HEADER###</b></td></tr>';
 			}
 		}
 		if (!$palFieldTemplate) {
 			if (!strlen($palFieldTemplate = $this->getTSFieldConf($elementConfig['palFieldTemplate'], $elementConfig['palFieldTemplate.']))) {
-				$palFieldTemplate = '<tr class="class-main25 palField"><td nowrap="nowrap" class="class-main25">###FIELD_PALETTE###</td></tr>';
+				$palFieldTemplate = '<tr class="class-main1 palField"><td nowrap="nowrap">###FIELD_PALETTE###</td></tr>';
 			}
 		}
 	}
@@ -519,7 +556,6 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 				while(list(,$fieldInfo)=each($fields))	{
 					$parts = t3lib_div::trimExplode(';',$fieldInfo);
 					$theField = $parts[0];
-
 					if (!in_array($theField,$this->excludeElements) && $GLOBALS['TCA'][$table]['columns'][$theField])	{
 						$this->palFieldArr[$palette][] = $theField;
 						if ($this->isPalettesCollapsed($table,$palette)) {
@@ -530,14 +566,24 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 						if (is_array($part)) {
 							$palParts[] = $part;
 						}
+					} elseif (!in_array($theField,$this->excludeElements) && $theField === '--linebreak--') {
+							// if the field is only a line break, it must be set as line break to be rendered
+						$palParts[] = array('NAME' => $theField);
 					}
 				}
 			}
 		}
 		
 			// @note	This is basically where the original function starts.
-			// Put palette together if there are fields in it:
-		if (count($palParts)) {
+			// Line breaks are a palette part so we need to find out if there is more than only line breaks to display
+		$palPartsWithoutLineBreaks = array();
+		foreach ($palParts as $palPart) {
+			if ($palPart['NAME'] !== '--linebreak--') {
+				$palPartsWithoutLineBreaks[] = $palPart;
+			}
+		}
+			// Put palette together if there are fields in it.
+		if (count($palPartsWithoutLineBreaks)) {
 			if ($header) {
 				$out .= $this->intoTemplate(
 							array('HEADER' => htmlspecialchars($header)),

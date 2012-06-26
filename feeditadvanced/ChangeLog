@@ -1,6 +1,8 @@
 2012-06-26  Lorenz Ulrich <lorenz.ulrich@phz.ch>
 
+	* Task #9059: Adopt TYPO3 4.5+ styling
 	* Task #38405: Compatibility with TYPO3 4.5+ (and not below)
+	* Raised TYPO3 dependency to 4.5
 
 2012-06-25  Lorenz Ulrich <lorenz.ulrich@phz.ch>
 
