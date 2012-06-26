@@ -26,9 +26,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tsfebeuserauth.php'
 
 	// Use pageRenderer hook to concatenate CSS files for the backend editing form.
 	// Should be removed when the pageRenderer handles frontend editing properly.
-if(t3lib_div::int_from_ver(TYPO3_version) >= 4004000) {
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['feeditadvanced'] = 'EXT:feeditadvanced/hooks/class.tx_feeditadvanced_pagerenderer.php:tx_feeditadvanced_pagerenderer->preProcessPageRenderer';
-}
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['feeditadvanced'] = 'EXT:feeditadvanced/hooks/class.tx_feeditadvanced_pagerenderer.php:tx_feeditadvanced_pagerenderer->preProcessPageRenderer';
 
 	// Ensure backpaths for new content element wizard are processed with absRefPrefix
 $GLOBALS['TYPO3_CONF_VARS']['FE']['additionalAbsRefPrefixDirectories'] .= 'typo3/../typo3conf,typo3/js';
@@ -81,20 +79,7 @@ config.disablePreviewNotification = 1
 
 	// Temporary home for TemplaVoila changes to make testing easier. Should eventually be rolled into TemplaVoila itself.
 if (t3lib_extMgm::isLoaded('templavoila')) {
-		// @todo Remove this code once TV 1.4 is released and required by feeditadvanced
-		// Save the extension key and include TemplaVoila's ext_emconf to get the version number.
-	$realExtKey = $_EXTKEY;
-	$_EXTKEY = 'templavoila';
-	include(t3lib_extMgm::extPath($_EXTKEY) . 'ext_emconf.php');
-	$version = $EM_CONF[$_EXTKEY]['version'];
-	if (t3lib_div::int_from_ver($version) < 1004000) {
-			// XCLASS for necessary code changes in tx_templavoila_pi1->renderElement in older versions of TV.
-		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/templavoila/pi1/class.tx_templavoila_pi1.php'] = t3lib_extMgm::extPath('feeditadvanced').'templavoila/class.ux_tx_templavoila_pi1.php';
-	} else {
 		$TYPO3_CONF_VARS['EXTCONF']['templavoila']['pi1']['renderElementClass'][] = 'EXT:feeditadvanced/templavoila/class.tx_templavoila_renderelement.php:tx_templavoila_renderelement';
-	}
-		// Restore the extension key
-	$_EXTKEY = $realExtKey;
 
 		// TemplaVoila frontend editing controller is the default when TemplaVoila is installed.
 	t3lib_extMgm::addPageTSConfig('TSFE.frontendEditingController = templavoila');

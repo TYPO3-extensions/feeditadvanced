@@ -77,40 +77,6 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 	}
 	
 	/**
-	 * @note	Where did wrapLabels() go?
-	 */
-
-
-	/**
-	 * Returns help-text ICON if configured for.
-	 *
-	 * @param	string		The table name
-	 * @param	string		The field name
-	 * @param	boolean		Force the return of the help-text icon.
-	 * @return	string		HTML, <a>-tag with
-	 *
-	 * @note	This is a new method, but extends an existing method in t3lib_tceforms.
-	 */
-	function helpTextIcon($table, $field, $force=false) {
-			// @note	init() call was addeded.
-		$this->init();
-
-		if ($this->globalShowHelp && $GLOBALS['TCA_DESCR'][$table]['columns'][$field] && (($this->edit_showFieldHelp=='icon' && !$this->doLoadTableDescr($table)) || $force)) {
-			$aOnClick = 'vHWin=window.open(\'' . $this->backPath . 'view_help.php?tfID=' . ($table . '.' . $field) . '\',\'viewFieldHelp\',\'height=400,width=600,status=0,menubar=0,scrollbars=1\');vHWin.focus();return false;';
-			
-			// @note	Missing check for edit_showFieldHelp == icon and assignment of $text. Might just be due to an older TYPO3 version that this was copied from.
-			
-			return '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
-					'<img' . t3lib_iconWorks::skinImg($this->imagePath, 'helpbubble.gif', 'width="14" height="14"') . ' hspace="2" border="0" class="absmiddle"' . ($GLOBALS['CLIENT']['FORMSTYLE'] ? ' style="cursor:help;"' : '') . ' alt="" />' .
-					'</a>';
-		} else {
-				// Detects fields with no CSH and outputs dummy line to insert into CSH locallang file:
-			return '<span class="nbsp">&nbsp;</span>';
-		}
-	}
-
-
-	/**
 	 * Prints the selector box form-field for the db/file/select elements (multiple)
 	 *
 	 * @param	string		Form element name
@@ -181,7 +147,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		}
 
 			// Create selector box of the options
-		$sSize = $params['autoSizeMax'] ? t3lib_div::intInRange($itemArrayC+1, t3lib_div::intInRange($params['size'],1),$params['autoSizeMax']) : $params['size'];
+		$sSize = $params['autoSizeMax'] ? $this->forceIntegerInRange($itemArrayC+1, $this->forceIntegerInRange($params['size'],1),$params['autoSizeMax']) : $params['size'];
 		if (!$selector) {
 				// @note	The code here is simpler than in t3lib_tceforms, possibly due to more recent changes in the core.
 			$selector = '<select size="' . $sSize . ' "' . $this->insertDefStyle('group') . ' multiple="multiple" name="' . $fName . '_list" ' . $onFocus.$params['style'] . $disabled . '>' . implode('', $opt) . '</select>';
@@ -327,12 +293,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		foreach ($paletteArray as $content)	{
 			$hRow[] = '<td' . $ccAttr2 . ' >&nbsp;</td><td nowrap="nowrap"' . $ccAttr2 . ' >' . '<span' . $ccAttr4 . ' >' . $content['NAME'] . '</span></td>';
 			
-			// @note  This is a new config option.
-			if ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['forceFormsOnPage']) {
-				$helpIcon = $content['HELP_ICON'];
-			}
-			
-			$iRow[] = '<td valign="top" class="space"> </td><td nowrap="nowrap" valign="top">' . $content['ITEM'] . $helpIcon . ' </td>';
+			$iRow[] = '<td valign="top" class="space"> </td><td nowrap="nowrap" valign="top">' . $content['ITEM'] . ' </td>';
 		}
 
 			// Final wrapping into the table:
@@ -409,7 +370,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		}
 		if (!$fieldTemplate) {
 			if (!strlen($fieldTemplate = $this->getTSFieldConf($elementConfig['fieldTemplate'], $elementConfig['fieldTemplate.']))) {
-				$fieldTemplate = '<tr class="class-main21 fieldHeader"><td nowrap="nowrap" class="class-main21">###FIELD_HELP_ICON###<b>###FIELD_NAME###</b>###FIELD_HELP_TEXT###</td></tr><tr class="class-main23 field"><td nowrap="nowrap" class="class-main23"><img name="req_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="10" height="10" alt="" /><img name="cm_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="7" height="10" alt="" />###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
+				$fieldTemplate = '<tr class="class-main21 fieldHeader"><td nowrap="nowrap" class="class-main21"><b>###FIELD_NAME###</b></td></tr><tr class="class-main23 field"><td nowrap="nowrap" class="class-main23"><img name="req_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="10" height="10" alt="" /><img name="cm_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="7" height="10" alt="" />###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
 			}
 		}
 
@@ -682,7 +643,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 					$altTemplate = $formOnPageConf['formsOnPage.']['fieldTemplate.'][$field];
 				}
 			elseif(isset($advFields[strtolower($field)]) && $myPOST['mode']!='editIcons') // not for edit icons - needed field might be hidden!
-				$altTemplate = '<tr name="advField" class="advField" style="display:none"><td class="normalfields"><table class="cellpadding="0" cellspacing="0" border="0" width="100%"><tr class="class-main21 fieldHeader"><td nowrap="nowrap" class="class-main21">###FIELD_HELP_ICON###<b>###FIELD_NAME###</b>###FIELD_HELP_TEXT###</td></tr><tr class="class-main23 field"><td nowrap="nowrap" class="class-main23">###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr></table></td></tr>';
+				$altTemplate = '<tr name="advField" class="advField" style="display:none"><td class="normalfields"><table class="cellpadding="0" cellspacing="0" border="0" width="100%"><tr class="class-main21 fieldHeader"><td nowrap="nowrap" class="class-main21"><b>###FIELD_NAME###</b></td></tr><tr class="class-main23 field"><td nowrap="nowrap" class="class-main23">###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr></table></td></tr>';
 			}
 
 			// @note End new code
@@ -782,7 +743,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 
 						// If the record has been saved and the "linkTitleToSelf" is set, we make the field name into a link, which will load ONLY this field in alt_doc.php
 					$PA['label'] = t3lib_div::deHSCentities(htmlspecialchars($PA['label']));
-					if (t3lib_div::testInt($row['uid']) && $PA['fieldTSConfig']['linkTitleToSelf'])	{
+					if ($this->canBeInterpretedAsInteger($row['uid']) && $PA['fieldTSConfig']['linkTitleToSelf'])	{
 							// @note	This URL is constructed differently. Any idea why?
 						$lTTS_url = $this->backPath.'alt_doc.php?edit[' . $table.'][' . $row['uid'].']=edit&columnsOnly=' . $field.
 									($PA['fieldTSConfig']['linkTitleToSelf.']['returnUrl'] ? '&returnUrl=' . rawurlencode($this->thisReturnUrl()) : '');
@@ -801,13 +762,6 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 							'TABLE' => $table,
 							'ITEM' => $item
 						);
-						if (!class_exists(t3lib_utility_VersionNumber)) {
-							// means we are on TYPO3 4.5 or lower and int_from_ver is not deprecated
-							if (t3lib_div::int_from_ver(TYPO3_version) < 4005000) {
-									// Array using CSH system of TYPO3 4.4 and older:
-								$out['HELP_ICON'] = $this->helpTextIcon($table, $field, 1);
-							}
-						}
 						$out = $this->addUserTemplateMarkers($out,$table,$field,$row,$PA);
 					} else {
 							// String:
@@ -819,14 +773,6 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 							'PAL_LINK_ICON' => $thePalIcon,
 							'FIELD' => $field
 						);
-						if (!class_exists(t3lib_utility_VersionNumber)) {
-							// means we are on TYPO3 4.5 or lower and int_from_ver is not deprecated
-							if (t3lib_div::int_from_ver(TYPO3_version) < 4005000) {
-									// String using CSH system of TYPO3 4.4 and older:
-								$out['HELP_ICON'] = $this->helpTextIcon($table, $field);
-								$out['HELP_TEXT'] = $this->helpText($table, $field);
-							}
-						}
 						$out = $this->addUserTemplateMarkers($out,$table,$field,$row,$PA);
 							// String:
 						$out=$this->intoTemplate($out,$altTemplate);
@@ -1288,6 +1234,42 @@ $toggle = 0;
 		}
 		return $content;
 	}
+
+	/**
+	 * Wrapper for t3lib_div::intInRange (TYPO3 4.5)/t3lib_utility_Math::forceIntegerInRange (TYPO3 4.6+)
+	 *
+	 * @param $theInt integer Input value
+	 * @param $min integer Lower limit
+	 * @param $max integer Higher limit
+	 * @param $defaultValue integer Default value if input is FALSE.
+	 * @return integer The input value forced into the boundaries of $min and $max
+	 */
+	public function forceIntegerInRange($theInt, $min, $max = 2000000000, $defaultValue = 0) {
+
+		if (version_compare(TYPO3_branch, '4.6', '<')) {
+			return t3lib_div::intInRange($theInt, $min, $max, $defaultValue);
+		}
+
+		return t3lib_utility_Math::forceIntegerInRange($theInt, $min, $max, $defaultValue);
+
+	}
+
+	/**
+	 * Wrapper for t3lib_div::testInt (TYPO3 4.5)/t3lib_utility_Math::canBeInterpretedAsInteger (TYPO3 4.6+)
+	 *
+	 * @param $var mixed Any input variable to test
+	 * @return boolean Returns TRUE if string is an integer
+	 */
+	public function canBeInterpretedAsInteger($var) {
+
+		if (version_compare(TYPO3_branch, '4.6', '<')) {
+			return t3lib_div::testInt($var);
+		}
+
+		return t3lib_utility_Math::canBeInterpretedAsInteger($var);
+
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_tceforms.php']) {

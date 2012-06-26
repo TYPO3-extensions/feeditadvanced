@@ -1,3 +1,7 @@
+2012-06-26  Lorenz Ulrich <lorenz.ulrich@phz.ch>
+
+	* Task #38405: Compatibility with TYPO3 4.5+ (and not below)
+
 2012-06-25  Lorenz Ulrich <lorenz.ulrich@phz.ch>
 
 	* Fixed bug #10573: t3lib_TCEforms->helpText() is deprecated and will be removed in TYPO3 4.7 (Thanks Christopher)
