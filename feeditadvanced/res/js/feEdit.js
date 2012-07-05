@@ -1072,6 +1072,7 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 TYPO3.FeEdit.DeleteAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 	_process: function(json) {
 		if (this.parent && this.parent.getTableName() != 'pages') {
+			FrontendEditing.editPanels.removeKey(this.parent.record);
 			this.parent.removeContent();
 		}
 	},
