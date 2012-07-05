@@ -1,6 +1,7 @@
 2012-07-05  Lorenz Ulrich <lorenz.ulrich@phz.ch>
 
 	* Fixed bug #8155: After deleting a content element dragging a new element throws an error (Thanks Cédric Délécluse)
+	* Fixed bug #27075: Editing only works correctly for first edited item (Thanks Cédric Délécluse)
 
 2012-06-26  Lorenz Ulrich <lorenz.ulrich@phz.ch>
 

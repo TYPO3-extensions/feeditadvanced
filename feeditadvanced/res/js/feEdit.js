@@ -1026,6 +1026,10 @@ TYPO3.FeEdit.NewRecordAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		} else {
 			label = TYPO3.LLL.feeditadvanced.newContentElement;
 		}
+
+			// attach new editPanel
+		FrontendEditing.editWindow.setEditPanel(this.parent);
+
 		var url = this.getRequestUrl(additionalParams);
 		FrontendEditing.editWindow.displayIframe(label, url);
 		if (targetID) {
@@ -1054,6 +1058,10 @@ TYPO3.FeEdit.EditAction = Ext.extend(TYPO3.FeEdit.EditPanelAction, {
 		} else {
 			label = TYPO3.LLL.feeditadvanced.editContentElement;
 		}
+
+			// attach new editPanel
+		FrontendEditing.editWindow.setEditPanel(this.parent);
+
 		var url = this.getRequestUrl();
 		FrontendEditing.editWindow.displayIframe(label, url);
 	},
@@ -1609,7 +1617,12 @@ TYPO3.FeEdit.EditWindow = Ext.extend(TYPO3.FeEdit.Base, {
 
 	setTargetID: function(id) {
 		this.targetID = id;
+	},
+
+	setEditPanel: function(editPanel) {
+		this.editPanel = editPanel;
 	}
+
 });
 
 /*
