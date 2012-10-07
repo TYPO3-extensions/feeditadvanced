@@ -761,7 +761,7 @@ TYPO3.FeEdit.DropZone = Ext.extend(TYPO3.FeEdit.Base, {
 					// so TCEmain needs a "moveAfter" with the correct colPos and the page (needs to be negative)
 				var contentElementContainerId = dropZoneEl.prev('.feEditAdvanced-firstWrapper').id;
 				// the ID looks like this: feEditAdvanced-firstWrapper-colPos-0-pages-13
-				var colPos = contentElementContainerId.substr(35, 1);
+				var colPos = contentElementContainerId.split('-')[3];
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
 
 				var additionalParams = linkedDragEl.getAttribute('rel') + '&defVals[tt_content][colPos]=' + colPos;
