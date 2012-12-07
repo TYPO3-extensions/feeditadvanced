@@ -62,8 +62,9 @@ Ext.ux.Lightbox = (function(){
 				els[id] = Ext.get('ux-lightbox-' + id);
 			});
 
-			Ext.each([els.overlay, els.lightbox, els.shim, els.header, els.loading], function(el){
-				el.setVisibilityMode(Ext.Element.DISPLAY);
+			Ext.each([els.overlay, els.lightbox, els.shim, els.header, els.loading], function(el) {
+				//el.setVisibilityMode(Ext.Element.DISPLAY); // Bug with Firefox (getComputedStyle is null) - Cedric Delecluse
+				el.setStyle('display', 'block');
 				el.hide();
 			});
 
@@ -191,7 +192,7 @@ Ext.ux.Lightbox = (function(){
 						top: lightboxTop + 'px',
 						left: lightboxLeft + 'px'
 					}).show();
-					this.setMessage(mText, fWidth, fHeight, showLoadingIndicator);
+					this.setMessage(mText, fWidth, fHeight, showLoadingIndicator, false);
 
 					this.fireEvent('open', mText);
 				},
@@ -211,7 +212,7 @@ Ext.ux.Lightbox = (function(){
 			}).show();
 		},
 
-		setMessage: function(mText, fWidth, fHeight, showLoadingIndicator){
+		setMessage: function(mText, fWidth, fHeight, showLoadingIndicator, showAnimation){
 			els.msg.update('');
 			if (showLoadingIndicator) {
 				els.loading.show();
@@ -226,7 +227,7 @@ Ext.ux.Lightbox = (function(){
 			els.msg.update(mText);
 			els.msg.show();
 
-			this.resizeBox(fWidth, fHeight);
+			this.resizeBox(fWidth, fHeight, showAnimation);
 		},
 
 		setUrl: function(index, shimWidth, shimHeight) {
@@ -244,7 +245,7 @@ Ext.ux.Lightbox = (function(){
 				response = window.frames['ux-lightbox-shim'].response;
 				if(response) {
 					if (response.error) {
-						this.setMessage(response.error, 200, 100, false);
+						this.setMessage(response.error, 200, 100, false, true);
 					} else {
 						this.close();
 					}
@@ -254,7 +255,7 @@ Ext.ux.Lightbox = (function(){
 					// For some reason, ExtJS's Fx.shift() comes up 20 pixels short when resizing the lighbox.  This corrects for it.
 					shiftFxCorrection = 20;
 					// 30 pixels accounts for the content header at the top of the edit window.
-					this.resizeBox(this.shimWidth + shiftFxCorrection, this.shimHeight + 30 + shiftFxCorrection);
+					this.resizeBox(this.shimWidth + shiftFxCorrection, this.shimHeight + 30 + shiftFxCorrection, true);
 					els.shim.fadeIn();
 					els.header.fadeIn();
 				
@@ -282,7 +283,7 @@ Ext.ux.Lightbox = (function(){
 		},
 		displayContentUpdateMessage: function() {
 			if (this.closeOnSubmit) {
-				this.setMessage(TYPO3.LLL.feeditadvanced.updatingContent, 200, 120, true);
+				this.setMessage(TYPO3.LLL.feeditadvanced.updatingContent, 200, 120, true, true);
 			}
 		},
 
@@ -290,7 +291,7 @@ Ext.ux.Lightbox = (function(){
 			this.closeOnSubmit = value;
 		},
 
-		resizeBox: function(w,h) {
+		resizeBox: function(w, h, showAnimation) {
 			var wCur = els.wrapper.getWidth();
 			var hCur = els.wrapper.getHeight();
 
@@ -303,15 +304,13 @@ Ext.ux.Lightbox = (function(){
 			var queueLength = 0;
 
 			if (hDiff != 0 || wDiff != 0) {
-				els.wrapper.syncFx()
-					.shift({
+				if (showAnimation) {
+					els.wrapper.shift({
 						height: hNew,
-						duration: this.resizeDuration
-					})
-					.shift({
 						width: wNew,
 						duration: this.resizeDuration
 					});
+				}
 				queueLength++;
 			}
 
@@ -329,6 +328,8 @@ Ext.ux.Lightbox = (function(){
 					duration: this.overlayDuration
 				});
 				els.shim.hide();
+				els.msg.hide();
+				els.loading.hide();
 			}
 			this.fireEvent('close', this);
 		},
