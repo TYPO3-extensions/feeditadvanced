@@ -47,7 +47,7 @@ class tx_feeditadvanced_ajax {
 	 * The editing command.
 	 *
 	 * @var	string
-	 */ 
+	 */
 	protected $cmd;
 
 	/**
@@ -106,7 +106,7 @@ class tx_feeditadvanced_ajax {
 			$this->ajaxObj->render();
 		}
 	}
-	
+
 	/**
 	 * Checks whether frontend editing is active.
 	 *
@@ -151,7 +151,7 @@ class tx_feeditadvanced_ajax {
 			if (is_array($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'])) {
 				list($table) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data']);
 				list($uid) = array_keys($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]);
-				
+
 				if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID']) {
 					$uid = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID'];
 				}
@@ -224,7 +224,7 @@ class tx_feeditadvanced_ajax {
 	protected function newItem($table, $uid) {
 		$this->renderContentElement($table, $uid);
 	}
-	
+
 	/**
 	 * AJAX response to a save and close action on a particular record.
 	 *
@@ -313,7 +313,7 @@ class tx_feeditadvanced_ajax {
 			}
 		}
 	}
-			
+
 	/**
 	 * AJAX response to a move up action on a particular record.
 	 *
@@ -358,7 +358,7 @@ class tx_feeditadvanced_ajax {
 			$contentValues = $templavoilaFlex['data'][$flexArray[2]][$flexArray[3]][$flexArray[4]][$flexArray[5]];
 			$this->ajaxObj->addContent('move_array',$contentValues);
 		}
-		
+
 		$this->ajaxObj->addContent('move_dir', $moveDir);
 	}
 
@@ -371,7 +371,7 @@ class tx_feeditadvanced_ajax {
 	 */
 	protected function moveAfterItem($table, $uid) {
 		$this->ajaxObj->addContent('moveAfterUID', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['moveAfter']);
-		
+
 		// if the item was moved to another column (colPos), then it needs to be saved to the DB as well.
 		if ($table == 'tt_content' && isset($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['colPos'])) {
 			$colPos = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['colPos'];
@@ -383,7 +383,7 @@ class tx_feeditadvanced_ajax {
 			$this->ajaxObj->addContent('colPos', $colPos);
 		}
 	}
-	
+
 	/**
 	 * AJAX response to a move action on a particular record.
 	 *
@@ -495,7 +495,7 @@ class tx_feeditadvanced_ajax {
 			$this->t3libClipboardObj->cleanCurrent();
 					// Save the clipboard content
 			$this->t3libClipboardObj->endClipboard();
-			
+
 			$this->ajaxObj->addContent('clear_clipboard',$thisRec);
 		}
 	}
@@ -564,7 +564,7 @@ class tx_feeditadvanced_ajax {
 
 					// send back all info
 				$this->ajaxObj->addContent('src_id', $srcRec['uid']);
-				$this->ajaxObj->addContent('dest_id', $destRec['uid']);				
+				$this->ajaxObj->addContent('dest_id', $destRec['uid']);
 				$this->ajaxObj->addContent('paste_content', $data);
 				$this->ajaxObj->addContent('copy_mode', $copyMode);
 			}
@@ -573,7 +573,7 @@ class tx_feeditadvanced_ajax {
 
 	/**
 	 * Initialize the TYPO3 Frontend for a given page id.
-	 * 
+	 *
 	 * @param		integer		The page id.
 	 * @return		void
 	 * @todo		feUserObj doesn't seem to be used.
@@ -582,7 +582,7 @@ class tx_feeditadvanced_ajax {
 		global $TSFE, $TYPO3_CONF_VARS;
 
 			// @todo 	jeff: don't include templavoila directly
-		if (t3lib_extMgm::isLoaded('templavoila')) {	
+		if (t3lib_extMgm::isLoaded('templavoila')) {
 			require_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_api.php');
 		}
 
@@ -607,15 +607,19 @@ class tx_feeditadvanced_ajax {
 			// allow hidden pages and records to be edited.
 		$TSFE->showHiddenPage = 1;
 		$TSFE->showHiddenRecords = 1;
-		
+
 		$TT = new t3lib_timeTrack;
 		$TT->start();
 
 			// Include the TCA
 		$TSFE->includeTCA();
 			// Load the sprite manager for frontend-editing
-		$spriteManager = t3lib_div::makeInstance('t3lib_SpriteManager', TRUE);
-		$spriteManager->loadCacheFile();
+		if (version_compare(TYPO3_branch, '6.0', '<')) {
+			$spriteManager = t3lib_div::makeInstance('t3lib_SpriteManager');
+			$spriteManager->loadCacheFile();
+		} else {
+			\TYPO3\CMS\Backend\Sprite\SpriteManager::initialize();
+		}
 
 
 			// Get the page
@@ -664,7 +668,7 @@ class tx_feeditadvanced_ajax {
 
 			// the value this->formfield_status is set to empty in order to disable login-attempts to the backend account through this script
 			// @todo 	Comment says its set to empty, but where does that happen?
-				
+
 			$GLOBALS['BE_USER'] = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');
 			$GLOBALS['BE_USER']->OS = TYPO3_OS;
 			$GLOBALS['BE_USER']->lockIP = $GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP'];
@@ -755,7 +759,7 @@ class tx_feeditadvanced_ajax {
 		$pageRenderer->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
 		$pageRenderer->setCharSet($GLOBALS['TSFE']->metaCharset);
 		$pageRenderer->enableConcatenateFiles();
-		
+
 			// Set the BACK_PATH for the pageRenderer concatenation.
 			// FIXME should be removed when the sprite manager, RTE, and pageRenderer are on the same path about concatenation.
 		$GLOBALS['BACK_PATH'] = TYPO3_mainDir;
