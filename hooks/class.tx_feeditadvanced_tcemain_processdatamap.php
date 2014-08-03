@@ -36,7 +36,7 @@ class tx_feeditadvanced_tcemain_processdatamap {
 
 	/**
 	 * Preprocessing hook for TCEMain. Used to rename POST data and work around the following core bug:
-	 * http://bugs.typo3.org/view.php?id=15496
+	 * https://forge.typo3.org/issues/23401
 	 *
 	 * @param	array
 	 * @param	string

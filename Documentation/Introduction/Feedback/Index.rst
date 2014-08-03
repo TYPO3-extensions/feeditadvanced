@@ -20,6 +20,6 @@ Feedback
 
 If you find a bug in this manual or in the extension functionality,
 please file an issue in the bug tracker of feeditadvanced:
-`http://forge.typo3.org/projects/typo3v4-feedit/issues
-<http://forge.typo3.org/projects/typo3v4-feedit/issues>`_
+`https://forge.typo3.org/projects/typo3v4-feedit/issues
+<https://forge.typo3.org/projects/typo3v4-feedit/issues>`_
 

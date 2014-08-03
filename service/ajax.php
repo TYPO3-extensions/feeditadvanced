@@ -75,7 +75,9 @@ class tx_feeditadvanced_ajax {
 
 		$this->pid = t3lib_div::_GP('pid');
 
-		tslib_eidtools::connectDB();
+		if (version_compare(TYPO3_branch, '6.1', '<')) {
+			tslib_eidtools::connectDB();
+		}
 		$this->initializeTSFE($this->pid);
 
 			// Setup ajax object

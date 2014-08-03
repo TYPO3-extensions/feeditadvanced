@@ -7,7 +7,7 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['typo3/classes/class.frontendedit.php']['edit']  
 	// @note Changed to hook to place Code before </body> directly before output
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php:tx_feeditadvanced_adminpanel->showMenuBar';
 
-	// Use TCEMain hook to work around TYPO3 Core bug: http://bugs.typo3.org/view.php?id=15496
+	// Use TCEMain hook to work around TYPO3 Core bug: https://forge.typo3.org/issues/23401
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:feeditadvanced/hooks/class.tx_feeditadvanced_tcemain_processdatamap.php:tx_feeditadvanced_tcemain_processdatamap';
 
 	// Add AJAX support
