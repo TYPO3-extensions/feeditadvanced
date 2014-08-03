@@ -711,7 +711,11 @@ class tx_feeditadvanced_editpanel {
 			// one time we will have $GLOBALS['TBE_STYLES'] available :)
 		$cssfile = $this->modTSconfig['properties']['skin.']['cssFormFile'];
 		$cssFormFile =  $cssfile ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_formsOnPage.css';
+		$cssFormFile2 = '/typo3/contrib/extjs/resources/css/ext-all-notheme.css';
+		$cssFormFile3 = t3lib_extMgm::siteRelPath('t3skin') . 'extjs/xtheme-t3skin.css';
 		$pageRenderer->addCssFile($cssFormFile);
+		$pageRenderer->addCssFile($cssFormFile2);
+		$pageRenderer->addCssFile($cssFormFile3);
 
 			// this allows toggling advanced/simple buttons on form
 		$incJS .= '<script type="text/javascript">

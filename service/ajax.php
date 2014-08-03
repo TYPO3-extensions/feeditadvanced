@@ -241,6 +241,7 @@ class tx_feeditadvanced_ajax {
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
 		} elseif ($this->modTSconfig['properties']['reloadPageOnContentUpdate']) {
+			$this->ajaxObj->addContent('stayOnPage', 1);
 			$this->ajaxObj->addContent('url', $this->getPageURL($GLOBALS['TSFE']->id));
 		} else {
 			$this->renderContentElement($table, $uid);
@@ -274,6 +275,7 @@ class tx_feeditadvanced_ajax {
 		if ($table == 'pages') {
 			$this->ajaxObj->addContent('url', $this->getPageURL($uid));
 		} elseif ($this->modTSconfig['properties']['reloadPageOnContentUpdate']) {
+			$this->ajaxObj->addContent('stayOnPage', 1);
 			$this->ajaxObj->addContent('url', $this->getPageURL($GLOBALS['TSFE']->id));
 		} else {
 			$this->renderContentElement($table, $uid);
@@ -602,6 +604,11 @@ class tx_feeditadvanced_ajax {
 			// initialize the backend user
 		$this->initializeBackendUser();
 
+		if (version_compare(TYPO3_branch, '6.1', '>')) {
+				// Load cached ext_tables core files
+			\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadExtensionTables();
+		}
+
 			// allow hidden pages and records to be edited.
 		$TSFE->showHiddenPage = 1;
 		$TSFE->showHiddenRecords = 1;
@@ -716,7 +723,7 @@ class tx_feeditadvanced_ajax {
 			// Including pagegen will make sure that extension PHP files are included
 		if (($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'close') || ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'saveAndClose')) {
 			global $TSFE, $TT;
-			include(PATH_tslib . 'pagegen.php');
+//			include(PATH_tslib . 'pagegen.php');
 		} else {
 			$GLOBALS['TSFE']->newCObj();
 		}
@@ -749,8 +756,22 @@ class tx_feeditadvanced_ajax {
 			// @todo Should we account for footer data too?
 		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		$pageRenderer->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
-		$pageRenderer->setCharSet($GLOBALS['TSFE']->metaCharset);
+		$pageRenderer->setCharSet($GLOBALS['LANG']->charSet);
+		$pageRenderer->setLanguage($GLOBALS['LANG']->lang);
+
+		if (version_compare(TYPO3_branch, '6.1', '>')) {
+				// Add js files
+			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('lang') . 'Resources/Public/JavaScript/Typo3Lang.js');
+			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('backend') . 'Resources/Public/JavaScript/tree.js');
+		}
 		$pageRenderer->enableConcatenateFiles();
+
+			// Add TYPO3.settings.ajaxUrls
+		$ajaxUrls = array();
+		foreach (array_keys($GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']) as $ajaxHandler) {
+			$ajaxUrls[$ajaxHandler] = t3lib_BEfunc::getAjaxUrl($ajaxHandler);
+		}
+		$pageRenderer->addHeaderData('<script type="text/javascript">/*<![CDATA[*/TYPO3.settings.ajaxUrls = ' . json_encode($ajaxUrls) . ';/*]]>*/</script>');
 
 			// Set the BACK_PATH for the pageRenderer concatenation.
 			// FIXME should be removed when the sprite manager, RTE, and pageRenderer are on the same path about concatenation.
