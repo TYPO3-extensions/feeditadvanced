@@ -35,13 +35,13 @@
  * @subpackage feeditadvanced
  */
 class tx_feeditadvanced_getMainFields_preProcess {
-	
+
 	/**
 	 * @todo	What is this?
 	 */
 	protected $modTSconfig;
-	
-	
+
+
 	/**
 	 * @todo	Add documentation.
 	 *
@@ -54,7 +54,7 @@ class tx_feeditadvanced_getMainFields_preProcess {
 		$this->modTSconfig = $thisVar->modTSconfig;
 		$formOnPageConf = $GLOBALS['TSFE']->tmpl->setup[$table.'.']['stdWrap.']['editPanel.'];
 
-			// these configurations concerns only 'EDITPANEL' objects - edit icons use default system + a funtion to reset some TCA, when used Forms on page editing mode		
+			// these configurations concerns only 'EDITPANEL' objects - edit icons use default system + a funtion to reset some TCA, when used Forms on page editing mode
 		if (t3lib_div::_GP('TSFE_EDIT') && $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['edit_editFormsOnPage']) {
 
 				// disable unwanted palettes
@@ -69,7 +69,7 @@ class tx_feeditadvanced_getMainFields_preProcess {
 					}
 				}
 			}
-			
+
 				// reset palettes
 			if ($table=='tt_content' && isset($formOnPageConf['formsOnPage.']['palettes.'])) {
 				for ($i=1; $i<16; $i++) {
@@ -78,15 +78,15 @@ class tx_feeditadvanced_getMainFields_preProcess {
 					}
 				}
 			}
-			
-			// automatic change some wizard properties  - handled in own function and used in function function formsOnPageForm, when works also for edit icons	
-			// disable possible generic options 
+
+			// automatic change some wizard properties  - handled in own function and used in function function formsOnPageForm, when works also for edit icons
+			// disable possible generic options
 			if ($this->modTSconfig['formsOnPage.'][$table.'.']['disableGeneralOptions']) {
 				$disableGeneralOptions = t3lib_div::trimExplode(',', strtolower($this->modTSconfig['formsOnPage.'][$table.'.']['disableGeneralOptions']), 1);
 			} elseif(isset($formOnPageConf['formsOnPage.']['disableGeneralOptions'])) {
 				$disableGeneralOptions=t3lib_div::trimExplode(',', strtolower($formOnPageConf['formsOnPage.']['disableGeneralOptions']), 1);
 			}
-			
+
 			if (isset($disableGeneralOptions) && is_array($disableGeneralOptions)) {
 				foreach($disableGeneralOptions as $disabledOption => $value) {
 					if (($value == 'starttime') && isset($GLOBALS['TCA'][$table]["columns"]["starttime"])) {
@@ -103,14 +103,14 @@ class tx_feeditadvanced_getMainFields_preProcess {
 					}
 				}
 			}
-				
+
 			if(isset($GLOBALS['TCA'][$table]['types'])) {
 				$typeNum = $thisVar->getRTypeNum($table,$row);
 			}
-			
+
 			/* example configurations:
-			// TS config for page/users/user groups			
-			mod.FE_BE.formsOnPage.tt_content.textpic.0.showitem(	
+			// TS config for page/users/user groups
+			mod.FE_BE.formsOnPage.tt_content.textpic.0.showitem(
 			bodytext;;9;richtext:rte_transform[flag=rte_enabled|mode=ts_css];3-3-3,
 				--palette--;LLL:EXT:cms/locallang_ttc.php:ALT.imgLinks;7,
 				--palette--;LLL:EXT:cms/locallang_ttc.php:ALT.imgOptions;11,
@@ -118,15 +118,15 @@ class tx_feeditadvanced_getMainFields_preProcess {
 				altText;;;;1-1-1
 			)
 			// TS config for TS Templates
-			tt_content.stdWrap.editPanel.formsOnPage.textpic.0.showitem(	
+			tt_content.stdWrap.editPanel.formsOnPage.textpic.0.showitem(
 			bodytext;;9;richtext:rte_transform[flag=rte_enabled|mode=ts_css];3-3-3,
 				--palette--;LLL:EXT:cms/locallang_ttc.php:ALT.imgLinks;7,
 				--palette--;LLL:EXT:cms/locallang_ttc.php:ALT.imgOptions;11,
 				imagecaption;;5,
 				altText;;;;1-1-1
-			)			
-			*/	
-				
+			)
+			*/
+
 			if ($this->modTSconfig['formsOnPage.'][$table.'.']) {
 				if ($table == 'tt_content') {
 					if (($row['CType'] == 'list') && $this->modTSconfig['formsOnPage.'][$table.'.'][$row['CType'].'.'][$row['list_type'].'.']['showitem']) {
@@ -149,8 +149,8 @@ class tx_feeditadvanced_getMainFields_preProcess {
 				}
 			}
 		}
-		
-		return;	
+
+		return;
 	}
 }
 
@@ -158,4 +158,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feedita
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_getMainFields_preProcess.php']);
 }
 
-?>

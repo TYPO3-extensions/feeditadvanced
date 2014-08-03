@@ -51,7 +51,6 @@ class tx_feeditadvanced_pagerenderer {
 			$params['cssFiles'] = $compressor->concatenateCssFiles($params['cssFiles'], $cssOptions);
 		}
 	}
-	
+
 }
 
-?>

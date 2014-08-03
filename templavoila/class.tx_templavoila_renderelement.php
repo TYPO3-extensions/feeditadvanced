@@ -57,12 +57,12 @@ class tx_templavoila_renderElement {
 				$flexformPointer['field'] = $key;
 				$flexformPointer['vLang'] = $flexformData['vLang'];
 
-					// Add a hidden field at the end of each container that provides destination pointer and ID, 
+					// Add a hidden field at the end of each container that provides destination pointer and ID,
 					// but only to elements that are not attributes.
 				if ((!isset($dataStructure['ROOT']['el'][$key]['type']) || $dataStructure['ROOT']['el'][$key]['type'] != 'attr') && $dataStructure['ROOT']['el'][$key]['tx_templavoila']['eType'] == 'ce') {
 					$vKey = $flexformData['vLang'];
 					$value[$vKey] .=  '<input type="hidden" class="feEditAdvanced-flexformPointers" title="' . implode(':', $flexformPointer) . '" value="' . $originalDataValues[$key][$vKey] . '" />';
-				
+
 						// Add some content to identify the container at the very beginning
 					$value[$vKey] = '<div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-field-' . $flexformPointer['field'] . '-pages-' . $GLOBALS['TSFE']->id . '"></div>' . $value[$vKey];
 				}
@@ -75,4 +75,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feedita
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/templavoila/class.tx_templavoila_renderelement.php']);
 }
 
-?>

@@ -30,11 +30,11 @@
  * Menu for advanced frontend editing.
  * This class is responsible for building the HTML of the items on top of the FE editing
  * but does not worry about the overall (rights etc)
- * 
+ *
  * This class delivers four main functions
  *   => init() sets up the paths and templates
  *   => addToolbar() and addItem() to add sections to the menu, and items to the sections
- *   => build() which renders the sections and items added previously 
+ *   => build() which renders the sections and items added previously
  *
  * @author	David Slayback <dave@webempoweredchurch.org>
  * @author	Jeff Segars <jeff@webempoweredchurch.org>
@@ -48,20 +48,20 @@ class tx_feeditadvanced_menu {
 	 * @var		tslib_content
 	 */
 	protected $cObj = NULL;
-	
+
 	/**
 	 * the ID of the current page (references pages::uid)
 	 * @var 	int
 	 */
 	protected $pid = 0;
-	
+
 	/**
 	 * the name of the current user (FE takes precedence over BE)
 	 * @todo	why is this needed?
 	 * @var 	string
 	 */
 	protected $username = '';
-	
+
 	/**
 	 * the path to the images
 	 * @var 	string
@@ -100,8 +100,8 @@ class tx_feeditadvanced_menu {
 	 * @var		array
 	 */
 	protected $sections = array();
-	
-	
+
+
 	/**
 	 * holds all the sections of the menu, and in each section the items for the section
 	 * @var		array
@@ -154,7 +154,7 @@ class tx_feeditadvanced_menu {
 	/**
 	 * This actually renders the top menu (depending on the state whether it's opened or not)
 	 * and takes care of the templating and HTML
-	 * 
+	 *
 	 * called from tx_feeditadvanced_adminpanel->buildMenu()
 	 *
 	 * @return	string the ready to go HTML
@@ -195,7 +195,7 @@ class tx_feeditadvanced_menu {
 				'SECTIONS_SECOND_ROW' => '',
 				'USERLISTING' => '',
 			);
-			
+
 			// loop through each section and render the section and the items
 			foreach ($this->sections as $section) {
 				$items = $this->itemList[$section['name']];
@@ -254,16 +254,16 @@ class tx_feeditadvanced_menu {
 
 	/***
 	  * API functions to add sections to the toolbar and items to the sections
-	  * 
+	  *
 	  * these two functions add the content that later buildMenu() renders
 	  */
 	/**
 	 * adds an item to the toolbar on top by taking all the need components and build the HTML element
-	 * 
+	 *
 	 * is usually called by feeditadvanced_adminpanel
-	 * 
+	 *
 	 * @param	$name	name of the section, later used in the addItem() function to put the item to right spot
-	 * @param	$id	the ID of the HTML element used 
+	 * @param	$id	the ID of the HTML element used
 	 * @param	$useSeparator	whether to use the template with the separator
 	 * @param	$inlineCSS		whether to add inline CSS to the element
 	 * @param	$isInFirstRow	whether this section should be put in the first row or in second row
@@ -282,9 +282,9 @@ class tx_feeditadvanced_menu {
 
 	/**
 	 * adds an item to the toolbar on top by taking all the need components and build the HTML element
-	 * 
+	 *
 	 * is usually called by feeditadvanced_adminpanel
-	 * 
+	 *
 	 * @param	$section	the section the item is placed in
 	 * @param	$name	the name of the item
 	 * @param	$action	the action the item is called (used as an ID for the HTML)
@@ -301,7 +301,7 @@ class tx_feeditadvanced_menu {
 
 		$ATagParams = array();
 		$ATagParams[] = 'href="' . (strlen($hrefParams) ? $hrefParams : '#') . '"';
-		
+
 		if (strlen($action)) {
 			$ATagParams[] = 'id="' . $action . '"';
 		}
@@ -337,7 +337,7 @@ class tx_feeditadvanced_menu {
 
 	/**
 	 * returns a list of all users editing something currently
-	 * 
+	 *
 	 * @note don't know when and how we need this, also, this method needs cleanup, badly!
 	 *
 	 * @return	void	all the info is stored in $this->userList
@@ -347,7 +347,7 @@ class tx_feeditadvanced_menu {
 			'locks.*, user.realName',
 			'sys_lockedrecords AS locks LEFT JOIN be_users AS user ON locks.userid=user.uid',
 			'locks.userid!='.intval($GLOBALS['BE_USER']->user['uid']).'
-			AND locks.tstamp > '.($GLOBALS['EXEC_TIME']-2*3600) .' 
+			AND locks.tstamp > '.($GLOBALS['EXEC_TIME']-2*3600) .'
 			AND ( (locks.record_pid='.intval($this->pid) .' AND	 locks.record_table!=\'pages\') OR
 			(locks.record_uid='.intval($this->pid) .' AND  locks.record_table=\'pages\') )'
 			);
@@ -358,10 +358,10 @@ class tx_feeditadvanced_menu {
 		if (is_array($records)) {
 			foreach($records AS $lockedRecord) {
 				$user = $lockedRecord['userid'];
-				
+
 				if($user != $oldUser) {
 					$userList[$user] = ($lockedRecord['realName'] != '' ? $lockedRecord['realName'] : $lockedRecord['username']);
-					$openedRecords[$user] = array('page' => 99999999999, 'content' => 99999999999, 'data' =>99999999999);		
+					$openedRecords[$user] = array('page' => 99999999999, 'content' => 99999999999, 'data' =>99999999999);
 				}
 				switch ($lockedRecord['record_table']) {
 					case 'pages':
@@ -379,7 +379,7 @@ class tx_feeditadvanced_menu {
 						}
 						break;
 				}
-				$oldUser = $user;	
+				$oldUser = $user;
 			}
 		}
 		$renderedListing = array();
@@ -409,12 +409,12 @@ class tx_feeditadvanced_menu {
 				unset($openedRecords[$userID]['data']);
 			}
 			$message = $userName. ' currently editing: '. implode(', ',$openedRecords[$userID]);
-		
+
 			$renderedListing[$userID] = '<span title="'. $message . '">';
 			$renderedListing[$userID] .= $userName;
 			$renderedListing[$userID] .= '</span>';
 		}
-		
+
 		$this->userList = implode(', ',$renderedListing);
 	}
 }
@@ -423,4 +423,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feedita
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_menu.php']);
 }
 
-?>

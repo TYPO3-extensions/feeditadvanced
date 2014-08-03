@@ -52,4 +52,3 @@ class tx_feeditadvanced_tcemain_processdatamap {
 	}
 }
 
-?>

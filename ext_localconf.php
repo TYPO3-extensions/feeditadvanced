@@ -119,4 +119,3 @@ styles.content.getNews.stdWrap.prepend.value = news
 
 }
 
-?>

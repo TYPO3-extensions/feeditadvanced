@@ -26,10 +26,10 @@
 require_once(t3lib_extMgm::extPath('templavoila') . 'class.tx_templavoila_api.php');
 
 class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
-	
+
 	var $templaVoilaObj;
 	var $templaVoilaObjTable;
-	
+
 	/**
 	 * Initializes and saves configuration options and then refreshes TSFE
 	 * with these new settings.
@@ -40,7 +40,7 @@ class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
 		parent::initConfigOptions();
 		$this->refreshTSFE();
 	}
-	
+
 	/**
 	 * Wrapper function for editAction in parent class.  Once edits are done,
 	 * TSFE is refreshed to make sure that TV-specific data is updated.
@@ -96,7 +96,7 @@ class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
 		} else {
 			parent::doMove($table, $uid);
 		}
-	}	
+	}
 
 	/**
 	 * Pastes a record using TemplVoila.
@@ -107,12 +107,12 @@ class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
 	protected function doPaste() {
 		// @todo 	Set table properly!
 		$templaVoilaObj = $this->getTemplaVoilaObj();
-		
+
 		// @todo 	Need to figure how to actually pass the data in a standard way.
-		$myPOST=t3lib_div::_POST(); 
+		$myPOST=t3lib_div::_POST();
 		$sourcePointer = $this->flexform_getPointerFromString($myPOST['sourcePointer']);
 		$destinationPointer = $this->flexform_getPointerFromString($myPOST['destinationPointer']);
-			
+
 		if(!t3lib_div::_GP('setCopyMode')) {
 			$templaVoilaObj->moveElement_setElementReferences($sourcePointer, $destinationPointer);
 		}
@@ -186,7 +186,7 @@ class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
 		return $incJS;
 
 	}
-	
+
 	/**
 	 * Returns an associative array of keys and values that should be used as
 	 * hidden form fields within an edit panel.
@@ -209,7 +209,7 @@ class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
 			'destinationPointer' => $parentPointerString,
 			'setCopyMode' => t3lib_div::_GP('setCopyMode')
 		);
-		
+
 	}
 
 	/**
@@ -223,7 +223,7 @@ class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
 			$this->templaVoilaObj = t3lib_div::makeInstance('tx_templavoila_api', $table);
 			$this->templaVoilaObjTable = $table;
 		}
-		
+
 		return $this->templaVoilaObj;
 	}
 
@@ -245,4 +245,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feedita
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/templavoila/class.tx_templavoila_frontendedit.php']);
 }
 
-?>

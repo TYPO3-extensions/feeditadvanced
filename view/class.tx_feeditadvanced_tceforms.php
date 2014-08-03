@@ -25,17 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Contains TYPO3 Core Form generator - AKA "TCEforms"
- *
- * $Id: class.t3lib_tceforms.php 2232 2007-03-30 09:41:10Z ohader $
- * Revised for TYPO3 3.6 August/2003 by Kasper Skaarhoj
- * XHTML compliant
- *
- * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- */
-
-/**
  * 'TCEforms' - Class for creating the backend editing forms.
+ * Contains TYPO3 Core Form generator - AKA "TCEforms"
  *
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
  * @coauthor	Rene Fritz <r.fritz@colorcube.de>
@@ -48,7 +39,7 @@
 class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 	var $imagePath = ''; // image path for Forms on page frontend editing mode
 	var $backPath = '';
-	
+
 	public function __construct() {
 			// Set the BACK_PATH for the sprite manager and then immediately unset for rtehtmlarea.
 			// FIXME should be removed when the sprite manager and RTE are on the same page with backPath vs. BACK_PATH usage.
@@ -62,7 +53,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		$pageRenderer->addMetaTag('<meta http-equiv="X-UA-Compatible" content="IE=8" />');
 
 		parent::__construct();
-		
+
 		$GLOBALS['BACK_PATH'] = '';
 	}
 
@@ -75,7 +66,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		if (!$this->imagePath && $this->backPath)
 			$this->imagePath = $this->backPath . 'gfx/';
 	}
-	
+
 	/**
 	 * Prints the selector box form-field for the db/file/select elements (multiple)
 	 *
@@ -229,7 +220,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 					'</a>';
 
 		}
-		
+
 		// @note	Thumbnail code here is new.
 		// path for finding thumbnails is wrong used in frontend editing mode 'Forms on page'
 		#$params['thumbnails']=str_replace("../",t3lib_div::getIndpEnv('TYPO3_SITE_URL'), $params['thumbnails']);
@@ -237,7 +228,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		#$params['thumbnails']=str_replace("..%2F","", $params['thumbnails']); // this is ok
 
 		$info=($params['thumbnails'] ? $this->wrapLabels($params['headers']['items']) : '');
-		
+
 		// @note	Minor formatting changes here.
 		$str='<table border="0" cellpadding="0" cellspacing="0" width="1">
 			' . ($params['headers'] ? '
@@ -371,7 +362,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		} else {
 			$hookName = $table;
 		}
-		
+
 		if ($hookRef = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['frontendForms'][$hookName]) {
 			$hookObj= &t3lib_div::getUserObj($hookRef);
 			if (is_object($hookObj)) {
@@ -448,7 +439,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		} elseif ($key) {
 			$tsConfig = $key;
 		}
-		
+
 		return $tsConfig;
 	}
 
@@ -476,7 +467,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		if (isset($row['list_type'])) {
 			$listType=$row['list_type'];
 		}
-			
+
 			// @note This code all looks familiar.
 			// set named key for possible hooks
 		if ($table=='tt_content') { // take account content types
@@ -489,7 +480,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		} else {
 			$hookName = $table . '_' . $palette;
 		}
-		
+
 		$altPalFieldTemplate = '';
 		$altPalFieldTemplateHeader = '';
 		if ($hookRef = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['frontendForms'][$hookName]) {
@@ -523,11 +514,11 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		} else {
 			$advFields = t3lib_div::trimExplode(',', $formOnPageConf['formsOnPage.']['advFieldPalettes'], true);
 		}
-		
+
 		if (isset($advFields) && is_array($advFields)) {
 			$advFields = array_flip($advFields);
 		}
-		
+
 		if (isset($advFields[$palette])) {
 			$palFieldTemplateHeader = '<tr name="advField" class="advField" style="display:none"><td class="palettefields"><table class="cellpadding="0" cellspacing="0" border="0" width="100%">' . $palFieldTemplateHeader;
 			$palFieldTemplate = $palFieldTemplate . '</table></td></tr>';
@@ -573,7 +564,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 				}
 			}
 		}
-		
+
 			// @note	This is basically where the original function starts.
 			// Line breaks are a palette part so we need to find out if there is more than only line breaks to display
 		$palPartsWithoutLineBreaks = array();
@@ -605,7 +596,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 				);
 			$out .= $pC;
 		}
-		
+
 		return $out;
 	}
 
@@ -696,7 +687,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 
 			// Make sure to load full $GLOBALS['TCA'] array for the table:
 		t3lib_div::loadTCA($table);
-		
+
 			// Get the TCA configuration for the current field:
 		$PA['fieldConf'] = $GLOBALS['TCA'][$table]['columns'][$field];
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['form_type'] ? $PA['fieldConf']['config']['form_type'] : $PA['fieldConf']['config']['type'];	// Using "form_type" locally in this script
@@ -722,9 +713,9 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 				$PA['itemFormElName']=$this->prependFormFieldNames.'['.$table.'][' . $row['uid'].'][' . $field . ']';		// Form field name
 				$PA['itemFormElName_file']=$this->prependFormFieldNames_file.'[' . $table.'][' . $row['uid'].'][' . $field . ']';	// Form field name, in case of file uploads
 				$PA['itemFormElValue']=$row[$field];		// The value to show in the form field.
-				
+
 				// @note	Missing assignment of itemFormElID and read-only default language.
-				
+
 				// @note	This should work with frontend editing now.
 				/*
 				the following doesn't work with 'Forms on page'
@@ -769,7 +760,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 					$PA['label'] = $PA['altName'] ? $PA['altName'] : $PA['fieldConf']['label'];
 					$PA['label'] = $this->sL($PA['label']);
 					// @note	Missing come code for TSConfig definition of labels. Was probably added by the core later on.
-					
+
 						// JavaScript code for event handlers:
 					$PA['fieldChangeFunc']=array();
 					$PA['fieldChangeFunc']['TBE_EDITOR_fieldChanged'] = "TBE_EDITOR_fieldChanged('".$table."','".$row['uid']."','".$field."','".$PA['itemFormElName']."');";
@@ -779,10 +770,10 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 
 						// Based on the type of the item, call a render function:
 					$item = $this->getSingleField_SW($table,$field,$row,$PA);
-					
-					
+
+
 					// @note	Missing some language specific checks.
-					
+
 						// Add language + diff
 					$item = $this->renderDefaultLanguageContent($table,$field,$row,$item);
 					$item = $this->renderDefaultLanguageDiff($table,$field,$row,$item);
@@ -867,9 +858,9 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		if ($GLOBALS['TCA'][$table])	{
 				// Load the full TCA for the table.
 			t3lib_div::loadTCA($table);
-			
+
 			// @note No check for dividers2tabs
-			
+
 				// Load the description content for the table.
 			if ($this->edit_showFieldHelp || $this->doLoadTableDescr($table))	{
 				$GLOBALS['LANG']->loadSingleTableDescription($table);
@@ -908,8 +899,8 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 					foreach($fields as $fieldInfo)	{
 						// Exploding subparts of the field configuration:
 						$parts = explode(';',$fieldInfo);
-						
-						
+
+
 						// @note	Removed color_style_parts code
 						// Getting the style information out:
 						//$color_style_parts = t3lib_div::trimExplode('-',$parts[4]);
@@ -1023,7 +1014,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 			if (count($parts) > 1) {
 					// Unset the current level of tab menus:
 				$this->popFromDynNestedStack('tab', $tabIdentStringMD5 . '-' . ($out_sheet+1));
-				
+
 					// @note	Additional parameters on getDynTabMenu!
 				$output = $this->getDynTabMenu($parts, $tabIdentString,0,FALSE,50,1,FALSE);
 			} else {
@@ -1155,7 +1146,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 			$JSinit = array();
 
 			$id = $this->getDynTabMenuId($identString);
-			
+
 			// @note	Different CSS definition for nowrap.
 			$noWrap = $noWrap ? ' style="white-space: nowrap;"' : '';
 
@@ -1181,14 +1172,14 @@ $toggle = 0;
 				} else {
 					$onclick = 'this.blur(); DTM_activate("' . $id . '","' . $index . '", ' . ($toggle<0 ? 1 : 0) . '); return false;';
 				}
-				
+
 					// @note	Similar logic, but reversed
 				$isNonEmpty = strcmp(trim($def['content']),'');
 				// "Removes" empty tabs
 				if (!$isNonEmpty && $dividers2tabs == 1) {
 					continue;
 				}
-				
+
 				// @note	New code
 				$isActive = strcmp(trim($def['content']),'');
 				$startTable='<table class="tabTable" cellspacing="0" cellpadding="0" border="0"><tr><td class="left"><div style="width:5px">&nbsp;</div></td><td class="middle">';
@@ -1322,4 +1313,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feedita
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_tceforms.php']);
 }
 
-?>

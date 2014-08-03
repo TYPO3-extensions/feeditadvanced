@@ -13,4 +13,3 @@ return array(
 	'tx_feeditadvanced_newcontentelements' => $extensionPath . 'view/class.tx_feeditadvanced_newcontentelements.php',
 	'tx_feeditadvanced_tceforms' => $extensionPath . 'view/class.tx_feeditadvanced_tceforms.php',
 );
-?>
