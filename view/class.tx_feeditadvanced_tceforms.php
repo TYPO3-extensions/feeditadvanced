@@ -531,7 +531,9 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 
 		$out = '';
 		$palParts = array();
-		t3lib_div::loadTCA($table);
+		if (version_compare(TYPO3_branch, '6.1', '<')) {
+			t3lib_div::loadTCA($table);
+		}
 
 			// Getting excludeElements, if any.
 		if (!is_array($this->excludeElements))	{
@@ -686,7 +688,9 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 			// @note End new code
 
 			// Make sure to load full $GLOBALS['TCA'] array for the table:
-		t3lib_div::loadTCA($table);
+		if (version_compare(TYPO3_branch, '6.1', '<')) {
+			t3lib_div::loadTCA($table);
+		}
 
 			// Get the TCA configuration for the current field:
 		$PA['fieldConf'] = $GLOBALS['TCA'][$table]['columns'][$field];
@@ -857,7 +861,9 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		}
 		if ($GLOBALS['TCA'][$table])	{
 				// Load the full TCA for the table.
-			t3lib_div::loadTCA($table);
+			if (version_compare(TYPO3_branch, '6.1', '<')) {
+				t3lib_div::loadTCA($table);
+			}
 
 			// @note No check for dividers2tabs
 

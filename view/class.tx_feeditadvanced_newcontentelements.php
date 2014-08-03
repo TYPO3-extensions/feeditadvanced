@@ -253,7 +253,9 @@ class tx_feeditadvanced_newcontentelements {
 		global $TCA;
 
 			// Load full table definition:
-		t3lib_div::loadTCA('tt_content');
+		if (version_compare(TYPO3_branch, '6.1', '<')) {
+			t3lib_div::loadTCA('tt_content');
+		}
 
 			// Get TCEFORM from TSconfig of current page
 		$row = array('pid' => $this->id);
