@@ -79,7 +79,6 @@ class tx_feeditadvanced_ajax {
 		$this->initializeTSFE($this->pid);
 
 			// Setup ajax object
-		require_once(PATH_typo3.'classes/class.typo3ajax.php');
 		$this->ajaxObj = t3lib_div::makeInstance('TYPO3AJAX', 'feeditadvanced');
 
 		/**
@@ -126,7 +125,6 @@ class tx_feeditadvanced_ajax {
 		if ($this->isFrontendEditActive()) {
 
 				// Setup ajax object
-			require_once(PATH_typo3.'classes/class.typo3ajax.php');
 			$this->ajaxObj = t3lib_div::makeInstance('TYPO3AJAX', 'feeditadvanced');
 
 				// Get TSConfig options
@@ -661,10 +659,6 @@ class tx_feeditadvanced_ajax {
 
 			// If the backend cookie is set, we proceed and check if a backend user is logged in.
 		if ($_COOKIE['be_typo_user']) {
-			require_once (PATH_t3lib.'class.t3lib_befunc.php');
-			require_once (PATH_t3lib.'class.t3lib_userauthgroup.php');
-			require_once (PATH_t3lib.'class.t3lib_beuserauth.php');
-			require_once (PATH_t3lib.'class.t3lib_tsfebeuserauth.php');
 
 			// the value this->formfield_status is set to empty in order to disable login-attempts to the backend account through this script
 			// @todo 	Comment says its set to empty, but where does that happen?
@@ -689,7 +683,6 @@ class tx_feeditadvanced_ajax {
 
 			// @todo	Is the if statement needed here?
 		//if ($GLOBALS['TSFE']->beUserLogin && is_object($GLOBALS['BE_USER']->frontendEdit))	{
-			require_once(t3lib_extMgm::extPath('lang') . 'lang.php');
 			$GLOBALS['LANG'] = t3lib_div::makeInstance('language');
 			$GLOBALS['LANG']->init($GLOBALS['BE_USER']->uc['lang']);
 		//}
@@ -723,7 +716,6 @@ class tx_feeditadvanced_ajax {
 			// Including pagegen will make sure that extension PHP files are included
 		if (($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'close') || ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'saveAndClose')) {
 			global $TSFE, $TT;
-			require_once(PATH_tslib . 'class.tslib_pagegen.php');
 			include(PATH_tslib . 'pagegen.php');
 		} else {
 			$GLOBALS['TSFE']->newCObj();
