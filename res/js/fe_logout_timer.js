@@ -47,7 +47,7 @@ function busy_OpenRefreshWindow()	{	//
 }
 function busy_checkLoginTimeout_timer()	{	//
 	if (busy.checkLoginTimeout() && !busy.reloginCancelled && !busy.openRefreshW)	{
-//		if (confirm('.$GLOBALS['LANG']->JScharCode($GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:mess.refresh_login')).'))	{
+//		if (confirm('.t3lib_div::quoteJSvalue($GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:mess.refresh_login')).'))	{
 			busy.openRefreshWindow();
 //		} else	{
 //			busy.reloginCancelled = 1;

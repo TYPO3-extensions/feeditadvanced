@@ -210,7 +210,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 						$itemTitle = 'unescape(\'' . rawurlencode(basename($elValue)) . ' \')';
 					} else {	// 'db' mode assumed
 						list($itemTable,$itemUid) = explode('|', $elValue);
-						$itemTitle = $GLOBALS['LANG']->JScharCode(t3lib_BEfunc::getRecordTitle($itemTable, t3lib_BEfunc::getRecordWSOL($itemTable,$itemUid)));
+						$itemTitle = $this->quoteJSvalue(t3lib_BEfunc::getRecordTitle($itemTable, t3lib_BEfunc::getRecordWSOL($itemTable,$itemUid)));
 						$elValue = $itemTable . ' _' . $itemUid;
 					}
 					$aOnClick.= 'setFormValueFromBrowseWin(\'' . $fName . ' \',unescape(\'' . rawurlencode(str_replace('%20',' ',$elValue)) . ' \'),' . $itemTitle . ' );';
@@ -712,7 +712,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 				(!$PA['fieldConf']['exclude'] || $BE_USER->check('non_exclude_fields',$table.':'.$field)) &&
 				$PA['fieldConf']['config']['form_type']!='passthrough' &&
 				($this->RTEenabled || !$PA['fieldConf']['config']['showIfRTE']) &&
-				(!$PA['fieldConf']['displayCond'] || $this->isDisplayCondition($PA['fieldConf']['displayCond'],$row)) &&
+				(!$PA['fieldConf']['displayCond'] || $this->matchCondition($PA['fieldConf']['displayCond'], $row)) &&
 				(!$GLOBALS['TCA'][$table]['ctrl']['languageField'] || strcmp($PA['fieldConf']['l10n_mode'],'exclude') || $row[$GLOBALS['TCA'][$table]['ctrl']['languageField']]<=0)
 			)	{
 
@@ -738,7 +738,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 						(($GLOBALS['TCA'][$table]['ctrl']['type'] && !strcmp($field,$GLOBALS['TCA'][$table]['ctrl']['type'])) ||
 						($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'] && t3lib_div::inList($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'],$field)))
 						&& !$BE_USER->uc['noOnChangeAlertInTypeFields']) {
-					$alertMsgOnChange = 'if (confirm('.$GLOBALS['LANG']->JScharCode($this->getLL('m_onChangeAlert')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR_submitForm() };';
+					$alertMsgOnChange = 'if (confirm('.$this->quoteJSvalue($this->getLL('m_onChangeAlert')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR_submitForm() };';
 				} else {$alertMsgOnChange='';}
 				*/
 
@@ -748,7 +748,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 						(($GLOBALS['TCA'][$table]['ctrl']['type'] && !strcmp($field,$GLOBALS['TCA'][$table]['ctrl']['type'])) ||
 						($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'] && t3lib_div::inList($GLOBALS['TCA'][$table]['ctrl']['requestUpdate'],$field)))
 						&& !$BE_USER->uc['noOnChangeAlertInTypeFields']) {
-					$alertMsgOnChange = 'if (confirm(' . $GLOBALS['LANG']->JScharCode($GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:alertChange')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR.submitForm(); };';
+					$alertMsgOnChange = 'if (confirm(' . $this->quoteJSvalue($GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:alertChange')).') && TBE_EDITOR_checkSubmit(-1)){ TBE_EDITOR.submitForm(); };';
 				} else {$alertMsgOnChange='';}
 
 				// Render as a hidden field?
@@ -1324,6 +1324,40 @@ $toggle = 0;
 
 	}
 
+	/**
+	 * Wrapper for FormEngine->isDisplayCondition() (TYPO3 6.0 and older)/ElementConditionMatcher->match() (TYPO3 6.1+)
+	 *
+	 * @param $displayCond string The required-field code
+	 * @param $row array The record to evaluate
+	 * @return boolean TRUE if condition evaluates successfully
+	 */
+	public function matchCondition($displayCond, $row) {
+
+		if (version_compare(TYPO3_branch, '6.1', '<')) {
+			return $this->isDisplayCondition($displayCond, $row);
+		}
+
+		/** @var $elementConditionMatcher \TYPO3\CMS\Backend\Form\ElementConditionMatcher */
+		$elementConditionMatcher = t3lib_div::makeInstance('TYPO3\\CMS\\Backend\\Form\\ElementConditionMatcher');
+		return $elementConditionMatcher->match($displayCond, $row);
+
+	}
+
+	/**
+	 * Wrapper for $GLOBALS['LANG']->JScharCode (TYPO3 6.1 and older)/t3lib_div::quoteJSvalue (TYPO3 6.2+)
+	 *
+	 * @param $var string the string to encode, may be empty
+	 * @return string the encoded value already quoted (with single quotes)
+	 */
+	public function quoteJSvalue($var) {
+
+		if (version_compare(TYPO3_branch, '6.2', '<')) {
+			return $GLOBALS['LANG']->JScharCode($var);
+		}
+
+		return t3lib_div::quoteJSvalue($var);
+
+	}
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/view/class.tx_feeditadvanced_tceforms.php']) {

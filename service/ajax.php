@@ -618,8 +618,11 @@ class tx_feeditadvanced_ajax {
 		$TT = new t3lib_timeTrack;
 		$TT->start();
 
-		// Include the TCA
-		$TSFE->includeTCA();
+		// Include the TCA; in newer versions happened automatically at that point already;
+		// call to \TYPO3\CMS\Frontend\Utility\EidUtility::initTCA() as used for eid scripts not needed
+		if (version_compare(TYPO3_branch, '6.1', '<')) {
+			$TSFE->includeTCA();
+		}
 		// Load the sprite manager for frontend-editing
 		if (version_compare(TYPO3_branch, '6.0', '<')) {
 			$spriteManager = t3lib_div::makeInstance('t3lib_SpriteManager');
