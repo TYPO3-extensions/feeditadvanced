@@ -7,8 +7,8 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 			// create a new record
 			var previousContentElement = dropZoneEl.prev('.feEditAdvanced-allWrapper');
 			if (!previousContentElement) {
-					// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
-					// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
+				// it is the first element in this list, was dropped onto feEditAdvanced-firstWrapper
+				// so TCEforms needs a "moveAfter" with the correct colPos and the page (needs to be negative)
 				var contentElementContainerId = dropZoneEl.prev('.feEditAdvanced-firstWrapper').id;
 				// the ID looks like this: feEditAdvanced-firstWrapper-pages-13
 				var pageId = contentElementContainerId.substr(contentElementContainerId.indexOf('-pages-') + 7);
@@ -50,28 +50,28 @@ Ext.override(TYPO3.FeEdit.DropZone, {
 			srcElement = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-record').first().getValue();
 			cmd = linkedDragEl.select('form input.feEditAdvanced-tsfeedit-input-cmd').first().getValue();
 
-				// do a clear of element on clipboard
+			// do a clear of element on clipboard
 			feClipboard.clearClipboard(linkedDragEl);
 
-				// if source is on this page, then move it
+			// if source is on this page, then move it
 			if (srcElement) {
-					// set source and destination
+				// set source and destination
 				source = FrontendEditing.editPanels.get(srcElement.id);
 				destination = FrontendEditing.editPanels.get(dropZoneEl.prev().id);
 
 				srcElement.removeAttribute('style');
-					// do the actual cut/copy				
+				// do the actual cut/copy
 				if (cmd == 'cut') {
-						// move the element to where it is dropped
+					// move the element to where it is dropped
 					source.paste(destination.getDestinationPointer());
 					srcElement.removeClass('doCut');
 					dropZoneEl.insertAfter(srcElement);
 					// TODO: draggableElement.highlight({duration: 5});
 
-						// now trigger the cut action
+					// now trigger the cut action
 
 				} else if (cmd == 'copy') {
-						// display the element where it is dropped
+					// display the element where it is dropped
 					srcElement.removeClass('doCopy');
 
 					clonedElement = srcElement.cloneNode(true);
@@ -161,7 +161,7 @@ FrontendEditing.updatePointerElements = function() {
 	 	elementsInContainer.each(function(element, counter) {
 			var firstElement = element.first();
 			var recordElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-record').first());
-				// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
+			// pointerArray will be something like [1318,7,4,1313,1315,1317,1316]
 			var recordInfo = recordElement.getValue().split(':');
 			pointerArray.push(recordInfo[1]);
 
@@ -199,7 +199,7 @@ FrontendEditing.addFlexformPointers = function() {
 					recordElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-record').first());
 					if (recordElement.getValue() == 'tt_content:' + pointerValue) {
 
-							// flexformPointer element
+						// flexformPointer element
 						var flexformPointerElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-flexformPointer:first'));
 						if (flexformPointerElement.first()) {
 							flexformPointerElement.set({'value': containerName + ':' + counter + '/tt_content:' + pointerValue});
@@ -214,7 +214,7 @@ FrontendEditing.addFlexformPointers = function() {
 							Ext.DomHelper.insertAfter(recordElement, options);
 						}
 
-							// sourcePointer element
+						// sourcePointer element
 						var sourcePointerElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-sourcePointer:first'));
 						if (sourcePointerElement.first()) {
 							sourcePointerElement.set({'value': containerName + ':' + counter});
@@ -229,7 +229,7 @@ FrontendEditing.addFlexformPointers = function() {
 							Ext.DomHelper.insertAfter(recordElement, options);
 						}
 
-							// destinationPointer element
+						// destinationPointer element
 						var destinationPointerElement = Ext.get(firstElement.select('input.feEditAdvanced-tsfeedit-input-destinationPointer:first'));
 						if (destinationPointerElement.first()) {
 							destinationPointerElement.set({'value': containerName + ':' + counter});
@@ -244,7 +244,7 @@ FrontendEditing.addFlexformPointers = function() {
 							Ext.DomHelper.insertAfter(recordElement, options);
 						}
 
-							// and remove the element which is now not needed anymore
+						// and remove the element which is now not needed anymore
 						elementsInContainer.removeElement(firstElement);
 					}
 				}

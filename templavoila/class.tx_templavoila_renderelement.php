@@ -47,7 +47,7 @@ class tx_templavoila_renderElement {
 	 */
 	public function renderElement_postProcessDataValues($dataStructure, &$dataValues, $originalDataValues, $flexformData) {
 		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['BE_USER']->isFrontendEditingActive()) {
-				// Calculate flexformPointers. Can we do this via API instead?.
+			// Calculate flexformPointers. Can we do this via API instead?.
 			foreach ($dataValues as $key => &$value) {
 				$flexformPointer = array();
 				$flexformPointer['table'] = $flexformData['table'];
@@ -57,13 +57,13 @@ class tx_templavoila_renderElement {
 				$flexformPointer['field'] = $key;
 				$flexformPointer['vLang'] = $flexformData['vLang'];
 
-					// Add a hidden field at the end of each container that provides destination pointer and ID,
-					// but only to elements that are not attributes.
+				// Add a hidden field at the end of each container that provides destination pointer and ID,
+				// but only to elements that are not attributes.
 				if ((!isset($dataStructure['ROOT']['el'][$key]['type']) || $dataStructure['ROOT']['el'][$key]['type'] != 'attr') && $dataStructure['ROOT']['el'][$key]['tx_templavoila']['eType'] == 'ce') {
 					$vKey = $flexformData['vLang'];
 					$value[$vKey] .=  '<input type="hidden" class="feEditAdvanced-flexformPointers" title="' . implode(':', $flexformPointer) . '" value="' . $originalDataValues[$key][$vKey] . '" />';
 
-						// Add some content to identify the container at the very beginning
+					// Add some content to identify the container at the very beginning
 					$value[$vKey] = '<div class="feEditAdvanced-firstWrapper" id="feEditAdvanced-firstWrapper-field-' . $flexformPointer['field'] . '-pages-' . $GLOBALS['TSFE']->id . '"></div>' . $value[$vKey];
 				}
 			}

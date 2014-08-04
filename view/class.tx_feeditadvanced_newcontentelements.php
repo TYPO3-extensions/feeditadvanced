@@ -35,15 +35,41 @@
  */
 class tx_feeditadvanced_newcontentelements {
 
-		// Internal, static (from GPvars):
-	var $id;					// Page id
-	var $sys_language=0;		// Sys language
-	var $R_URI='';				// Return URL.
-	var $colPos;				// If set, the content is destined for a specific column.
-	var $uid_pid;				//
+	/**
+	 * Page id
+	 * @var	integer
+	 */
+	var $id;
 
-		// Internal, static:
-	var $modTSconfig=array();	// Module TSconfig.
+	/**
+	 * Sys language
+	 * @var	integer
+	 */
+	var $sys_language=0;
+
+	/**
+	 * Return URL
+	 * @var	string
+	 */
+	var $R_URI='';
+
+	/**
+	 * If set, the content is destined for a specific column.
+	 * @var	string
+	 */
+	var $colPos;
+
+	/**
+	 * ???
+	 * @var	??
+	 */
+	var $uid_pid;
+
+	/**
+	 * Module TSconfig
+	 * @var	array
+	 */
+	var $modTSconfig=array();
 
 	/**
 	 * Internal backend template object
@@ -52,11 +78,11 @@ class tx_feeditadvanced_newcontentelements {
 	 */
 	var $doc;
 
-		// Internal, dynamic:
-	var $include_once = array();	// Includes a list of files to include between init() and main() - see init()
-	var $content;					// Used to accumulate the content of the module.
-	var $access;					// Access boolean.
-	var $config;					// config of the wizard
+	// Internal, dynamic:
+	var $include_once = array();// Includes a list of files to include between init() and main() - see init()
+	var $content;				// Used to accumulate the content of the module.
+	var $access;				// Access boolean.
+	var $config;				// config of the wizard
 
     var $menuItems;
 
@@ -68,12 +94,12 @@ class tx_feeditadvanced_newcontentelements {
 	function init()	{
 
 
-			// Setting class files to include:
+		// Setting class files to include:
 		if (is_array($TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']))	{
 			$this->include_once = array_merge($this->include_once,$GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']);
 		}
 
-			// Setting internal vars:
+		// Setting internal vars:
 		$this->id = $GLOBALS['TSFE']->id;
 		$this->sys_language = $GLOBALS['TSFE']->sys_language_uid;
 
@@ -82,7 +108,7 @@ class tx_feeditadvanced_newcontentelements {
 		$config = t3lib_BEfunc::getPagesTSconfig($this->id);
 		$this->config = $config['mod.']['wizards.']['newContentElement.'];
 
-	   			// Getting the current page and receiving access information (used in main())
+		// Getting the current page and receiving access information (used in main())
 		$perms_clause = $GLOBALS['BE_USER']->getPagePermsClause(1);
 		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id,$perms_clause);
 		$this->access = is_array($this->pageinfo) ? 1 : 0;
@@ -98,7 +124,7 @@ class tx_feeditadvanced_newcontentelements {
 
 	    $wizardItems = $this->getWizardItems();
 
-			// Hook for manipulating wizardItems, wrapper, onClickEvent etc.
+		// Hook for manipulating wizardItems, wrapper, onClickEvent etc.
 		if(is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook'] as $classData) {
 				$hookObject = &t3lib_div::getUserObj($classData);
@@ -112,8 +138,8 @@ class tx_feeditadvanced_newcontentelements {
 		}
 
 
-			// Traverse items for the wizard.
-			// An item is either a header or an item rendered with a radio button and title/description and icon:
+		// Traverse items for the wizard.
+		// An item is either a header or an item rendered with a radio button and title/description and icon:
 		$cc = $key = 0;
 		$this->menuItems = array();
 		foreach ($wizardItems as $k => $wInfo)	{
@@ -123,9 +149,9 @@ class tx_feeditadvanced_newcontentelements {
 				);
 				$key = count($this->menuItems) - 1;
 			} else {
-					// Icon:
+				// Icon:
 				$iInfo = @getimagesize($wInfo['icon']);
-					// Finally, put it together in a container:
+				// Finally, put it together in a container:
 				$this->menuItems[$key]['ce'][] = $wInfo;
 				$cc++;
 			}
@@ -199,7 +225,7 @@ class tx_feeditadvanced_newcontentelements {
 			}
 		}
 
-			// Remove elements where preset values are not allowed:
+		// Remove elements where preset values are not allowed:
 		$this->removeInvalidElements($wizardItems);
 
 		return $wizardItems;
@@ -252,50 +278,50 @@ class tx_feeditadvanced_newcontentelements {
 	function removeInvalidElements(&$wizardItems)	{
 		global $TCA;
 
-			// Load full table definition:
+		// Load full table definition:
 		if (version_compare(TYPO3_branch, '6.1', '<')) {
 			t3lib_div::loadTCA('tt_content');
 		}
 
-			// Get TCEFORM from TSconfig of current page
+		// Get TCEFORM from TSconfig of current page
 		$row = array('pid' => $this->id);
 		$TCEFORM_TSconfig = t3lib_BEfunc::getTCEFORM_TSconfig('tt_content', $row);
 		$removeItems = t3lib_div::trimExplode(',', $TCEFORM_TSconfig['CType']['removeItems'], 1);
 		$keepItems = t3lib_div::trimExplode(',', $TCEFORM_TSconfig['CType']['keepItems'], 1);
 
 		$headersUsed = Array();
-			// Traverse wizard items:
-		foreach($wizardItems as $key => $cfg)	{
+		// Traverse wizard items:
+		foreach($wizardItems as $key => $cfg) {
 
-				// Exploding parameter string, if any (old style)
-			if ($wizardItems[$key]['params'])	{
-					// Explode GET vars recursively
+			// Exploding parameter string, if any (old style)
+			if ($wizardItems[$key]['params']) {
+				// Explode GET vars recursively
 				$tempGetVars = t3lib_div::explodeUrl2Array($wizardItems[$key]['params'],TRUE);
-					// If tt_content values are set, merge them into the tt_content_defValues array, unset them from $tempGetVars and re-implode $tempGetVars into the param string (in case remaining parameters are around).
-				if (is_array($tempGetVars['defVals']['tt_content']))	{
+				// If tt_content values are set, merge them into the tt_content_defValues array, unset them from $tempGetVars and re-implode $tempGetVars into the param string (in case remaining parameters are around).
+				if (is_array($tempGetVars['defVals']['tt_content'])) {
 					$wizardItems[$key]['tt_content_defValues'] = array_merge(is_array($wizardItems[$key]['tt_content_defValues']) ? $wizardItems[$key]['tt_content_defValues'] : array(), $tempGetVars['defVals']['tt_content']);
 					unset($tempGetVars['defVals']['tt_content']);
 					$wizardItems[$key]['params'] = t3lib_div::implodeArrayForUrl('',$tempGetVars);
 				}
 			}
 
-				// If tt_content_defValues are defined...:
-			if (is_array($wizardItems[$key]['tt_content_defValues']))	{
+			// If tt_content_defValues are defined...:
+			if (is_array($wizardItems[$key]['tt_content_defValues'])) {
 
-					// Traverse field values:
-				foreach($wizardItems[$key]['tt_content_defValues'] as $fN => $fV)	{
-					if (is_array($TCA['tt_content']['columns'][$fN]))	{
-							// Get information about if the field value is OK:
+				// Traverse field values:
+				foreach($wizardItems[$key]['tt_content_defValues'] as $fN => $fV) {
+					if (is_array($TCA['tt_content']['columns'][$fN])) {
+						// Get information about if the field value is OK:
 						$config = &$TCA['tt_content']['columns'][$fN]['config'];
 						$authModeDeny = ($config['type']=='select' && $config['authMode'] && !$GLOBALS['BE_USER']->checkAuthMode('tt_content', $fN, $fV, $config['authMode']));
 						$isNotInKeepItems = (count($keepItems) && !in_array($fV, $keepItems));
 
 						if ($authModeDeny || ($fN=='CType' && in_array($fV,$removeItems)) || $isNotInKeepItems) {
-								// Remove element all together:
+							// Remove element all together:
 							unset($wizardItems[$key]);
 							break;
 						} else {
-								// Add the parameter:
+							// Add the parameter:
 							$wizardItems[$key]['params'].= '&defVals[tt_content][' . $fN . ']=' . rawurlencode($fV);
 							$tmp = explode('_', $key);
 							$headersUsed[$tmp[0]] = $tmp[0];
@@ -304,7 +330,7 @@ class tx_feeditadvanced_newcontentelements {
 				}
 			}
 		}
-			// remove headers without elements
+		// remove headers without elements
 		foreach ($wizardItems as $key => $cfg)	{
 			$tmp = explode('_',$key);
 			if ($tmp[0] && !$tmp[1] && !in_array($tmp[0], $headersUsed))	{

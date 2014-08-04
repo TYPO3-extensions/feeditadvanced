@@ -1,37 +1,37 @@
 <?php
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
-	// Hooks to view display for advanced frontend editing
+// Hooks to view display for advanced frontend editing
 $TYPO3_CONF_VARS['SC_OPTIONS']['typo3/classes/class.frontendedit.php']['edit']  = 'EXT:feeditadvanced/view/class.tx_feeditadvanced_editpanel.php:tx_feeditadvanced_editpanel';
 
-	// @note Changed to hook to place Code before </body> directly before output
+// @note Changed to hook to place Code before </body> directly before output
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php:tx_feeditadvanced_adminpanel->showMenuBar';
 
-	// Use TCEMain hook to work around TYPO3 Core bug: https://forge.typo3.org/issues/23401
+// Use TCEMain hook to work around TYPO3 Core bug: https://forge.typo3.org/issues/23401
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:feeditadvanced/hooks/class.tx_feeditadvanced_tcemain_processdatamap.php:tx_feeditadvanced_tcemain_processdatamap';
 
-	// Add AJAX support
+// Add AJAX support
 $TYPO3_CONF_VARS['FE']['eID_include']['feeditadvanced'] = 'EXT:feeditadvanced/service/ajax.php';
 
-	// Set Language Files
-	// @todo Dave: Is there a better way to do this? .php and .xml???
+// Set Language Files
+// @todo Dave: Is there a better way to do this? .php and .xml???
 $TYPO3_CONF_VARS['SYS']['locallangXMLOverride']['EXT:lang/locallang_tsfe.php']['EXT:' . $_EXTKEY] = t3lib_extMgm::extPath($_EXTKEY) . "locallang.xml";
 $TYPO3_CONF_VARS['SYS']['locallangXMLOverride']['EXT:lang/locallang_tsfe.xml']['EXT:' . $_EXTKEY] = t3lib_extMgm::extPath($_EXTKEY) . "locallang.xml";
 
-	// Adds disable palettes functionality for Frontend forms
+// Adds disable palettes functionality for Frontend forms
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsClass'][] = 'EXT:feeditadvanced/view/class.tx_feeditadvanced_getMainFields_preProcess.php:tx_feeditadvanced_getMainFields_preProcess';
 
-	// Register the controller for feeditadvanced.
+// Register the controller for feeditadvanced.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tsfebeuserauth.php']['frontendEditingController']['feeditadvanced'] = 'EXT:feeditadvanced/controller/class.tx_feeditadvanced_frontendedit.php:tx_feeditadvanced_frontendedit';
 
-	// Use pageRenderer hook to concatenate CSS files for the backend editing form.
-	// Should be removed when the pageRenderer handles frontend editing properly.
+// Use pageRenderer hook to concatenate CSS files for the backend editing form.
+// Should be removed when the pageRenderer handles frontend editing properly.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['feeditadvanced'] = 'EXT:feeditadvanced/hooks/class.tx_feeditadvanced_pagerenderer.php:tx_feeditadvanced_pagerenderer->preProcessPageRenderer';
 
-	// Ensure backpaths for new content element wizard are processed with absRefPrefix
+// Ensure backpaths for new content element wizard are processed with absRefPrefix
 $GLOBALS['TYPO3_CONF_VARS']['FE']['additionalAbsRefPrefixDirectories'] .= 'typo3/../typo3conf,typo3/js';
 
-	// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
+// Configure settings, etc for showing the icons, menubar, and frontend forms on the page
 t3lib_extMgm::addPageTSConfig('
 	FeEdit {
 		#possible disable complete with set FeEdit.disable=1
@@ -61,7 +61,7 @@ t3lib_extMgm::addPageTSConfig('
 	}
 ');
 
-	// Settings needed to be forced for showing hidden records to work
+// Settings needed to be forced for showing hidden records to work
 t3lib_extMgm::addUserTSConfig('
 	admPanel {
 			override.edit.displayIcons = 1
@@ -77,21 +77,21 @@ t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
 config.disablePreviewNotification = 1
 ');
 
-	// Temporary home for TemplaVoila changes to make testing easier. Should eventually be rolled into TemplaVoila itself.
+// Temporary home for TemplaVoila changes to make testing easier. Should eventually be rolled into TemplaVoila itself.
 if (t3lib_extMgm::isLoaded('templavoila')) {
 		$TYPO3_CONF_VARS['EXTCONF']['templavoila']['pi1']['renderElementClass'][] = 'EXT:feeditadvanced/templavoila/class.tx_templavoila_renderelement.php:tx_templavoila_renderelement';
 
-		// TemplaVoila frontend editing controller is the default when TemplaVoila is installed.
+	// TemplaVoila frontend editing controller is the default when TemplaVoila is installed.
 	t3lib_extMgm::addPageTSConfig('TSFE.frontendEditingController = templavoila');
 
-		// Register the TemplaVoila frontend editing controller.
+	// Register the TemplaVoila frontend editing controller.
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tsfebeuserauth.php']['frontendEditingController']['templavoila'] = 'EXT:feeditadvanced/templavoila/class.tx_templavoila_frontendedit.php:tx_templavoila_frontendedit';
 
-		// Needs to be included to avoid errors when editing page properties.
+	// Needs to be included to avoid errors when editing page properties.
 	include_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_handlestaticdatastructures.php');
 } else {
 	t3lib_extMgm::addPageTSConfig('TSFE.frontendEditingController = feeditadvanced');
-	// add the wrap for each CE container area, so we can drop new CEs into empty areas
+// add the wrap for each CE container area, so we can drop new CEs into empty areas
 t3lib_extMgm::addTypoScript('feeditadvanced', 'setup', '
 #############################################
 ## TypoScript added by extension "FE Editing Advanced"

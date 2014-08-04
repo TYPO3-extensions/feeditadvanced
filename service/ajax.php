@@ -80,7 +80,7 @@ class tx_feeditadvanced_ajax {
 		}
 		$this->initializeTSFE($this->pid);
 
-			// Setup ajax object
+		// Setup ajax object
 		$this->ajaxObj = t3lib_div::makeInstance('TYPO3AJAX', 'feeditadvanced');
 
 		/**
@@ -95,14 +95,14 @@ class tx_feeditadvanced_ajax {
 		}
 
 		if ($this->isFrontendEditActive()) {
-				// @todo	Is there a better way to force these values so that we're sure editAction gets called?
+			// @todo	Is there a better way to force these values so that we're sure editAction gets called?
 			$GLOBALS['BE_USER']->uc['TSFE_adminConfig']['display_edit'] = true;
 			$GLOBALS['BE_USER']->extAdminConfig['enable.']['edit'] = true;
 			$GLOBALS['TSFE']->displayEditIcons = true;
 
 			$GLOBALS['BE_USER']->frontendEdit->initConfigOptions();
 		} else {
-				// @todo	Should we send a full error message here or what?  How does the user relogin?
+			// @todo	Should we send a full error message here or what?  How does the user relogin?
 			$this->ajaxObj->addContent('error', 'No login found.');
 			$this->ajaxObj->render();
 		}
@@ -126,14 +126,14 @@ class tx_feeditadvanced_ajax {
 	public function processAction() {
 		if ($this->isFrontendEditActive()) {
 
-				// Setup ajax object
+			// Setup ajax object
 			$this->ajaxObj = t3lib_div::makeInstance('TYPO3AJAX', 'feeditadvanced');
 
-				// Get TSConfig options
+			// Get TSConfig options
 			$this->modTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
 
 			$cmd = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'];
-				// Map values from TCEForms submission to editing actions.
+			// Map values from TCEForms submission to editing actions.
 			if (!$cmd) {
 				if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['update']) {
 					$cmd = 'edit';
@@ -142,7 +142,7 @@ class tx_feeditadvanced_ajax {
 				} elseif ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['close']) {
 					$cmd = 'close';
 				} elseif (is_array($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'])) {
-						// If there's a data array and no action, assume that we're already showing an editing form and want to show it again.
+					// If there's a data array and no action, assume that we're already showing an editing form and want to show it again.
 					$cmd = 'edit';
 				}
 				$GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] = $cmd;
@@ -155,7 +155,7 @@ class tx_feeditadvanced_ajax {
 				if ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID']) {
 					$uid = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['newUID'];
 				}
-					// If we're dealing with a new record, get the UID of the previous sibling.
+				// If we're dealing with a new record, get the UID of the previous sibling.
 				if (($uid == 'NEW') && ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]['NEW']['pid'] < 0)) {
 					$uid = abs($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['data'][$table]['NEW']['pid']);
 				}
@@ -163,7 +163,7 @@ class tx_feeditadvanced_ajax {
 			}
 			list($table, $uid) = explode(':', $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['record']);
 			$this->setAJAXContentFormat($cmd);
-				// Call post processing function, if applicable.
+			// Call post processing function, if applicable.
 			$cmdFunction = $cmd . 'Item';
 			if ($cmd && method_exists($this, $cmdFunction)) {
 				$this->$cmdFunction($table, $uid);
@@ -174,7 +174,7 @@ class tx_feeditadvanced_ajax {
 				$this->ajaxObj->addContent('uid', $uid);
 			}
 
-				// Return output
+			// Return output
 			$this->ajaxObj->render();
 		}
 	}
@@ -350,12 +350,12 @@ class tx_feeditadvanced_ajax {
 	 * @todo	Extract TV specific code.
 	 */
 	protected function moveUpDownItem($table, $uid, $moveDir, $flexPtr='') {
-			// Special TemplaVoila handling
+		// Special TemplaVoila handling
 		if ($flexPtr != '') {
 			$origTVFlex = $GLOBALS['TSFE']->page['tx_templavoila_flex'];
-				// load the flex array and find values
+			// load the flex array and find values
 			$flexArray = t3lib_div::trimExplode(':',$flexPtr);
-				// this is the sDEF:lDEF:field_maincontent:vDEF:uid #
+			// this is the sDEF:lDEF:field_maincontent:vDEF:uid #
 			$templavoilaFlex = t3lib_div::xml2array($origTVFlex);
 			$contentValues = $templavoilaFlex['data'][$flexArray[2]][$flexArray[3]][$flexArray[4]][$flexArray[5]];
 			$this->ajaxObj->addContent('move_array',$contentValues);
@@ -397,8 +397,8 @@ class tx_feeditadvanced_ajax {
 	 * @todo	Extract TV specific code.
 	 */
 	protected function cutCopyItem($table, $uid, $sourcePtr, $copyMode) {
-			// save item in the clipboard obj of user session...
-			// @todo	Can we avoid settings $_GET directly?
+		// save item in the clipboard obj of user session...
+		// @todo	Can we avoid settings $_GET directly?
 		$_GET['id'] = $GLOBALS['TSFE']->id;
 		$_GET['sourcePointer'] = $sourcePtr;
 		$_GET['setCopyMode'] = $copyMode;
@@ -406,34 +406,34 @@ class tx_feeditadvanced_ajax {
 		$_GET['CB']['el'][$thisRec] = 1;
 		$_GET['CB']['setCopyMode'] = $copyMode;
 
-			// Start clipboard
+		// Start clipboard
 		$this->t3libClipboardObj = t3lib_div::makeInstance('t3lib_clipboard');
-			// Initialize - reads the clipboard content from the user session
+		// Initialize - reads the clipboard content from the user session
 		$this->t3libClipboardObj->initializeClipboard();
-			// Clipboard actions are handled:
-			// @todo ??? IS SET???
-		$CB = t3lib_div::_GET('CB');	// CB is the clipboard command array
-			// @todo 	jeff: $this->cmd = action = ajax[0].  Doesn't seem to ever equal setCB when we're here.
+		// Clipboard actions are handled:
+		// @todo ??? IS SET???
+		$CB = t3lib_div::_GET('CB');// CB is the clipboard command array
+		// @todo 	jeff: $this->cmd = action = ajax[0].  Doesn't seem to ever equal setCB when we're here.
 		if ($this->cmd == 'setCB') {
-				// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
-				// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
-				// @todo	Clean up the POSTVAR naming.
+			// CBH is all the fields selected for the clipboard, CBC is the checkbox fields which were checked. By merging we get a full array of checked/unchecked elements
+			// This is set to the 'el' array of the CB after being parsed so only the table in question is registered.
+			// @todo	Clean up the POSTVAR naming.
 			$CB['el'] = $this->t3libClipboardObj->cleanUpCBC(array_merge((array)t3lib_div::_POST('CBH'), (array)t3lib_div::_POST('CBC')), $this->cmd_table);
 		}
-			// If the clipboard is NOT shown, set the pad to 'normal'.
+		// If the clipboard is NOT shown, set the pad to 'normal'.
 		$CB['setP'] = 'normal';
-			// Execute commands.
+		// Execute commands.
 		$this->t3libClipboardObj->setCmd($CB);
-			// Clean up pad
+		// Clean up pad
 		$this->t3libClipboardObj->cleanCurrent();
-			// Save the clipboard content
+		// Save the clipboard content
 		$this->t3libClipboardObj->endClipboard();
 
-			// return the paste and close links
-			// @todo	PID is not an argument!
+		// return the paste and close links
+		// @todo	PID is not an argument!
 		$data = $this->renderContentElement($table, $uid, $this->pid);
 
-			// now wrap in editPanel
+		// now wrap in editPanel
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($this->contentElementRow, $table);
 		if ($sourcePtr) {
@@ -454,7 +454,7 @@ class tx_feeditadvanced_ajax {
 		$cObj->destinationPointer['position'] = $dPtr[6];
 		$cObj->getPasteLink($uid, $dataArr['colPos'], $lang, 'TSFE_FORM_' . $uid);
 
-			// reformat the paste and clear_clipboard links so generic...because have to put in EVERY hovermenu
+		// reformat the paste and clear_clipboard links so generic...because have to put in EVERY hovermenu
 		$pasteText = $cObj->panelItems['paste'];
 		$pattern = '/(onClick="fe_edit_ajax\(.+?,.+?,.+?,)(.+?)(\);)/i';
 		$replacement = '$1\'###FLEXPTR###\'$3';
@@ -478,10 +478,10 @@ class tx_feeditadvanced_ajax {
 	 * @todo		Remove the TemplaVoila specific code.
 	 */
 	protected function clearClipboard($table, $uid, $sourcePtr = 0) {
-			// clear current item in the clipboard obj user session...
-			// Start clipboard
+		// clear current item in the clipboard obj user session...
+		// Start clipboard
 		$this->t3libClipboardObj = t3lib_div::makeInstance('t3lib_clipboard');
-			// Initialize - reads the clipboard content from the user session
+		// Initialize - reads the clipboard content from the user session
 		$this->t3libClipboardObj->initializeClipboard();
 		$cData = $this->t3libClipboardObj->clipData;
 		$thisUID = $cData[$cData['current']]['el'];
@@ -489,13 +489,13 @@ class tx_feeditadvanced_ajax {
 			$thisRec = key($thisUID);
 			$_GET['id'] = $GLOBALS['TSFE']->id;
 			$_GET['CB']['remove'] = $thisRec;
-				// CB is the clipboard command array
+			// CB is the clipboard command array
 			$CB = t3lib_div::_GET('CB');
-				// Execute commands.
+			// Execute commands.
 			$this->t3libClipboardObj->setCmd($CB);
-				// Clean up pad
+			// Clean up pad
 			$this->t3libClipboardObj->cleanCurrent();
-					// Save the clipboard content
+			// Save the clipboard content
 			$this->t3libClipboardObj->endClipboard();
 
 			$this->ajaxObj->addContent('clear_clipboard',$thisRec);
@@ -514,7 +514,7 @@ class tx_feeditadvanced_ajax {
 	 * @todo		Remove TemplaVoila specific code.
 	 */
 	protected function pasteItemHERE($table, $uid) {
-		// @todo	Are these parameters needed?
+	// @todo	Are these parameters needed?
 	//},$sourcePtr,$destPtr,$copyMode) {
 
 		$mySrcPtr = explode(':', $sourcePtr);
@@ -542,29 +542,29 @@ class tx_feeditadvanced_ajax {
 			$srcRec = $TVObj->flexform_getRecordByPointer($sourcePointer);
 			$destRec = $TVObj->flexform_getRecordByPointer($destinationPointer);
 			$elID = $srcRec['uid'];
-				// cut mode
+			// cut mode
 			if(!$copyMode) {
 				$ok = $TVObj->moveElement_setElementReferences($sourcePointer, $destinationPointer);
 			}
-				// copy mode
+			// copy mode
 			elseif(intval($copyMode) == 1) {
 				$ok = $TVObj->insertElement_setElementReferences($destinationPointer, $sourcePointer['uid']);
-					// set copyMode to new UID
+				// set copyMode to new UID
 				$elID = $TVObj->copyElement($sourcePointer, $destinationPointer);
 			}
-				// ???
+			// ???
 			else {
 				$ok = $TVObj->referenceElement($sourcePointer, $destinationPointer);
 			}
 
-				// grab source content (either created or copy version)
+			// grab source content (either created or copy version)
 			$data = $this->renderContentElement($table, $elID);
 
 			if ($ok) {
-					// clear the clipboard
+				// clear the clipboard
 				$this->clearClipboard($table, $src['uid']);
 
-					// send back all info
+				// send back all info
 				$this->ajaxObj->addContent('src_id', $srcRec['uid']);
 				$this->ajaxObj->addContent('dest_id', $destRec['uid']);
 				$this->ajaxObj->addContent('paste_content', $data);
@@ -583,44 +583,44 @@ class tx_feeditadvanced_ajax {
 	protected function initializeTSFE($pid, $feUserObj = '') {
 		global $TSFE, $TYPO3_CONF_VARS;
 
-			// @todo 	jeff: don't include templavoila directly
+		// @todo 	jeff: don't include templavoila directly
 		if (t3lib_extMgm::isLoaded('templavoila')) {
 			require_once(t3lib_extMgm::extPath('templavoila').'class.tx_templavoila_api.php');
 		}
 
-			// create object instances:
+		// create object instances:
 		$TSFE = t3lib_div::makeInstance('tslib_fe', $TYPO3_CONF_VARS, $pid, 0, true);
 
 		$TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
 		$TSFE->tmpl = t3lib_div::makeInstance('t3lib_tstemplate');
 		$TSFE->tmpl->init();
 
-			// fetch rootline and extract ts setup:
+		// fetch rootline and extract ts setup:
 		$TSFE->rootLine = $TSFE->sys_page->getRootLine(intval($pid));
 		$TSFE->getConfigArray();
 
-			// then initialize fe user
+		// then initialize fe user
 		$TSFE->initFEuser();
 		$TSFE->fe_user->fetchGroupData();
 
-			// initialize the backend user
+		// initialize the backend user
 		$this->initializeBackendUser();
 
 		if (version_compare(TYPO3_branch, '6.1', '>')) {
-				// Load cached ext_tables core files
+			// Load cached ext_tables core files
 			\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadExtensionTables();
 		}
 
-			// allow hidden pages and records to be edited.
+		// allow hidden pages and records to be edited.
 		$TSFE->showHiddenPage = 1;
 		$TSFE->showHiddenRecords = 1;
 
 		$TT = new t3lib_timeTrack;
 		$TT->start();
 
-			// Include the TCA
+		// Include the TCA
 		$TSFE->includeTCA();
-			// Load the sprite manager for frontend-editing
+		// Load the sprite manager for frontend-editing
 		if (version_compare(TYPO3_branch, '6.0', '<')) {
 			$spriteManager = t3lib_div::makeInstance('t3lib_SpriteManager');
 			$spriteManager->loadCacheFile();
@@ -629,7 +629,7 @@ class tx_feeditadvanced_ajax {
 		}
 
 
-			// Get the page
+		// Get the page
 		$TSFE->fetch_the_id();
 		$TSFE->getPageAndRootline();
 		$TSFE->initTemplate();
@@ -637,7 +637,7 @@ class tx_feeditadvanced_ajax {
 		$TSFE->forceTemplateParsing = true;
 		$TSFE->getConfigArray();
 
-			// Get the Typoscript as its inherited from parent pages
+		// Get the Typoscript as its inherited from parent pages
 		$template = t3lib_div::makeInstance('t3lib_tsparser_ext'); // Defined global here!
 		$template->tt_track = 0;
 		$template->init();
@@ -646,7 +646,7 @@ class tx_feeditadvanced_ajax {
 		$template->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 		$template->generateConfig();
 
-			// Save the setup
+		// Save the setup
 		$this->setup = $template->setup;
 	}
 
@@ -658,7 +658,7 @@ class tx_feeditadvanced_ajax {
 	protected function initializeBackendUser() {
 		global $BE_USER, $TYPO3_DB, $TSFE, $LANG;
 
-			// @todo	What's the point here? To prevent looping?
+		// @todo	What's the point here? To prevent looping?
 		if ($this->initBE) {
 			return;
 		}
@@ -666,7 +666,7 @@ class tx_feeditadvanced_ajax {
 
 		$GLOBALS['BE_USER'] = '';
 
-			// If the backend cookie is set, we proceed and check if a backend user is logged in.
+		// If the backend cookie is set, we proceed and check if a backend user is logged in.
 		if ($_COOKIE['be_typo_user']) {
 
 			// the value this->formfield_status is set to empty in order to disable login-attempts to the backend account through this script
@@ -690,8 +690,8 @@ class tx_feeditadvanced_ajax {
 			}
 		}
 
-			// @todo	Is the if statement needed here?
-		//if ($GLOBALS['TSFE']->beUserLogin && is_object($GLOBALS['BE_USER']->frontendEdit))	{
+		// @todo	Is the if statement needed here?
+		//if ($GLOBALS['TSFE']->beUserLogin && is_object($GLOBALS['BE_USER']->frontendEdit)) {
 			$GLOBALS['LANG'] = t3lib_div::makeInstance('language');
 			$GLOBALS['LANG']->init($GLOBALS['BE_USER']->uc['lang']);
 		//}
@@ -722,7 +722,7 @@ class tx_feeditadvanced_ajax {
 	 * @return	string		HTML output for the content element.
 	 */
 	protected function renderContentElement($table, $uid) {
-			// Including pagegen will make sure that extension PHP files are included
+		// Including pagegen will make sure that extension PHP files are included
 		if (($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'close') || ($GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['cmd'] == 'saveAndClose')) {
 			global $TSFE, $TT;
 //			include(PATH_tslib . 'pagegen.php');
@@ -740,7 +740,7 @@ class tx_feeditadvanced_ajax {
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($this->contentElementRow, 'tt_content');
 
-			// @todo	Hack to render editPanel for records other than tt_content.
+		// @todo	Hack to render editPanel for records other than tt_content.
 		if(($table == 'tt_content') && ($uid != 'NEW')) {
 			$cObjOutput = $cObj->cObjGetSingle($this->setup['tt_content'], $this->setup['tt_content.']);
 		} else {
@@ -754,29 +754,29 @@ class tx_feeditadvanced_ajax {
 			$cObjOutput = $cObj->editPanel('', $conf, $table . ':' . $uid, $this->contentElementRow);
 		}
 
-			// Set a simplified template file for use in the AJAX response.  No title, meta tags, etc.
-			// @todo Should we account for footer data too?
+		// Set a simplified template file for use in the AJAX response.  No title, meta tags, etc.
+		// @todo Should we account for footer data too?
 		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		$pageRenderer->setTemplateFile(t3lib_extMgm::extPath('feeditadvanced') . 'res/template/content_element.tmpl');
 		$pageRenderer->setCharSet($GLOBALS['LANG']->charSet);
 		$pageRenderer->setLanguage($GLOBALS['LANG']->lang);
 
 		if (version_compare(TYPO3_branch, '6.1', '>')) {
-				// Add js files
+			// Add js files
 			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('lang') . 'Resources/Public/JavaScript/Typo3Lang.js');
 			$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('backend') . 'Resources/Public/JavaScript/tree.js');
 		}
 		$pageRenderer->enableConcatenateFiles();
 
-			// Add TYPO3.settings.ajaxUrls
+		// Add TYPO3.settings.ajaxUrls
 		$ajaxUrls = array();
 		foreach (array_keys($GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']) as $ajaxHandler) {
 			$ajaxUrls[$ajaxHandler] = t3lib_BEfunc::getAjaxUrl($ajaxHandler);
 		}
 		$pageRenderer->addHeaderData('<script type="text/javascript">/*<![CDATA[*/TYPO3.settings.ajaxUrls = ' . json_encode($ajaxUrls) . ';/*]]>*/</script>');
 
-			// Set the BACK_PATH for the pageRenderer concatenation.
-			// FIXME should be removed when the sprite manager, RTE, and pageRenderer are on the same path about concatenation.
+		// Set the BACK_PATH for the pageRenderer concatenation.
+		// FIXME should be removed when the sprite manager, RTE, and pageRenderer are on the same path about concatenation.
 		$GLOBALS['BACK_PATH'] = TYPO3_mainDir;
 
 		$header = $this->renderHeaderData();
@@ -848,14 +848,14 @@ class tx_feeditadvanced_ajax {
 	protected function isRelativeUrl($url) {
 		$parsedUrl = @parse_url($url);
 		if ($parsedUrl !== FALSE && !isset($parsedUrl['scheme']) && !isset($parsedUrl['host'])) {
-				// If the relative URL starts with a slash, we need to check if it's within the current site path
+			// If the relative URL starts with a slash, we need to check if it's within the current site path
 			return (!t3lib_div::isFirstPartOfStr($parsedUrl['path'], '/') || t3lib_div::isFirstPartOfStr($parsedUrl['path'], t3lib_div::getIndpEnv('TYPO3_SITE_PATH')));
 		}
 		return FALSE;
 	}
 }
 
-	// exit, if script is called directly (must be included via eID in index_ts.php)
+// exit, if script is called directly (must be included via eID in index_ts.php)
 if (!defined ('PATH_typo3conf')) die ('Could not access this script directly!');
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/feeditadvanced/service/ajax.php']) {

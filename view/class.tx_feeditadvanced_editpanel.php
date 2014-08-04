@@ -87,7 +87,7 @@ class tx_feeditadvanced_editpanel {
 	 * @return		void
 	 */
 	public function init($conf) {
-			// If init has already been called, then return...
+		// If init has already been called, then return...
 		if (!empty($this->modTSconfig)) {
 			return;
 		}
@@ -98,16 +98,16 @@ class tx_feeditadvanced_editpanel {
 			$GLOBALS['TSFE']->displayEditIcons = false;
 			return;
 		}
-			// set defaults for showIcons otherwise is set by $conf['allow']
+		// set defaults for showIcons otherwise is set by $conf['allow']
 		if (!$this->modTSconfig['properties']['showIcons']) {
 			$this->modTSconfig['properties']['showIcons'] = 'edit,move,new,copy,cut,hide,delete,drag,draggable';
 		}
 
-			// image path for frontend editing related images - edit panel and edit icon icons
+		// image path for frontend editing related images - edit panel and edit icon icons
 		$imgPath = $this->modTSconfig['properties']['skin.']['imagePath'];
 		$this->imagePath = $imgPath  ? $imgPath  : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/';
 
-			// load in the template
+		// load in the template
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 		$templateFile = ($conf['template']) ? $conf['template'] : $this->modTSconfig['properties']['skin.']['templateFile'];
 		if (!$templateFile) {
@@ -117,9 +117,9 @@ class tx_feeditadvanced_editpanel {
 		$this->template = $this->cObj->fileResource($templateFile);
 		$this->templateAction = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_ACTION_'.strtoupper($this->table). '###') != '' ? $code : $this->cObj->getSubpart($this->template, '###EDITPANEL_ACTION###') );
 
-			// need to set this, otherwise do not see edit icons or process them right
+		// need to set this, otherwise do not see edit icons or process them right
 		$GLOBALS['TSFE']->displayEditIcons = true;
-			// otherwise forms not on page
+		// otherwise forms not on page
 		$GLOBALS['BE_USER']->uc['TSFE_adminConfig']['edit_editFormsOnPage'] = true;
 	}
 
@@ -154,10 +154,10 @@ class tx_feeditadvanced_editpanel {
 			return $content;
 		}
 
-			// Special content is about to be shown, so the cache must be disabled.
+		// Special content is about to be shown, so the cache must be disabled.
 		$GLOBALS['TSFE']->set_no_cache();
 
-			// Build all the necessary variables
+		// Build all the necessary variables
 		$markerArray = array();
 		$subpartMarker = array();
 
@@ -171,10 +171,10 @@ class tx_feeditadvanced_editpanel {
 		//$markerArray['###FORM_END###'] = '</form>';
 		$markerArray['###FORM_CONTENT###'] = ' ';
 
-			// put this in var for easy access
+		// put this in var for easy access
 		$TSFE_EDIT = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT;
 
-			// set command
+		// set command
 		if (is_array($TSFE_EDIT) && ($TSFE_EDIT['record'] == $currentRecord) && !$TSFE_EDIT['update_close']) {
 			$theCmd =$TSFE_EDIT['cmd'];
 		} else {
@@ -182,11 +182,11 @@ class tx_feeditadvanced_editpanel {
 		}
 
 
-			// @todo button order? $allowOrder?
+		// @todo button order? $allowOrder?
 		$btnOrder = $this->modTSconfig['properties']['showIcons'] ? $this->modTSconfig['properties']['showIcons'] : $conf['allow'];
 		$allowOrder = t3lib_div::trimExplode(',', $btnOrder, 1);
 
-			// generate the panel items, unless this is a new or edit command
+		// generate the panel items, unless this is a new or edit command
 		if (($theCmd != 'edit') && ($theCmd != 'new')) {
 			$panel = '';
 
@@ -211,7 +211,7 @@ class tx_feeditadvanced_editpanel {
 				$this->panelItems['edit'] = $this->editIconLinkWrap('edit', 'editIcon', 'editTitle');
 			}
 			$sortField = $GLOBALS['TCA'][$table]['ctrl']['sortby'];
-			if (isset($allow['move']) && $sortField && $GLOBALS['BE_USER']->workspace===0)	{	// Hiding in workspaces because implementation is incomplete
+			if (isset($allow['move']) && $sortField && $GLOBALS['BE_USER']->workspace===0) {	// Hiding in workspaces because implementation is incomplete
 				$this->panelItems['up'] 	= $this->editIconLinkWrap('up', 'upIcon', 'upTitle', '');
 				$this->panelItems['down'] 	= $this->editIconLinkWrap('down', 'downIcon', 'downTitle', '');
 
@@ -221,7 +221,7 @@ class tx_feeditadvanced_editpanel {
 					$this->panelItems['draggable'] = ' feEditAdvanced-draggable draggable';
 				}
 			}
-				// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case
+			// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case
 			$hideField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'];
 			if (isset($allow['hide']) && $hideField && $GLOBALS['BE_USER']->workspace === 0 && !$dataArr['_LOCALIZED_UID']) {
 				$this->panelItems['hide'] 	= $this->editIconLinkWrap('hide',   'hideIcon',   'hideTitle',    $dataArr[$hideField] ? 'style="display:none"' : '');
@@ -232,27 +232,27 @@ class tx_feeditadvanced_editpanel {
 					$this->panelItems['new'] = $this->editIconLinkWrap('newPage', 'newPageIcon', 'newPageTitle');
 				} else {
 					if (substr_compare($currentRecord, ':NEW', '-4') === 0) {
-							// $currentRecord ends with ":NEW". => New content in top of column.
+						// $currentRecord ends with ":NEW". => New content in top of column.
 						$title = 'newRecordInTopOfColumnTitle';
 					} else {
-							// New content after this element.
+						// New content after this element.
 						$title = 'newRecordTitle';
 					}
 					$this->panelItems['new'] = $this->editIconLinkWrap('newRecord',  'newRecordIcon', $title);
 				}
 			}
-				// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case
+			// Hiding in workspaces because implementation is incomplete, Hiding for localizations because it is unknown what should be the function in that case
 			if (isset($allow['delete']) && ($GLOBALS['BE_USER']->workspace === 0) && !$dataArr['_LOCALIZED_UID']) {
 				$this->panelItems['delete'] = $this->editIconLinkWrap('delete','deleteIcon','deleteTitle');
 			}
 
-				// Allow cut, copy, and paste
+			// Allow cut, copy, and paste
 			if (isset($allow['paste'])) {
-				$this->panelItems['copy'] 	= $this->editIconLinkWrap('copy','copyIcon', 'copyTitle');
-				$this->panelItems['cut'] 	= $this->editIconLinkWrap('cut', 'cutIcon', 'cutTitle');
+				$this->panelItems['copy'] = $this->editIconLinkWrap('copy','copyIcon', 'copyTitle');
+				$this->panelItems['cut'] = $this->editIconLinkWrap('cut', 'cutIcon', 'cutTitle');
 			}
 
-				// hook to add any hidden fields
+			// hook to add any hidden fields
 			$hiddenFieldString = '';
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'])) {
 				foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_editpanel.php']['addHiddenFields'] as $classRef) {
@@ -262,12 +262,12 @@ class tx_feeditadvanced_editpanel {
 				}
 			}
 
-				// build hidden fields output based on what is passed in
+			// build hidden fields output based on what is passed in
 			foreach ($hiddenFields as $name => $value) {
 				$hiddenFieldString .= '<input type="hidden" name="TSFE_EDIT[' . $name . ']" value="' . $value . '"/>' . chr(10);
 			}
 
-				// Add hidden fields with necessary data
+			// Add hidden fields with necessary data
 			$hiddenFieldString .= '	<input type="hidden" name="TSFE_EDIT[cmd]" class="feEditAdvanced-tsfeedit-input-cmd" value="" />
 			<input type="hidden" name="TSFE_EDIT[record]" class="feEditAdvanced-tsfeedit-input-record" value="' . $currentRecord . '" />
 			<input type="hidden" name="TSFE_EDIT[pid]" class="feEditAdvanced-tsfeedit-input-pid" value="' . $GLOBALS['TSFE']->id . '" />';
@@ -279,14 +279,14 @@ class tx_feeditadvanced_editpanel {
 			$markerArray['###FORM_HIDDENFIELDS###'] = $hiddenFieldString;
 		}
 
-			// add the content. For 'new', we just want the form, not the header since it is embedded in the content
+		// add the content. For 'new', we just want the form, not the header since it is embedded in the content
 		if ($theCmd != 'new') {
 			$markerArray['###CONTENT_ELEMENT###'] = trim($content);
 		}
 
-			// wrap the editPanel around the content
+		// wrap the editPanel around the content
 		$markerArray = $this->wrapContent($markerArray, $table, $uid, $dataArr, $conf, $allowOrder, $theCmd, $newUID, $fieldList);
-			// clear out any unused marker sections
+		// clear out any unused marker sections
 		if (!strlen($markerArray['###FORM_CONTENT###'])) {
 			$subpartMarker['###HOVERFORM###'] = '';
 		}
@@ -294,7 +294,7 @@ class tx_feeditadvanced_editpanel {
 			$subpartMarker['###EDITFORM###'] = '';
 		}
 
-			// handle adding actions to type=pages
+		// handle adding actions to type=pages
 		if ($table == 'pages') {
 			$pageBtnOrder = $this->modTSconfig['properties']['showPageIcons'] ? $this->modTSconfig['properties']['showPageIcons'] : $conf['allow'];
 			$allPageActions = array('new','edit','delete','hide');
@@ -309,16 +309,16 @@ class tx_feeditadvanced_editpanel {
 			$markerArray['###EDITPANEL_SHOW_HIDDEN_TEXT###'] = $GLOBALS['BE_USER']->extGetLL('pageShowHidden');
 			$markerArray['###EDITPANEL_SHOW_HIDDEN_TOOLTIP###'] = $GLOBALS['BE_USER']->extGetLL('pageShowHiddenTooltip');
 		}
-			// load in template for edit panel
-			// if special template for table is present, use it, else use default
+		// load in template for edit panel
+		// if special template for table is present, use it, else use default
 		$templateEditPanel = ( $code = $this->cObj->getSubpart($this->template, '###EDITPANEL_'.strtoupper($table).'###')) ? $code : $this->cObj->getSubpart($this->template, '###EDITPANEL###');
 
-			// then substitute all the markers in the template into appropriate places
+		// then substitute all the markers in the template into appropriate places
 		$output = $this->cObj->substituteMarkerArrayCached($templateEditPanel, $markerArray, $subpartMarker, array());
 
-			// clear out any empty template fields
+		// clear out any empty template fields
 		$output = preg_replace('/###[A-Za-z_1234567890]+###/', '', $output);
-			// and any start & end comments @todo -- how to make more efficient
+		// and any start & end comments @todo -- how to make more efficient
 		$output = preg_replace('/<!--([\s]*?)start([\s]*?)-->/', '', $output);
 		$output = preg_replace('/<!--([\s]*?)end([\s]*?)-->/', '', $output);
 
@@ -364,14 +364,14 @@ class tx_feeditadvanced_editpanel {
 	 */
  	protected function wrapContent($markerArray, $table, $uid, array $recordData=array(), array $conf=array(), array $allowOrder=array(), $theCmd='', $newUID='', $fieldList='') {
 		$editpanelItems = '';
-			// Put the edit panel items in given order
+		// Put the edit panel items in given order
 		/*
 		if (is_array($this->panelItems)) {
 			$whichOrder = is_array($allowOrder) ? $allowOrder : $this->panelItems;
 			foreach($whichOrder as $item => $value) {
 				$isThere = array_key_exists($value,$this->panelItems);
 
-					// expand hide to hide + unhide
+				// expand hide to hide + unhide
 				if ($isThere && ($value == 'hide') && isset($this->panelItems['hide'])) {
 					$editpanelItems .= $this->panelItems['hide'] . $this->panelItems['unhide'];
 				} elseif ($isThere && ($value != 'clickContentToEdit') && ($value != 'draggable')) {
@@ -408,7 +408,7 @@ class tx_feeditadvanced_editpanel {
 					$editpanelItems .= $this->addAction('drag');
 				}
 
-				// no allow order was specifid, thus all items are rendered
+			// no allow order was specified, thus all items are rendered
 			} else {
 				foreach ($panelItems as $key => $panelItem) {
 					$editpanelItems .= $this->addAction($key);
@@ -433,14 +433,14 @@ class tx_feeditadvanced_editpanel {
 		$wrapperID = $table . ':' . $uid;
 		$markerArray['###EDITPANEL_ID###'] = $wrapperID;
 
-			// if edit or new, then add the form on page
+		// if edit or new, then add the form on page
 		if ($theCmd=='edit' || $theCmd=='new') {
 			if ($theCmd == 'edit') {
 				$markerArray['###CONTENT_ELEMENT###'] = '';
 			}
 			$markerArray = $this->formsOnPageForm($markerArray,$table, $recordData, $currentRecord, $conf, $content, $theCmd, $newUID, $fieldList);
 		} else {
-				// fill in the markers
+			// fill in the markers
 			$markerArray['###EDITPANEL_ACTIONS###'] = $editpanelItems;
 		}
 
@@ -490,13 +490,13 @@ class tx_feeditadvanced_editpanel {
 	 * @see	editPanel(), editIcons(), t3lib_tsfeBeUserAuth::extEditAction()
 	 */
 	protected function formsOnPageForm($markerArray, $table, $dataArr=array(), $currentRecord='', $conf='', $content='', $theCmd='edit', $newUID='', $fieldList='') {
-			// change some TCA for this editing mode - must use here because tceforms related hook is not available for edit icons
+		// change some TCA for this editing mode - must use here because tceforms related hook is not available for edit icons
 		tx_feeditadvanced_tceforms::changeTCAforFormsOnPage($GLOBALS['TCA'],$table);
 
-			 // configuration for edit panels
+		// configuration for edit panels
 		$formOnPageConf = $GLOBALS['TSFE']->tmpl->setup[$table . '.']['stdWrap.']['editPanel.'];
 
-			// hook to add additional JavaScript or CSS to the HEAD section of the page
+		// hook to add additional JavaScript or CSS to the HEAD section of the page
 		if (isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['addAdditionalHeaderDataForFormsOnPage']) && is_array ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['addJSorCSSforFormsOnPage'])) {
 			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['addAdditionalHeaderDataForFormsOnPage'] as $classRef) {
 				$hookObj= &t3lib_div::getUserObj($classRef);
@@ -515,10 +515,10 @@ class tx_feeditadvanced_editpanel {
 		$tceforms->formName = $markerArray['###FORM_NAME###'];
 		$tceforms->backPath = TYPO3_mainDir;
 
-			// add include files
+		// add include files
 		$incFiles = $this->addFormIncludes($tceforms);
 
-			// Handle records in a workspace
+		// Handle records in a workspace
 		if ($versionedRecord = t3lib_BEfunc::getWorkspaceVersionOfRecord($GLOBALS['BE_USER']->workspace, $table, $dataArr['uid'], 'uid')) {
 			$dataArr['uid'] = $versionedRecord['uid'];
 		}
@@ -541,18 +541,18 @@ class tx_feeditadvanced_editpanel {
 		}
 		$mainMode = ($fieldList) ? 'editIcons' : 'editPanel';
 
-			 // related with original reference t3lib_div::makeInstance('t3lib_TCEforms_FE');
+		// related with original reference t3lib_div::makeInstance('t3lib_TCEforms_FE');
 		$tceforms->setFancyDesign($tceforms->totalWrap, $tceforms->fieldTemplate, $tceforms->palFieldTemplateHeader, $tceforms->palFieldTemplate, $tceforms->sectionWrap, $conf, $table, $CType, $listType, $mainMode);
 
 		$tceforms->defStyle = 'font-family:Verdana;font-size:10px;';
 		$tceforms->edit_showFieldHelp = $GLOBALS['BE_USER']->uc['edit_showFieldHelp'];
 		$tceforms->helpTextFontTag = '<font class="helpTextFont" face="verdana,sans-serif" color="#333333" size="1">';
-			// configuration for edit panels
+		// configuration for edit panels
 		$formOnPageConf = $GLOBALS['TSFE']->tmpl->setup[$table.'.']['stdWrap.']['editPanel.'];
 
 		$panel = '';
 
-			// hook to add additional JavaScript or CSS before the actual form
+		// hook to add additional JavaScript or CSS before the actual form
 		$addHeaderHook = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['addJSorCSSforFormsOnPage'];
 		if (isset($addHeaderHook) && is_array($addHeaderHook)) {
 			foreach ($addHeaderHook as $classRef) {
@@ -562,11 +562,11 @@ class tx_feeditadvanced_editpanel {
 				}
 			}
 		} elseif ($formOnPageConf['formsOnPage.']['advFields']) {
-				// should not be set for edit icons because they must be handled differently
-				// @todo	Think this is dead code that can be removed.
+			// should not be set for edit icons because they must be handled differently
+			// @todo	Think this is dead code that can be removed.
 			if (t3lib_div::_POST('mode')!='editIcons') {
 				$toggle .= '<div class="toggleShowHide class-main21"><a href="#" onclick="toggleSimpleAdvanced();return false;"><span id="simpleadv_toggle">' . $GLOBALS['BE_USER']->extGetLL('toggle_advanced') . '</span></a></div>';
-					// Buttons top
+				// Buttons top
 				$panel .= $tceforms->intoTemplate(array('ITEM' => $toggle));
 			}
 		}
@@ -574,8 +574,8 @@ class tx_feeditadvanced_editpanel {
 		$updateOnClick = 'parent.Ext.ux.Lightbox.setCloseOnSubmit(false);';
 		$updateCloseOnClick = 'parent.Ext.ux.Lightbox.setCloseOnSubmit(true);';
 
-			// Inline Javascript for form close. Bypasses TBE_EDITOR checks and submits the form.
-			// @todo Move this to an external Javascript file?
+		// Inline Javascript for form close. Bypasses TBE_EDITOR checks and submits the form.
+		// @todo Move this to an external Javascript file?
 		$closeOnClick  = "parent.Ext.ux.Lightbox.setCloseOnSubmit(true); ";
 		$closeOnClick .= "parent.Ext.ux.Lightbox.displayContentUpdateMessage(); ";
 		$closeOnClick .= "editingForm = document.getElementById('" . $tceforms->formName . "'); ";
@@ -587,7 +587,7 @@ class tx_feeditadvanced_editpanel {
 		$closeOnClick .= "document." . $tceforms->formName . ".submit(); ";
 		$closeOnClick .= "return false;";
 
-			// add the save, saveClose, close buttons
+		// add the save, saveClose, close buttons
 		$buttons = '<div class="feEditAdvanced-editControls" id="feEditAdvanced-editControls">';
 		$buttons .= '<button type="submit" name="TSFE_EDIT[update]" value="1" onclick="' . $updateOnClick . '" class="feEditAdvanced-actionButton saveAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveButton').'</span></button>';
 		$buttons .= '<button type="submit" name="TSFE_EDIT[update_close]" value="1" onclick="' . $updateCloseOnClick . '" class="feEditAdvanced-actionButton saveCloseAction" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveCloseDoc', 1) . '"><span>'.$GLOBALS['BE_USER']->extGetLL('saveCloseButton').'</span></button>';
@@ -633,37 +633,37 @@ class tx_feeditadvanced_editpanel {
 			}
 		}
 
-			// if fieldList exists and it is not empty
+		// if fieldList exists and it is not empty
 		if ($fieldList) {
 			$panel .= $tceforms->getListedFields($table, $processedDataArr, $fieldList);
 		}
-			// if field list has not been found use full form
+		// if field list has not been found use full form
 		else {
 			$panel .= $tceforms->getMainFields($table, $processedDataArr);
 		}
-			// for new, add hidden fields
+		// for new, add hidden fields
 		if ($theCmd == 'new') {
 			$hiddenF .= '<input type="hidden" name="TSFE_EDIT[data][' . $table . '][NEW][pid]" value="' . $newUID . '" />';
-				// If a new page is created in front-end, then show it by default!
+			// If a new page is created in front-end, then show it by default!
 			if ($table == 'pages') {
 				$hiddenF .= '<input type="hidden" name="TSFE_EDIT[data][' . $table . '][NEW][hidden]" value="0" />';
 			}
 		}
-			// add hidden fields to form
+		// add hidden fields to form
 		$hiddenF .= '<input type="hidden" name="TSFE_EDIT[doSave]" class="feEditAdvanced-tsfeedit-input-doSave" value="0" />';
 		$panel .= $tceforms->intoTemplate(array('ITEM' => $hiddenF));
 
-			// create panel
+		// create panel
 		$panel = '<div class="formsOnPageWrapper">' . $tceforms->wrapTotal($panel, $dataArr, $table) . '</div>';
 
-			// for editor code reset
+		// for editor code reset
 		$JSTop .= $tceforms->printNeededJSFunctions_top() . ($conf['edit.']['displayRecord'] ? $content : '');
 		$JSBottom = $tceforms->printNeededJSFunctions();
 
 		$formContent = $JSTop . $incFiles . $panel . $JSBottom . $buttons;
 
-			// Insert any header data from TCEForms.
-			// @todo	Temporarily commented out because some styles conflict with page content.
+		// Insert any header data from TCEForms.
+		// @todo	Temporarily commented out because some styles conflict with page content.
 		//$GLOBALS['SOBE']->doc->insertHeaderData();
 
 		$markerArray['###EDITFORM_CONTENT###'] = $formContent;
@@ -704,11 +704,11 @@ class tx_feeditadvanced_editpanel {
 		/** @var $pageRenderer t3lib_PageRenderer */
 		$pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 
-			// code for dynamic tabs
+		// code for dynamic tabs
 		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/getDynTabMenuJScode.js');
 
-			// forms on page CSS
-			// one time we will have $GLOBALS['TBE_STYLES'] available :)
+		// forms on page CSS
+		// one time we will have $GLOBALS['TBE_STYLES'] available :)
 		$cssfile = $this->modTSconfig['properties']['skin.']['cssFormFile'];
 		$cssFormFile =  $cssfile ? $cssfile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/css/fe_formsOnPage.css';
 		$cssFormFile2 = '/typo3/contrib/extjs/resources/css/ext-all-notheme.css';
@@ -717,7 +717,7 @@ class tx_feeditadvanced_editpanel {
 		$pageRenderer->addCssFile($cssFormFile2);
 		$pageRenderer->addCssFile($cssFormFile3);
 
-			// this allows toggling advanced/simple buttons on form
+		// this allows toggling advanced/simple buttons on form
 		$incJS .= '<script type="text/javascript">
 				function toggleSimpleAdvanced() {
 					advFields = document.getElementsByClassName("advField");
@@ -740,13 +740,13 @@ class tx_feeditadvanced_editpanel {
 				}
 		</script>';
 
-			// add JS functions, as needed
+		// add JS functions, as needed
 		if ($tceforms) {
 			$incJS .= $tceforms->printNeededJSFunctions_top();
 			$incJS .= $tceforms->printNeededJSFunctions();
 		}
 
-			// @todo: Dave -- this is needed because top.busy is not defined for jsunc.tbe_editor.js -- needs a workaround
+		// @todo: Dave -- this is needed because top.busy is not defined for jsunc.tbe_editor.js -- needs a workaround
 		$pageRenderer->addJsFile(t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/js/fe_logout_timer.js');
 
 		return $incJS;

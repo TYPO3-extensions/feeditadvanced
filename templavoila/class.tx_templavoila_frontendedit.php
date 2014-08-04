@@ -135,7 +135,7 @@ class tx_templavoila_frontendedit extends tx_feeditadvanced_frontendedit {
 			$sourcePointerString = $GLOBALS['BE_USER']->frontendEdit->TSFE_EDIT['flexformPointer'];
 			$sourcePointer = $this->flexform_getPointerFromString($sourcePointerString);
 
-				// Unlinking rather than deleting to be consistent with TemplaVoila's backend interface.
+			// Unlinking rather than deleting to be consistent with TemplaVoila's backend interface.
 			$templaVoilaObj->deleteElement($sourcePointer);
 		} else {
 			parent::doDelete($table, $uid);

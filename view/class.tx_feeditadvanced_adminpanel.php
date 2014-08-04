@@ -103,25 +103,25 @@ class tx_feeditadvanced_adminpanel {
 
 	public function __construct() {
 		if (is_object($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->beUserLogin) {
-				// set up general configuration
+			// set up general configuration
 			if (!count($this->admPanelTSconfig)) {
 				$this->admPanelTSconfig = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'admPanel');
 				$this->modTSconfig      = t3lib_BEfunc::getModTSconfig($GLOBALS['TSFE']->id, 'FeEdit');
 				$GLOBALS['TSFE']->determineId();
 			}
 
-				// check if frontend editing is enabled
+			// check if frontend editing is enabled
 			if ($this->modTSconfig['properties']['disable'] || (!$GLOBALS['BE_USER']->frontendEdit instanceOf t3lib_FrontendEdit)) {
 				$this->disabled = true;
 				return;
 			}
 
-				// check if the menu is already opened
+			// check if the menu is already opened
 			if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) || $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen']) {
 				$this->menuOpen = true;
 			}
 
-				// run through the actions
+			// run through the actions
 			$this->actionHandler();
 		}
 	}
@@ -134,13 +134,13 @@ class tx_feeditadvanced_adminpanel {
 	public function actionHandler() {
 		$action = t3lib_div::_POST('TSFE_ADMIN_PANEL');
 
-			// handle toggling the menu on and off
-			// if the menu is going to be switched on/off, then it's also stored in the userconfiguration of the BE user
+		// handle toggling the menu on and off
+		// if the menu is going to be switched on/off, then it's also stored in the userconfiguration of the BE user
 		if ($action && isset($action['menuOpen'])) {
 			$GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] = $this->menuOpen = (bool) $action['menuOpen'];
 		}
 
-			// hook to handle actions that define in menu
+		// hook to handle actions that define in menu
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['actionHandler'])) {
 			$_params = array(
 				'action' => &$action,
@@ -164,7 +164,7 @@ class tx_feeditadvanced_adminpanel {
 			return;
 		}
 
-			// loading template
+		// loading template
 		$templateFile = $this->modTSconfig['properties']['skin.']['templateFile'];
 		$templateFile = ($templateFile ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl');
 		$templateFile = $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
@@ -177,8 +177,8 @@ class tx_feeditadvanced_adminpanel {
 			'CSSPREFIX'   => $this->cssPrefix
 		);
 
-			// @todo	This code runs after content has been created,
-			// thus we cannot insert data into the head using the page renderer.  Are there any other options?
+		// @todo	This code runs after content has been created,
+		// thus we cannot insert data into the head using the page renderer.  Are there any other options?
 		if ($this->menuOpen) {
 			$markers['INCLUDES'] = $this->getIncludes();
 		} else {
@@ -217,7 +217,7 @@ class tx_feeditadvanced_adminpanel {
 		<input type="hidden" name="TSFE_ADMIN_PANEL[menuOpen]" value="' . intval($this->menuOpen) . '" />
 		';
 
-			// hook to add additional hidden fields
+		// hook to add additional hidden fields
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['getAdmPanelFields'])) {
 			$_params = array(
 				'content' => &$content,
@@ -239,8 +239,8 @@ class tx_feeditadvanced_adminpanel {
 	function buildMenu() {
 		$content = '';
 
-			// Allow to hook in the buildMenu process here,
-			// this way you can exchange the menu building completely
+		// Allow to hook in the buildMenu process here,
+		// this way you can exchange the menu building completely
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['buildMenu'])) {
 			$_params = array(
 				'input' => &$input,
@@ -254,13 +254,13 @@ class tx_feeditadvanced_adminpanel {
 		if (!$content && !$this->modTSconfig['properties']['menuBar.']['disable']) {
 			$this->menuBar = t3lib_div::makeInstance('tx_feeditadvanced_menu');
 
-				// add sections for menu
+			// add sections for menu
 			$this->menuBar->addToolbar('Actions',        'actionToolbar', false, '', true);
 			$this->menuBar->addToolbar('ContextActions', 'contextToolbar', false, '', true);
 			$this->menuBar->addToolbar('ContentType',    'contentTypeToolbar');
 			$this->menuBar->addToolbar('Clipboard',      'clipboardToolbar', false, 'style="display:none;"');
 
-				// build the menus here
+			// build the menus here
 			// @todo need to check permissions here too
 			$tsMenuBar  = $this->modTSconfig['properties']['menuBar.'];
 			$menuConfig = t3lib_div::trimExplode(',', ($tsMenuBar['config'] ? $tsMenuBar['config'] : 'action,type,clipboard,context'));
@@ -354,23 +354,23 @@ class tx_feeditadvanced_adminpanel {
 			'TYPO3Configuration' => $this->getConfigurationJavascript(),
 			'backend.js'   => $this->getScriptTag('typo3/js/backend.js'),
 
-				// load AJAX handling functions
+			// load AJAX handling functions
 			'feedit.js'    => $this->getScriptTag($extPath . 'res/js/feEdit.js'),
 			'lightbox.js'  => $this->getScriptTag($extPath . 'res/js/lightbox.js'),
 			'lightbox.css' => $this->getLinkTag($extPath . 'res/css/lightbox.css')
 		);
 
-			// load main CSS file
+		// load main CSS file
 		$cssFile = $this->modTSconfig['properties']['skin.']['cssFile'];
 		$includes[] = $this->getLinkTag($cssFile ? $cssFile : $extPath . 'res/css/fe_edit_advanced.css');
 
-			// include anything from controller
+		// include anything from controller
 		$controllerIncludes = $GLOBALS['BE_USER']->frontendEdit->getJavascriptIncludes();
 		if ($controllerIncludes) {
 			$includes[] = $controllerIncludes;
 		}
 
-			// hook to load in any extra / additional JS includes
+		// hook to load in any extra / additional JS includes
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['addIncludes'])) {
 			foreach  ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_adminpanel.php']['addIncludes'] as $classRef) {
 				$hookObj = &t3lib_div::getUserObj($classRef);
@@ -452,7 +452,7 @@ class tx_feeditadvanced_adminpanel {
 			'updatingContent' => $GLOBALS['LANG']->sL('LLL:EXT:feeditadvanced/locallang.xml:js.updatingContent')
 		);
 
-			// Convert labels/settings back to UTF-8 since json_encode() only works with UTF-8:
+		// Convert labels/settings back to UTF-8 since json_encode() only works with UTF-8:
 		if ($GLOBALS['LANG']->charSet !== 'utf-8') {
 			$GLOBALS['LANG']->csConvObj->convArray($configuration, $GLOBALS['LANG']->charSet, 'utf-8');
 			$GLOBALS['LANG']->csConvObj->convArray($editWindowConfiguration, $GLOBALS['LANG']->charSet, 'utf-8');

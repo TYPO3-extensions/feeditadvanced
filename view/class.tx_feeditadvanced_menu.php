@@ -127,10 +127,10 @@ class tx_feeditadvanced_menu {
 		$this->pid  = intval($GLOBALS['TSFE']->id);
 		$this->modTSconfig = t3lib_BEfunc::getModTSconfig($this->pid, 'FeEdit');
 
-			// TODO: do we need this?
+		// TODO: do we need this?
 		$this->getUserListing();
 
-			// check if the menu is opened
+		// check if the menu is opened
 		if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'])
 			|| ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['menuOpen'] == true)) {
 			$this->menuOpen = true;
@@ -138,11 +138,11 @@ class tx_feeditadvanced_menu {
 
 		$this->username = ($GLOBALS['TSFE']->fe_user->user['username'] ? $GLOBALS['TSFE']->fe_user->user['username'] : $GLOBALS['BE_USER']->user['username']);
 
-			// setting the base path for the icons
+		// setting the base path for the icons
 		$this->imagePath = $this->modTSconfig['properties']['skin.']['imagePath'];
 		$this->imagePath = ($this->imagePath ? $this->imagePath : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/icons/');
 
-			// loading template
+		// loading template
 		$templateFile = $this->modTSconfig['properties']['skin.']['templateFile'];
 		$templateFile = ($templateFile ? $templateFile : t3lib_extMgm::siteRelPath('feeditadvanced') . 'res/template/feedit.tmpl');
 		$templateFile = $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
@@ -167,15 +167,15 @@ class tx_feeditadvanced_menu {
 			'CSSPREFIX' => $this->cssPrefix
 		);
 
-			// if the menu is not open, then just show "Activate editing" box
+		// if the menu is not open, then just show "Activate editing" box
 		if (!$this->menuOpen) {
 				$markers['OPEN_EDIT_MODE'] = $this->getLL('statusActivateEditing');
 				$markers['OPEN_EDIT_MODE_TOOLTIP'] = $this->getLL('openTooltip');
 		} else {
-				// otherwise, the menu is open
+			// otherwise, the menu is open
 
-				// @todo Temporary code to draw and "Edit Page" button.
-				// @todo does not work by now
+			// @todo Temporary code to draw and "Edit Page" button.
+			// @todo does not work by now
 			$data = $GLOBALS['TSFE']->page;
 			$this->cObj->start($data, 'pages');
 			$conf = array(
@@ -184,7 +184,7 @@ class tx_feeditadvanced_menu {
 			);
 			$markers['PAGE_EDIT_PANEL'] = $this->cObj->editPanel('', $conf);
 
-				// show all sections and accompanying items that are in the first row
+			// show all sections and accompanying items that are in the first row
 			$sectionParts  = t3lib_parsehtml::getSubpart($this->template, '###SECTIONS_FIRST_ROW###');
 			$templateSection    = t3lib_parsehtml::getSubpart($sectionParts, '###SECTION###');
 			$templateSingleItem = t3lib_parsehtml::getSubpart($sectionParts, '###SINGLE_ITEM###');
@@ -221,7 +221,7 @@ class tx_feeditadvanced_menu {
 				}
 			}
 
-				// add section = showing users online
+			// add section = showing users online
 			if ($this->userList) {
 				$userMarkers = array('USER_LIST' => $this->userList, 'USER_LABEL' => $this->getLL('usersOnPage'));
 				$subparts['USERLISTING'] = t3lib_parsehtml::getSubpart($this->template, '###USERLISTING###');
@@ -236,7 +236,7 @@ class tx_feeditadvanced_menu {
 
 		$content = t3lib_parsehtml::substituteMarkerArray($this->template, $markers, '###|###');
 
-			// hook to add additional menu features, including a sidebar
+		// hook to add additional menu features, including a sidebar
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['EXT:feeditadvanced/view/class.tx_feeditadvanced_menu.php']['build'])) {
 			$_params = array(
 				'menuOut' => &$content,	// deprecated, should use "content" now

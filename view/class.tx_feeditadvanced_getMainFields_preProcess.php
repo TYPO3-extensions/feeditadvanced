@@ -54,10 +54,10 @@ class tx_feeditadvanced_getMainFields_preProcess {
 		$this->modTSconfig = $thisVar->modTSconfig;
 		$formOnPageConf = $GLOBALS['TSFE']->tmpl->setup[$table.'.']['stdWrap.']['editPanel.'];
 
-			// these configurations concerns only 'EDITPANEL' objects - edit icons use default system + a funtion to reset some TCA, when used Forms on page editing mode
+		// these configurations concerns only 'EDITPANEL' objects - edit icons use default system + a funtion to reset some TCA, when used Forms on page editing mode
 		if (t3lib_div::_GP('TSFE_EDIT') && $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['edit_editFormsOnPage']) {
 
-				// disable unwanted palettes
+			// disable unwanted palettes
 			if ($table == 'tt_content' && isset($formOnPageConf['formsOnPage.']['disablePalettes'])) {
 				$disablePalettes = t3lib_div::trimExplode(',',strtolower($formOnPageConf['formsOnPage.']['disablePalettes']), 1);
 				if (isset($disablePalettes) && is_array($disablePalettes)) {
@@ -70,7 +70,7 @@ class tx_feeditadvanced_getMainFields_preProcess {
 				}
 			}
 
-				// reset palettes
+			// reset palettes
 			if ($table=='tt_content' && isset($formOnPageConf['formsOnPage.']['palettes.'])) {
 				for ($i=1; $i<16; $i++) {
 					if ($formOnPageConf['formsOnPage.']['palettes.'][$i . '.']['showitem']) {
