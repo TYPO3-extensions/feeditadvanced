@@ -348,11 +348,16 @@ class tx_feeditadvanced_adminpanel {
 	 */
 	protected function getIncludes() {
 		$extPath = t3lib_extMgm::siteRelPath('feeditadvanced');
+		if (version_compare(TYPO3_branch, '6.2', '<')) {
+			$backendJs = 'typo3/js/backend.js';
+		} else {
+			$backendJs = 'typo3/sysext/backend/Resources/Public/JavaScript/backend.js';
+		}
 		$includes = array(
 			'ext-base.js'  => $this->getScriptTag($extPath . 'res/js/ext-base.js'),
 			'ext-dd.js'    => $this->getScriptTag($extPath . 'res/js/ext-dd.js'),
 			'TYPO3Configuration' => $this->getConfigurationJavascript(),
-			'backend.js'   => $this->getScriptTag('typo3/js/backend.js'),
+			'backend.js'   => $this->getScriptTag($backendJs),
 
 			// load AJAX handling functions
 			'feedit.js'    => $this->getScriptTag($extPath . 'res/js/feEdit.js'),
