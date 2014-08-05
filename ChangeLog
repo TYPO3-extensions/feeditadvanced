@@ -1,3 +1,27 @@
+2014-08-05  Christopher  <chrissitopher@gmx.de>
+
+	* [TASK] Fix path to clear.gif
+	* [TASK] Include backend.js properly
+	* [TASK] Stop using deprecated functions (#60776)
+
+2014-08-04  Christopher  <chrissitopher@gmx.de>
+
+	* [TASK] Fix indentation
+
+2014-08-03  Christopher  <chrissitopher@gmx.de>
+
+	* [TASK] Fatal error due to changes in SpriteHandler in TYPO3 6.0 (#40773)
+	* [TASK] Fix trailing spaces and PHP tags
+	* [TASK] Fix calls to loadTCA()
+	* [TASK] Remove require_once() calls to Core classes (#56153)
+	* [TASK] Update TYPO3 logo
+	* [TASK] 6.2 Compatibility Changes (#56153)
+	* [TASK] Fix a call to a deprecated function
+
+2014-08-02  Christopher  <chrissitopher@gmx.de>
+
+	* [TASK] Update manual to reST format
+
 2012-12-07  Lorenz Ulrich <lorenz.ulrich@visol.ch>
 
 	* Fixed bug #43197: RTE is not working on load in Firefox (Thanks Cédric Delécluse)
