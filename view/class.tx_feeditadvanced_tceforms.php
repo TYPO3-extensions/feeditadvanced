@@ -319,8 +319,8 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 								$content['NAME'] .
 								'</label>' .
 								'<span' . $fieldAttributes . '>' .
-									'<img name="cm_' . $fieldIdentifierForJs . '" src="clear.gif" class="t3-form-palette-icon-contentchanged" alt="" />' .
-									'<img name="req_' . $fieldIdentifierForJs . '" src="clear.gif" class="t3-form-palette-icon-required" alt="" />' .
+									'<img name="cm_' . $fieldIdentifierForJs . '" src="typo3/gfx/clear.gif" class="t3-form-palette-icon-contentchanged" alt="" />' .
+									'<img name="req_' . $fieldIdentifierForJs . '" src="typo3/gfx/clear.gif" class="t3-form-palette-icon-required" alt="" />' .
 									$content['ITEM'] .
 								'</span>' .
 								'</span>';
@@ -407,7 +407,7 @@ class tx_feeditadvanced_tceforms extends t3lib_TCEforms_fe {
 		}
 		if (!$fieldTemplate) {
 			if (!strlen($fieldTemplate = $this->getTSFieldConf($elementConfig['fieldTemplate'], $elementConfig['fieldTemplate.']))) {
-				$fieldTemplate = '<tr class="class-main2 fieldHeader"><td nowrap="nowrap" class="formField-header"><b>###FIELD_NAME###</b></td></tr><tr class="class-main1 field"><td nowrap="nowrap" class="formField-field"><img name="req_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="10" height="10" alt="" /><img name="cm_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="clear.gif" width="7" height="10" alt="" />###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
+				$fieldTemplate = '<tr class="class-main2 fieldHeader"><td nowrap="nowrap" class="formField-header"><b>###FIELD_NAME###</b></td></tr><tr class="class-main1 field"><td nowrap="nowrap" class="formField-field"><img name="req_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="typo3/gfx/clear.gif" width="10" height="10" alt="" /><img name="cm_###FIELD_TABLE###_###FIELD_ID###_###FIELD_FIELD###" src="typo3/gfx/clear.gif" width="7" height="10" alt="" />###FIELD_ITEM######FIELD_PAL_LINK_ICON###</td></tr>';
 			}
 		}
 
