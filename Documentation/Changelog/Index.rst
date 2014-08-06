@@ -28,35 +28,29 @@ with the extension.
 
    Version
          Version
-   
+
    Changes
          Changes
+
+.. container:: table-row
+
+   Version
+         1.6.0
+
+   Changes
+         Compatibility for TYPO3 up to and including version 6.2. Thanks to Christopher, Lorenz Ulrich, and other contributors.
 
 
 .. container:: table-row
 
    Version
          1.5.0
-   
+
    Changes
          Improved TYPO3 4.5 Compatibility.
 
-
-.. container:: table-row
-
-   Version
-   
-   
-   Changes
          Added basic manual.
 
-
-.. container:: table-row
-
-   Version
-   
-   
-   Changes
          Many bugfixes. See ChangeLog file for full details.
 
 
