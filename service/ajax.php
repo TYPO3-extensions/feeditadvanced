@@ -771,12 +771,14 @@ class tx_feeditadvanced_ajax {
 		}
 		$pageRenderer->enableConcatenateFiles();
 
-		// Add TYPO3.settings.ajaxUrls
-		$ajaxUrls = array();
-		foreach (array_keys($GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']) as $ajaxHandler) {
-			$ajaxUrls[$ajaxHandler] = t3lib_BEfunc::getAjaxUrl($ajaxHandler);
+		if (version_compare(TYPO3_branch, '6.1', '>')) {
+			// Add TYPO3.settings.ajaxUrls
+			$ajaxUrls = array();
+			foreach (array_keys($GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']) as $ajaxHandler) {
+				$ajaxUrls[$ajaxHandler] = t3lib_BEfunc::getAjaxUrl($ajaxHandler);
+			}
+			$pageRenderer->addHeaderData('<script type="text/javascript">/*<![CDATA[*/TYPO3.settings.ajaxUrls = ' . json_encode($ajaxUrls) . ';/*]]>*/</script>');
 		}
-		$pageRenderer->addHeaderData('<script type="text/javascript">/*<![CDATA[*/TYPO3.settings.ajaxUrls = ' . json_encode($ajaxUrls) . ';/*]]>*/</script>');
 
 		// Set the BACK_PATH for the pageRenderer concatenation.
 		// FIXME should be removed when the sprite manager, RTE, and pageRenderer are on the same path about concatenation.
